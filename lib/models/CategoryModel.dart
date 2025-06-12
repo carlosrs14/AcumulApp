@@ -13,4 +13,20 @@ class CategoryModel {
 
   String get description => _description;
   set description(String value) => _description = value;
+
+  factory CategoryModel.fromJson(Map<String, dynamic> json) {
+    return CategoryModel(
+      json['id'] as int,
+      json['name'] as String,
+      json['description'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': _id,
+      'name': _name,
+      'description': _description,
+    };
+  }
 }

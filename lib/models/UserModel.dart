@@ -17,4 +17,23 @@ class UserModel {
 
   String get password => _password;
   set password(String value) => _password = value;
+
+  
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      json['id'] as int,
+      json['name'] as String,
+      json['email'] as String,
+      json['password'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': _id,
+      'name': _name,
+      'email': _email,
+      'password': _password,
+    };
+  }
 }

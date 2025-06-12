@@ -13,4 +13,21 @@ class LinkModel {
 
   String get redSocial => _redSocial;
   set redSocial(String value) => _redSocial = value;
+
+  
+  factory LinkModel.fromJson(Map<String, dynamic> json) {
+    return LinkModel(
+      json['id'] as int,
+      json['url'] as String,
+      json['redSocial'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': _id,
+      'url': _url,
+      'redSocial': _redSocial,
+    };
+  }
 }

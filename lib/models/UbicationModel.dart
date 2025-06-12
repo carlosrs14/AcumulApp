@@ -9,4 +9,18 @@ class UbicationModel {
 
   String get name => _name;
   set name(String value) => _name = value;
+
+  factory UbicationModel.fromJson(Map<String, dynamic> json) {
+    return UbicationModel(
+      json['id'] as int,
+      json['name'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': _id,
+      'name': _name,
+    };
+  }
 }
