@@ -9,6 +9,7 @@ class BusinessService {
 
   // Lista de categorías estáticas: puedes exponerla públicamente si la necesitas en UI
   final List<CategoryModel> _allCategories = [
+    CategoryModel(0, "All", "Todos"),
     CategoryModel(
       1,
       "Restaurante",
@@ -33,7 +34,7 @@ class BusinessService {
         101,
         "La Parrilla Bogotana",
         "Calle 85 #12-34, Bogotá",
-        "https://example.com/logos/la_parrilla_bogotana.png",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
           LinkModel(1, "https://facebook.com/laparrillabogotana", "Facebook"),
           LinkModel(2, "https://instagram.com/laparrillabogotana", "Instagram"),
@@ -52,7 +53,7 @@ class BusinessService {
         102,
         "Dulce Aroma",
         "Carrera 7 #45-67, Medellín",
-        "https://example.com/logos/dulce_aroma.png",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
           LinkModel(4, "https://facebook.com/dulcearoma", "Facebook"),
           LinkModel(5, "https://instagram.com/dulcearoma", "Instagram"),
@@ -70,7 +71,7 @@ class BusinessService {
         103,
         "Moda Urbana",
         "Avenida El Poblado #10-20, Medellín",
-        "https://example.com/logos/moda_urbana.png",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
           LinkModel(6, "https://instagram.com/modaurbana", "Instagram"),
           LinkModel(7, "https://tiktok.com/@modaurbana", "TikTok"),
@@ -88,7 +89,7 @@ class BusinessService {
         104,
         "Página y Pluma",
         "Calle 9 #16-30, Cali",
-        "https://example.com/logos/pagina_pluma.png",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
           LinkModel(8, "https://facebook.com/paginaypluma", "Facebook"),
           LinkModel(9, "https://instagram.com/paginaypluma", "Instagram"),
@@ -106,7 +107,7 @@ class BusinessService {
         105,
         "FitLife",
         "Av. Simón Bolívar #5-50, Barranquilla",
-        "https://example.com/logos/fitlife.png",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
           LinkModel(10, "https://facebook.com/fitlifebaq", "Facebook"),
           LinkModel(11, "https://instagram.com/fitlifebaq", "Instagram"),
@@ -114,7 +115,7 @@ class BusinessService {
         UbicationModel(4, "Barranquilla"),
         // categoría 5: Gimnasio
         [_allCategories.firstWhere((c) => c.id == 5)],
-        3.5,
+        4.0,
       ),
     );
 
@@ -124,7 +125,7 @@ class BusinessService {
         106,
         "Rutas y Destinos",
         "Carrera 15 #8-90, Cartagena",
-        "https://example.com/logos/rutas_destinos.png",
+        "https://encrypted-tbgstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
           LinkModel(12, "https://facebook.com/rutasy_destinos", "Facebook"),
           LinkModel(13, "https://instagram.com/rutasy_destinos", "Instagram"),
@@ -147,7 +148,7 @@ class BusinessService {
         107,
         "TechConexión",
         "Diagonal 20 #30-15, Bucaramanga",
-        "https://example.com/logos/techconexion.png",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
           LinkModel(15, "https://facebook.com/techconexion", "Facebook"),
           LinkModel(16, "https://instagram.com/techconexion", "Instagram"),
@@ -184,6 +185,9 @@ class BusinessService {
   /// Filtra negocios que tengan alguna categoría con nombre que contenga 'categoryName' (case-insensitive).
   List<BusinessModel> filterByCategoryName(String categoryName) {
     final key = categoryName.toLowerCase();
+    if (categoryName == "All") {
+      return this._businesses;
+    }
     return _businesses.where((b) {
       return b.categories.any((cat) => cat.name.toLowerCase().contains(key));
     }).toList();

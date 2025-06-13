@@ -1,5 +1,6 @@
 import 'dart:ffi';
 import 'package:acumulapp/models/CategoryModel.dart';
+import 'package:acumulapp/services/BusinessService.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:acumulapp/models/BusinessModel.dart';
 import 'package:acumulapp/models/LinkModel.dart';
@@ -15,48 +16,23 @@ class Inicioclienteview extends StatefulWidget {
 }
 
 class _InicioclienteviewState extends State<Inicioclienteview> {
-  late Widget cuerpo;
-  @override
-  void initState() {
-    cuerpo = home();
-    filteredBusiness = business;
-    super.initState();
-  }
-
+  final BusinessService businessService = BusinessService();
+  List<BusinessModel> business = [];
+  List<BusinessModel> filteredBusiness = [];
   final TextEditingController _searchController = TextEditingController();
   String selectedCategory = 'All';
 
-  final List<String> categories = ['All', 'Food', 'clothing', 'Music'];
-  List<BusinessModel> business = [
-    BusinessModel(
-      1,
-      "tienda empres",
-      "Av. Central #123",
-      "https://static.vecteezy.com/system/resources/previews/020/662/330/non_2x/store-icon-logo-illustration-vector.jpg",
-      [
-        LinkModel(1, "https://instagram.com/tienda", "Instagram"),
-        LinkModel(2, "https://facebook.com/tienda", "Facebook"),
-      ],
-      UbicationModel(1, "Santa marta"),
-      [CategoryModel(2, "clothing", "_description")],
-      3.5,
-    ),
+  List<CategoryModel> categories = [];
 
-    BusinessModel(
-      2,
-      "El chorro",
-      "Calle 45 Sur #8-22",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
-      [
-        LinkModel(3, "https://instagram.com/tienda", "Instagram"),
-        LinkModel(4, "https://facebook.com/tienda", "Facebook"),
-      ],
-      UbicationModel(1, "Santa marta"),
-      [CategoryModel(1, "Food", "_description")],
-      4.5,
-    ),
-  ];
-  List<BusinessModel> filteredBusiness = [];
+  late Widget cuerpo;
+  @override
+  void initState() {
+    super.initState();
+    business = businessService.getAll();
+    filteredBusiness = business;
+    categories = businessService.getAllCategories();
+    cuerpo = home();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +100,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
           children: [
             SizedBox(width: 20),
             search(),
-            SizedBox(width: 20),
+            SizedBox(width: 10),
             filtro(),
           ],
         ),
@@ -146,13 +122,19 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
         child: DropdownButton<String>(
           value: selectedCategory,
           icon: Icon(Icons.arrow_drop_down),
-          items: categories.map((String value) {
-            return DropdownMenuItem<String>(value: value, child: Text(value));
+          items: categories.map((CategoryModel value) {
+            return DropdownMenuItem<String>(
+              value: value.name,
+              child: Text(value.name),
+            );
           }).toList(),
           onChanged: (String? newValue) {
             if (newValue != null) {
               setState(() {
                 selectedCategory = newValue;
+                filteredBusiness = businessService.filterByCategoryName(
+                  selectedCategory,
+                );
                 cuerpo = home();
               });
             }
@@ -164,7 +146,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
 
   Widget search() {
     return Container(
-      width: 300,
+      width: 220,
       height: 40,
 
       child: TextField(
@@ -222,23 +204,56 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                 ),
               ],
             ),
-            leading: ClipOval(
-              child: Image.network(filteredBusiness[index].logoUrl),
-            ),
-            trailing: Container(
+            leading: Container(
               width: 55,
               height: 55,
               padding: EdgeInsets.all(1),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.black, width: 4),
+                border: Border.all(color: Colors.black, width: 1),
                 borderRadius: BorderRadius.circular(35),
               ),
+
               child: Center(
-                child: IconButton(
-                  icon: Icon(MdiIcons.cardsOutline),
+                child: ClipOval(
+                  child: Image.network(
+                    filteredBusiness[index].logoUrl,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Aquí puedes manejar el error y mostrar una imagen predeterminada
+                      return Text(
+                        filteredBusiness[index].name[0],
+                        style: TextStyle(fontSize: 20),
+                      ); // Imagen local predeterminada
+                    },
+                  ),
+                ),
+              ),
+            ),
+            trailing: Container(
+              width: 159,
+              height: 55,
+              padding: EdgeInsets.all(1),
+
+              child: Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40),
+                      side: BorderSide(
+                        color: Colors.black, // Color del borde
+                        width: 1, // Ancho del borde
+                      ),
+                    ),
+                  ),
                   onPressed: () {
-                    //ir a tarjetas del negocio
+                    // ir a tarjertas de negocio
                   },
+                  child: Row(
+                    children: [
+                      Text("Ver tarjetas"),
+                      SizedBox(width: 10),
+                      Icon(MdiIcons.cardsOutline),
+                    ],
+                  ),
                 ),
               ),
             ),
