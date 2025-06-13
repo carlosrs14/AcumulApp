@@ -1,5 +1,7 @@
+import 'package:acumulapp/models/CategoryModel.dart';
 import 'package:acumulapp/models/LinkModel.dart';
 import 'package:acumulapp/models/UbicationModel.dart';
+import 'package:flutter/foundation.dart';
 
 class BusinessModel {
   int _id;
@@ -8,6 +10,8 @@ class BusinessModel {
   String _logoUrl;
   List<LinkModel> _links;
   UbicationModel? _ubication;
+  List<CategoryModel> _categories;
+  double _rating;
 
   BusinessModel(
     this._id,
@@ -15,7 +19,9 @@ class BusinessModel {
     this._direction,
     this._logoUrl,
     this._links,
-    this._ubication
+    this._ubication,
+    this._categories,
+    this._rating,
   );
 
   int get id => _id;
@@ -32,20 +38,38 @@ class BusinessModel {
 
   List<LinkModel> get links => _links;
   set links(List<LinkModel> value) => _links = value;
-  
+
   UbicationModel? get ubication => _ubication;
   set ubication(UbicationModel? value) => _ubication = value;
+
+  List<CategoryModel> get categories => _categories;
+  set categories(List<CategoryModel> value) => _categories = value;
+
+  double get rating => _rating;
+  set rating(double value) => _rating = value;
 
   factory BusinessModel.fromJson(Map<String, dynamic> json) {
     List<LinkModel> linksList = [];
     if (json['links'] != null) {
       final l = json['links'] as List;
-      linksList = l.map((item) => LinkModel.fromJson(item as Map<String, dynamic>)).toList();
+      linksList = l
+          .map((item) => LinkModel.fromJson(item as Map<String, dynamic>))
+          .toList();
     }
 
     UbicationModel? ubication;
     if (json.containsKey('ubication') && json['ubication'] != null) {
-      ubication = UbicationModel.fromJson(json['ubication'] as Map<String, dynamic>);
+      ubication = UbicationModel.fromJson(
+        json['ubication'] as Map<String, dynamic>,
+      );
+    }
+
+    List<CategoryModel> categoriesList = [];
+    if (json['categories'] != null) {
+      final l = json['categories'] as List;
+      linksList = l
+          .map((item) => LinkModel.fromJson(item as Map<String, dynamic>))
+          .toList();
     }
 
     return BusinessModel(
@@ -55,6 +79,8 @@ class BusinessModel {
       json['logoUrl'] as String,
       linksList,
       ubication,
+      categoriesList,
+      (json['rating'] ?? 0.0),
     );
   }
 
@@ -67,6 +93,8 @@ class BusinessModel {
       'links': _links.map((link) => link.toJson()).toList(),
       // Solo incluyo ubication si no es null
       if (_ubication != null) 'ubication': _ubication!.toJson(),
+      'categories': _categories.map((category) => category.toJson()).toList(),
+      'rating': _rating,
     };
   }
 }
