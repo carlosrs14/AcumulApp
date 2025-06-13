@@ -1,3 +1,4 @@
+import 'package:acumulapp/models/CategoryModel.dart';
 import 'package:acumulapp/models/LinkModel.dart';
 import 'package:acumulapp/models/UbicationModel.dart';
 
@@ -8,6 +9,7 @@ class BusinessModel {
   String _logoUrl;
   List<LinkModel> _links;
   UbicationModel? _ubication;
+  List<CategoryModel> _categories;
 
   BusinessModel(
     this._id,
@@ -15,7 +17,8 @@ class BusinessModel {
     this._direction,
     this._logoUrl,
     this._links,
-    this._ubication
+    this._ubication,
+    this._categories
   );
 
   int get id => _id;
@@ -35,12 +38,21 @@ class BusinessModel {
   
   UbicationModel? get ubication => _ubication;
   set ubication(UbicationModel? value) => _ubication = value;
+  
+  List<CategoryModel> get categories => _categories;
+  set categories(List<CategoryModel> value) => _categories = value;
 
   factory BusinessModel.fromJson(Map<String, dynamic> json) {
     List<LinkModel> linksList = [];
     if (json['links'] != null) {
       final l = json['links'] as List;
       linksList = l.map((item) => LinkModel.fromJson(item as Map<String, dynamic>)).toList();
+    }
+
+    List<CategoryModel> categoryList = [];
+    if (json['categories'] != null) {
+      final l = json['categories'] as List;
+      categoryList = l.map((item) => CategoryModel.fromJson(item as Map<String, dynamic>)).toList();
     }
 
     UbicationModel? ubication;
@@ -55,6 +67,7 @@ class BusinessModel {
       json['logoUrl'] as String,
       linksList,
       ubication,
+      categoryList
     );
   }
 
@@ -67,6 +80,7 @@ class BusinessModel {
       'links': _links.map((link) => link.toJson()).toList(),
       // Solo incluyo ubication si no es null
       if (_ubication != null) 'ubication': _ubication!.toJson(),
+      'categories': _categories.map((category) => category.toJson()).toList(),
     };
   }
 }
