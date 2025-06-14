@@ -1,6 +1,7 @@
 import 'dart:ffi';
 import 'package:acumulapp/models/CategoryModel.dart';
 import 'package:acumulapp/services/BusinessService.dart';
+import 'package:acumulapp/views/AppBarClient.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:acumulapp/models/BusinessModel.dart';
 import 'package:acumulapp/models/LinkModel.dart';
@@ -24,71 +25,19 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
 
   List<CategoryModel> categories = [];
 
-  late Widget cuerpo;
   @override
   void initState() {
     super.initState();
     business = businessService.getAll();
     filteredBusiness = business;
     categories = businessService.getAllCategories();
-    cuerpo = home();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.grey,
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    cuerpo = home();
-                  });
-                },
-                icon: Icon(MdiIcons.home),
-                iconSize: 33,
-              ),
-              SizedBox(width: 30),
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    cuerpo = Text("cards");
-                  });
-                },
-                icon: Icon(MdiIcons.cards),
-                iconSize: 33,
-              ),
-              SizedBox(width: 30),
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    cuerpo = Text("Notificaciones");
-                  });
-                },
-                icon: Icon(MdiIcons.bell),
-                iconSize: 33,
-              ),
-              SizedBox(width: 30),
-
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    cuerpo = Text("Pefil");
-                  });
-                },
-                icon: Icon(MdiIcons.accountCircle),
-                iconSize: 33,
-              ),
-              SizedBox(width: 90),
-            ],
-          ),
-        ],
-      ),
-      body: Container(child: cuerpo),
+      appBar: AppbarClient(currentScreen: "InicioClientView"),
+      body: Container(child: home()),
     );
   }
 
@@ -135,7 +84,6 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                 filteredBusiness = businessService.filterByCategoryName(
                   selectedCategory,
                 );
-                cuerpo = home();
               });
             }
           },
@@ -155,7 +103,6 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
             filteredBusiness = business.where((negocio) {
               return negocio.name.toLowerCase().contains(value.toLowerCase());
             }).toList();
-            cuerpo = home();
           });
         },
         controller: _searchController,
@@ -218,11 +165,10 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                   child: Image.network(
                     filteredBusiness[index].logoUrl,
                     errorBuilder: (context, error, stackTrace) {
-                      // Aquí puedes manejar el error y mostrar una imagen predeterminada
                       return Text(
                         filteredBusiness[index].name[0],
                         style: TextStyle(fontSize: 20),
-                      ); // Imagen local predeterminada
+                      );
                     },
                   ),
                 ),
@@ -238,10 +184,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(40),
-                      side: BorderSide(
-                        color: Colors.black, // Color del borde
-                        width: 1, // Ancho del borde
-                      ),
+                      side: BorderSide(color: Colors.black, width: 1),
                     ),
                   ),
                   onPressed: () {
