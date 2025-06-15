@@ -1,7 +1,6 @@
 import 'package:acumulapp/models/CategoryModel.dart';
 import 'package:acumulapp/models/LinkModel.dart';
 import 'package:acumulapp/models/UbicationModel.dart';
-import 'package:flutter/foundation.dart';
 
 class BusinessModel {
   int _id;

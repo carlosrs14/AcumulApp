@@ -1,11 +1,9 @@
-import 'dart:ffi';
 import 'package:acumulapp/models/CategoryModel.dart';
 import 'package:acumulapp/services/BusinessService.dart';
+import 'package:acumulapp/services/CategoryService.dart';
 import 'package:acumulapp/views/AppBarClient.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:acumulapp/models/BusinessModel.dart';
-import 'package:acumulapp/models/LinkModel.dart';
-import 'package:acumulapp/models/UbicationModel.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -18,19 +16,45 @@ class Inicioclienteview extends StatefulWidget {
 
 class _InicioclienteviewState extends State<Inicioclienteview> {
   final BusinessService businessService = BusinessService();
+  final CategoryService categoryService = CategoryService();
+
   List<BusinessModel> business = [];
   List<BusinessModel> filteredBusiness = [];
   final TextEditingController _searchController = TextEditingController();
-  String selectedCategory = 'All';
 
-  List<CategoryModel> categories = [];
+  String selectedCategory = 'All';
+  bool _isLoadingCategories = true;
+  String? _errorCategories;
+
+  List<CategoryModel> categoryList = [];
+
+  Future<void> _loadCategories() async {
+    setState(() {
+      _isLoadingCategories = true;
+      _errorCategories = null;
+    });
+    try {
+      final lista = await categoryService.all();
+      setState(() {
+        categoryList = lista;
+      });
+    } catch (e) {
+      setState(() {
+        _errorCategories = 'Error al cargar categorías';
+      });
+    } finally {
+      setState(() {
+        _isLoadingCategories = false;
+      });
+    }
+  }
 
   @override
   void initState() {
+    _loadCategories();
     super.initState();
     business = businessService.getAll();
     filteredBusiness = business;
-    categories = businessService.getAllCategories();
   }
 
   @override
@@ -71,7 +95,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
         child: DropdownButton<String>(
           value: selectedCategory,
           icon: Icon(Icons.arrow_drop_down),
-          items: categories.map((CategoryModel value) {
+          items: categoryList.map((CategoryModel value) {
             return DropdownMenuItem<String>(
               value: value.name,
               child: Text(value.name),
