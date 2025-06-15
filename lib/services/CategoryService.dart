@@ -10,10 +10,13 @@ class CategoryService {
    Future<List<CategoryModel>> all() async {
     List<CategoryModel> categories = [];
     try {
-      var response = await http.get(Uri.parse(urlApiCategory));
+      final response = await http.get(Uri.parse(urlApiCategory));
+
+      if (response.statusCode != 200) return [];
+
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-      
+
       for (var element in jsonData) {
         categories.add(CategoryModel.fromJson(element));
       }
