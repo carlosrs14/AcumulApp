@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:acumulapp/models/UserModel.dart';
+import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/utils/utils.dart';
 
-class UserService {
+class UserProvider {
   String urlApiUser = "$urlApi/auth/user";
   
   Future<UserModel?> login(String email, String password) async {

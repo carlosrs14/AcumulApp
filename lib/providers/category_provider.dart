@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:acumulapp/models/CategoryModel.dart';
+import 'package:acumulapp/models/category.dart';
 import '../utils/utils.dart';
 import 'package:http/http.dart' as http;
 
-class CategoryService {
+class CategoryProvider {
   String urlApiCategory = "$urlApi/categories/";
 
    Future<List<CategoryModel>> all() async {

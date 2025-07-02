@@ -1,6 +1,6 @@
-import 'package:acumulapp/models/CardModel.dart';
+import 'package:acumulapp/models/card.dart';
 
-class Cardservice {
+class CardProvider {
   List<CardModel> getAll() {
     List<CardModel> cards = List.empty();
     return cards;

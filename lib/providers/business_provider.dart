@@ -1,11 +1,11 @@
-import 'package:acumulapp/models/BusinessModel.dart';
-import 'package:acumulapp/models/CategoryModel.dart';
-import 'package:acumulapp/models/LinkModel.dart';
-import 'package:acumulapp/models/UbicationModel.dart';
+import 'package:acumulapp/models/business.dart';
+import 'package:acumulapp/models/category.dart';
+import 'package:acumulapp/models/link.dart';
+import 'package:acumulapp/models/ubication.dart';
 
-class BusinessService {
+class BusinessProvider {
   // Lista interna de negocios
-  final List<BusinessModel> _businesses = [];
+  final List<Business> _businesses = [];
 
   // Lista de categorías estáticas: puedes exponerla públicamente si la necesitas en UI
   final List<CategoryModel> _allCategories = [
@@ -26,11 +26,11 @@ class BusinessService {
   // Contador interno para asignar nuevos IDs automáticamente si se desea
   int _nextBusinessId = 108;
 
-  BusinessService() {
+  BusinessProvider() {
     // Inicializar 7 negocios de ejemplo, asignando categorías de _allCategories
     // 1. La Parrilla Bogotana — categoría Restaurante
     _businesses.add(
-      BusinessModel(
+      Business(
         101,
         "La Parrilla Bogotana",
         "Calle 85 #12-34, Bogotá",
@@ -49,7 +49,7 @@ class BusinessService {
 
     // 2. Dulce Aroma — Café/Panadería
     _businesses.add(
-      BusinessModel(
+      Business(
         102,
         "Dulce Aroma",
         "Carrera 7 #45-67, Medellín",
@@ -67,7 +67,7 @@ class BusinessService {
 
     // 3. Moda Urbana — Ropa
     _businesses.add(
-      BusinessModel(
+      Business(
         103,
         "Moda Urbana",
         "Avenida El Poblado #10-20, Medellín",
@@ -85,7 +85,7 @@ class BusinessService {
 
     // 4. Página y Pluma — Librería
     _businesses.add(
-      BusinessModel(
+      Business(
         104,
         "Página y Pluma",
         "Calle 9 #16-30, Cali",
@@ -103,7 +103,7 @@ class BusinessService {
 
     // 5. FitLife — Gimnasio
     _businesses.add(
-      BusinessModel(
+      Business(
         105,
         "FitLife",
         "Av. Simón Bolívar #5-50, Barranquilla",
@@ -121,7 +121,7 @@ class BusinessService {
 
     // 6. Rutas y Destinos — Agencia de Viajes
     _businesses.add(
-      BusinessModel(
+      Business(
         106,
         "Rutas y Destinos",
         "Carrera 15 #8-90, Cartagena",
@@ -144,7 +144,7 @@ class BusinessService {
 
     // 7. TechConexión — Electrónica
     _businesses.add(
-      BusinessModel(
+      Business(
         107,
         "TechConexión",
         "Diagonal 20 #30-15, Bucaramanga",
@@ -169,7 +169,7 @@ class BusinessService {
   }
 
   /// Crea un nuevo negocio en memoria, asignándole un ID automáticamente.
-  BusinessModel create(BusinessModel business) {
+  Business create(Business business) {
     // Asignar ID único
     business.id = _nextBusinessId;
     _nextBusinessId++;
@@ -178,15 +178,15 @@ class BusinessService {
   }
 
   /// Devuelve todos los negocios (copia).
-  List<BusinessModel> getAll() {
-    return List<BusinessModel>.from(_businesses);
+  List<Business> getAll() {
+    return List<Business>.from(_businesses);
   }
 
   /// Filtra negocios que tengan alguna categoría con nombre que contenga 'categoryName' (case-insensitive).
-  List<BusinessModel> filterByCategoryName(String categoryName) {
+  List<Business> filterByCategoryName(String categoryName) {
     final key = categoryName.toLowerCase();
     if (categoryName == "All") {
-      return this._businesses;
+      return _businesses;
     }
     return _businesses.where((b) {
       return b.categories.any((cat) => cat.name.toLowerCase().contains(key));
@@ -194,14 +194,14 @@ class BusinessService {
   }
 
   /// Filtra negocios que tengan la categoría con el ID dado.
-  List<BusinessModel> filterByCategoryId(int categoryId) {
+  List<Business> filterByCategoryId(int categoryId) {
     return _businesses.where((b) {
       return b.categories.any((cat) => cat.id == categoryId);
     }).toList();
   }
 
   /// Obtiene un negocio por ID. Lanza Exception si no existe.
-  BusinessModel get(int id) {
+  Business get(int id) {
     try {
       return _businesses.firstWhere((b) => b.id == id);
     } catch (e) {
@@ -210,7 +210,7 @@ class BusinessService {
   }
 
   /// Actualiza un negocio dado su ID. Retorna el negocio actualizado o lanza Exception.
-  BusinessModel update(int id, BusinessModel business) {
+  Business update(int id, Business business) {
     for (var i = 0; i < _businesses.length; i++) {
       if (_businesses[i].id == id) {
         business.id = id; // forzar que mantenga el mismo ID
