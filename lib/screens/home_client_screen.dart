@@ -1,9 +1,9 @@
-import 'package:acumulapp/models/CategoryModel.dart';
-import 'package:acumulapp/services/BusinessService.dart';
-import 'package:acumulapp/services/CategoryService.dart';
-import 'package:acumulapp/views/AppBarClient.dart';
+import 'package:acumulapp/models/category.dart';
+import 'package:acumulapp/providers/business_provider.dart';
+import 'package:acumulapp/providers/category_provider.dart';
+import 'package:acumulapp/screens/app_bar_client.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:acumulapp/models/BusinessModel.dart';
+import 'package:acumulapp/models/business.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -15,11 +15,11 @@ class Inicioclienteview extends StatefulWidget {
 }
 
 class _InicioclienteviewState extends State<Inicioclienteview> {
-  final BusinessService businessService = BusinessService();
-  final CategoryService categoryService = CategoryService();
+  final BusinessProvider businessService = BusinessProvider();
+  final CategoryProvider categoryService = CategoryProvider();
 
-  List<BusinessModel> business = [];
-  List<BusinessModel> filteredBusiness = [];
+  List<Business> business = [];
+  List<Business> filteredBusiness = [];
   final TextEditingController _searchController = TextEditingController();
 
   String selectedCategory = 'All';
@@ -117,7 +117,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
   }
 
   Widget search() {
-    return Container(
+    return SizedBox(
       width: 220,
       height: 40,
 

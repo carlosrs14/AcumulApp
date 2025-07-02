@@ -71,7 +71,7 @@ packages:
     source: hosted
     version: "5.0.0"
   flutter_rating_bar:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_rating_bar
       sha256: d2af03469eac832c591a1eba47c91ecc871fe5708e69967073c043b2d775ed93
@@ -148,7 +148,7 @@ packages:
     source: hosted
     version: "0.11.1"
   material_design_icons_flutter:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: material_design_icons_flutter
       sha256: "6f986b7a51f3ad4c00e33c5c84e8de1bdd140489bbcdc8b66fc1283dad4dea5a"

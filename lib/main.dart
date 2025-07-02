@@ -1,4 +1,4 @@
-import 'package:acumulapp/views/InicioClienteView.dart';
+import 'package:acumulapp/screens/home_client_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -29,8 +29,8 @@ class _InicioState extends State<Inicio> {
 }
 
 Widget cuerpo(BuildContext context) {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   return Container(
     decoration: BoxDecoration(color: Colors.white),
@@ -44,15 +44,15 @@ Widget cuerpo(BuildContext context) {
           alignment: Alignment.centerLeft,
           child: Text("Email", style: TextStyle(fontSize: 15)),
         ),
-        campoEmail(_emailController),
+        campoEmail(emailController),
         Container(
           padding: EdgeInsets.only(left: 20),
           alignment: Alignment.centerLeft,
           child: Text("Password", style: TextStyle(fontSize: 15)),
         ),
-        campoContrasena(_passwordController),
+        campoContrasena(passwordController),
         SizedBox(height: 30),
-        botonEntrar(_emailController, _passwordController, context),
+        botonEntrar(emailController, passwordController, context),
         SizedBox(height: 30),
         botonGoogle(),
       ],

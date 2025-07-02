@@ -1,4 +1,4 @@
-import 'package:acumulapp/views/AppBarClient.dart';
+import 'package:acumulapp/screens/app_bar_client.dart';
 import 'package:flutter/material.dart';
 
 class Ejemplo extends StatefulWidget {

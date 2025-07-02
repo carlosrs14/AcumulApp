@@ -1,5 +1,5 @@
-import 'package:acumulapp/views/InicioClienteView.dart';
-import 'package:acumulapp/views/ejemplo.dart';
+import 'package:acumulapp/screens/home_client_screen.dart';
+import 'package:acumulapp/screens/ejemplo.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
