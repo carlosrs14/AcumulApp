@@ -3,7 +3,11 @@ class LinkModel {
   String _url;
   String _redSocial;
 
-  LinkModel(this._id, this._url, this._redSocial);
+  LinkModel(
+    this._id,
+    this._url,
+    this._redSocial
+  );
 
   int get id => _id;
   set id(int value) => _id = value;

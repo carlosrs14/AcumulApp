@@ -1,8 +1,8 @@
-import 'package:acumulapp/models/CategoryModel.dart';
-import 'package:acumulapp/models/LinkModel.dart';
-import 'package:acumulapp/models/UbicationModel.dart';
+import 'package:acumulapp/models/category.dart';
+import 'package:acumulapp/models/link.dart';
+import 'package:acumulapp/models/ubication.dart';
 
-class BusinessModel {
+class Business {
   int _id;
   String _name;
   String _direction;
@@ -12,7 +12,7 @@ class BusinessModel {
   List<CategoryModel> _categories;
   double _rating;
 
-  BusinessModel(
+  Business(
     this._id,
     this._name,
     this._direction,
@@ -47,7 +47,7 @@ class BusinessModel {
   double get rating => _rating;
   set rating(double value) => _rating = value;
 
-  factory BusinessModel.fromJson(Map<String, dynamic> json) {
+  factory Business.fromJson(Map<String, dynamic> json) {
     List<LinkModel> linksList = [];
     if (json['links'] != null) {
       final l = json['links'] as List;
@@ -71,7 +71,7 @@ class BusinessModel {
           .toList();
     }
 
-    return BusinessModel(
+    return Business(
       json['id'] as int,
       json['name'] as String,
       json['direction'] as String,
