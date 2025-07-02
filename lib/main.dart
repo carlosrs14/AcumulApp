@@ -71,21 +71,21 @@ Widget nombre() {
   );
 }
 
-Widget campoEmail(TextEditingController _emailController) {
+Widget campoEmail(TextEditingController emailController) {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 3),
     child: TextField(
-      controller: _emailController,
+      controller: emailController,
       decoration: InputDecoration(fillColor: Colors.white, filled: true),
     ),
   );
 }
 
-Widget campoContrasena(TextEditingController _passwordController) {
+Widget campoContrasena(TextEditingController passwordController) {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 3),
     child: TextField(
-      controller: _passwordController,
+      controller: passwordController,
       obscureText: true,
       decoration: InputDecoration(fillColor: Colors.white, filled: true),
     ),
@@ -93,8 +93,8 @@ Widget campoContrasena(TextEditingController _passwordController) {
 }
 
 Widget botonEntrar(
-  TextEditingController _emailController,
-  TextEditingController _passwordController,
+  TextEditingController emailController,
+  TextEditingController passwordController,
   BuildContext context,
 ) {
   return Container(
@@ -103,8 +103,8 @@ Widget botonEntrar(
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
       onPressed: () {
-        if (("Daniel") == _emailController.text &&
-            ("1234") == _passwordController.text) {
+        if (("Daniel") == emailController.text &&
+            ("1234") == passwordController.text) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => Inicioclienteview()),
