@@ -1,9 +1,9 @@
-class CategoryModel {
+class Category {
   int _id;
   String _name;
   String _description;
 
-  CategoryModel(this._id, this._name, this._description);
+  Category(this._id, this._name, this._description);
 
   int get id => _id;
   set id(int value) => _id = value;
@@ -14,8 +14,8 @@ class CategoryModel {
   String get description => _description;
   set description(String value) => _description = value;
 
-  factory CategoryModel.fromJson(Map<String, dynamic> json) {
-    return CategoryModel(
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
       json['id'] as int,
       json['name'] as String,
       json['description'] as String,

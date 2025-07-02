@@ -7,9 +7,9 @@ import 'package:acumulapp/utils/utils.dart';
 class UserProvider {
   String urlApiUser = "$urlApi/auth/user";
   
-  Future<UserModel?> login(String email, String password) async {
+  Future<User?> login(String email, String password) async {
     String url = "$urlApiUser/login/";
-    UserModel user;
+    User user;
     Map map = {
       'email': email,
       'password': password
@@ -22,7 +22,7 @@ class UserProvider {
     
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-      user = UserModel.fromJson(jsonData);
+      user = User.fromJson(jsonData);
     } catch (e) {
       print(e);
       return null;
@@ -30,9 +30,9 @@ class UserProvider {
     return user;
   }
 
-  Future<UserModel?> register(UserModel user) async {
+  Future<User?> register(User user) async {
     String url = "$urlApiUser/register/";
-    UserModel? userResponse;
+    User? userResponse;
 
     try {
       final response = await http.post(Uri.parse(url), body: user.toJson());
@@ -41,7 +41,7 @@ class UserProvider {
 
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-      userResponse = UserModel.fromJson(jsonData);
+      userResponse = User.fromJson(jsonData);
 
     } catch (e) {
       print(e);

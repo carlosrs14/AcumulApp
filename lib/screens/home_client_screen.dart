@@ -26,7 +26,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
   bool _isLoadingCategories = true;
   String? _errorCategories;
 
-  List<CategoryModel> categoryList = [];
+  List<Category> categoryList = [];
 
   Future<void> _loadCategories() async {
     setState(() {
@@ -95,7 +95,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
         child: DropdownButton<String>(
           value: selectedCategory,
           icon: Icon(Icons.arrow_drop_down),
-          items: categoryList.map((CategoryModel value) {
+          items: categoryList.map((Category value) {
             return DropdownMenuItem<String>(
               value: value.name,
               child: Text(value.name),

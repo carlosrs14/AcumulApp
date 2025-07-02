@@ -1,10 +1,10 @@
-class UserModel {
+class User {
   int _id;
   String _name;
   String _email;
   String _password;
 
-  UserModel(this._id, this._name, this._email, this._password);
+  User(this._id, this._name, this._email, this._password);
 
   int get id => _id;
   set id(int value) => _id = value;
@@ -19,8 +19,8 @@ class UserModel {
   set password(String value) => _password = value;
 
   
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
       json['id'] as int,
       json['name'] as String,
       json['email'] as String,

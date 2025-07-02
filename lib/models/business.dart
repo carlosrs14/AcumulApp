@@ -7,9 +7,9 @@ class Business {
   String _name;
   String _direction;
   String _logoUrl;
-  List<LinkModel> _links;
-  UbicationModel? _ubication;
-  List<CategoryModel> _categories;
+  List<Link> _links;
+  Ubication? _ubication;
+  List<Category> _categories;
   double _rating;
 
   Business(
@@ -35,39 +35,39 @@ class Business {
   String get logoUrl => _logoUrl;
   set logoUrl(String value) => _logoUrl = value;
 
-  List<LinkModel> get links => _links;
-  set links(List<LinkModel> value) => _links = value;
+  List<Link> get links => _links;
+  set links(List<Link> value) => _links = value;
 
-  UbicationModel? get ubication => _ubication;
-  set ubication(UbicationModel? value) => _ubication = value;
+  Ubication? get ubication => _ubication;
+  set ubication(Ubication? value) => _ubication = value;
 
-  List<CategoryModel> get categories => _categories;
-  set categories(List<CategoryModel> value) => _categories = value;
+  List<Category> get categories => _categories;
+  set categories(List<Category> value) => _categories = value;
 
   double get rating => _rating;
   set rating(double value) => _rating = value;
 
   factory Business.fromJson(Map<String, dynamic> json) {
-    List<LinkModel> linksList = [];
+    List<Link> linksList = [];
     if (json['links'] != null) {
       final l = json['links'] as List;
       linksList = l
-          .map((item) => LinkModel.fromJson(item as Map<String, dynamic>))
+          .map((item) => Link.fromJson(item as Map<String, dynamic>))
           .toList();
     }
 
-    UbicationModel? ubication;
+    Ubication? ubication;
     if (json.containsKey('ubication') && json['ubication'] != null) {
-      ubication = UbicationModel.fromJson(
+      ubication = Ubication.fromJson(
         json['ubication'] as Map<String, dynamic>,
       );
     }
 
-    List<CategoryModel> categoriesList = [];
+    List<Category> categoriesList = [];
     if (json['categories'] != null) {
       final l = json['categories'] as List;
       linksList = l
-          .map((item) => LinkModel.fromJson(item as Map<String, dynamic>))
+          .map((item) => Link.fromJson(item as Map<String, dynamic>))
           .toList();
     }
 

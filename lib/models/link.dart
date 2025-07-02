@@ -1,9 +1,9 @@
-class LinkModel {
+class Link {
   int _id;
   String _url;
   String _redSocial;
 
-  LinkModel(
+  Link(
     this._id,
     this._url,
     this._redSocial
@@ -19,8 +19,8 @@ class LinkModel {
   set redSocial(String value) => _redSocial = value;
 
   
-  factory LinkModel.fromJson(Map<String, dynamic> json) {
-    return LinkModel(
+  factory Link.fromJson(Map<String, dynamic> json) {
+    return Link(
       json['id'] as int,
       json['url'] as String,
       json['redSocial'] as String,

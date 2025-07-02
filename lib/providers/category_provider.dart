@@ -7,8 +7,8 @@ import 'package:http/http.dart' as http;
 class CategoryProvider {
   String urlApiCategory = "$urlApi/categories/";
 
-   Future<List<CategoryModel>> all() async {
-    List<CategoryModel> categories = [];
+   Future<List<Category>> all() async {
+    List<Category> categories = [];
     try {
       final response = await http.get(Uri.parse(urlApiCategory));
 
@@ -18,7 +18,7 @@ class CategoryProvider {
       final jsonData = jsonDecode(body);
 
       for (var element in jsonData) {
-        categories.add(CategoryModel.fromJson(element));
+        categories.add(Category.fromJson(element));
       }
     } catch (e) {
       print(e);

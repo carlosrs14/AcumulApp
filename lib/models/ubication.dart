@@ -1,8 +1,8 @@
-class UbicationModel {
+class Ubication {
   int _id;
   String _name;
 
-  UbicationModel(this._id, this._name);
+  Ubication(this._id, this._name);
 
   int get id => _id;
   set id(int value) => _id = value;
@@ -10,8 +10,8 @@ class UbicationModel {
   String get name => _name;
   set name(String value) => _name = value;
 
-  factory UbicationModel.fromJson(Map<String, dynamic> json) {
-    return UbicationModel(
+  factory Ubication.fromJson(Map<String, dynamic> json) {
+    return Ubication(
       json['id'] as int,
       json['name'] as String,
     );

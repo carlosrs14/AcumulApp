@@ -8,19 +8,19 @@ class BusinessProvider {
   final List<Business> _businesses = [];
 
   // Lista de categorías estáticas: puedes exponerla públicamente si la necesitas en UI
-  final List<CategoryModel> _allCategories = [
-    CategoryModel(0, "All", "Todos"),
-    CategoryModel(
+  final List<Category> _allCategories = [
+    Category(0, "All", "Todos"),
+    Category(
       1,
       "Restaurante",
       "Negocios de comida, restaurantes y similares",
     ),
-    CategoryModel(2, "Café/Panadería", "Cafés, panaderías y reposterías"),
-    CategoryModel(3, "Ropa", "Tiendas de ropa y moda"),
-    CategoryModel(4, "Librería", "Librerías y papelerías"),
-    CategoryModel(5, "Gimnasio", "Gimnasios y centros deportivos"),
-    CategoryModel(6, "Agencia de Viajes", "Agencias de viajes y turismo"),
-    CategoryModel(7, "Electrónica", "Tiendas de electrónica y tecnología"),
+    Category(2, "Café/Panadería", "Cafés, panaderías y reposterías"),
+    Category(3, "Ropa", "Tiendas de ropa y moda"),
+    Category(4, "Librería", "Librerías y papelerías"),
+    Category(5, "Gimnasio", "Gimnasios y centros deportivos"),
+    Category(6, "Agencia de Viajes", "Agencias de viajes y turismo"),
+    Category(7, "Electrónica", "Tiendas de electrónica y tecnología"),
   ];
 
   // Contador interno para asignar nuevos IDs automáticamente si se desea
@@ -36,11 +36,11 @@ class BusinessProvider {
         "Calle 85 #12-34, Bogotá",
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
-          LinkModel(1, "https://facebook.com/laparrillabogotana", "Facebook"),
-          LinkModel(2, "https://instagram.com/laparrillabogotana", "Instagram"),
-          LinkModel(3, "https://twitter.com/laparrillabogo", "Twitter"),
+          Link(1, "https://facebook.com/laparrillabogotana", "Facebook"),
+          Link(2, "https://instagram.com/laparrillabogotana", "Instagram"),
+          Link(3, "https://twitter.com/laparrillabogo", "Twitter"),
         ],
-        UbicationModel(1, "Bogotá"),
+        Ubication(1, "Bogotá"),
         // categoría 1: Restaurante
         [_allCategories.firstWhere((c) => c.id == 1)],
         3.5,
@@ -55,10 +55,10 @@ class BusinessProvider {
         "Carrera 7 #45-67, Medellín",
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
-          LinkModel(4, "https://facebook.com/dulcearoma", "Facebook"),
-          LinkModel(5, "https://instagram.com/dulcearoma", "Instagram"),
+          Link(4, "https://facebook.com/dulcearoma", "Facebook"),
+          Link(5, "https://instagram.com/dulcearoma", "Instagram"),
         ],
-        UbicationModel(2, "Medellín"),
+        Ubication(2, "Medellín"),
         // categoría 2: Café/Panadería
         [_allCategories.firstWhere((c) => c.id == 2)],
         3.5,
@@ -73,10 +73,10 @@ class BusinessProvider {
         "Avenida El Poblado #10-20, Medellín",
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
-          LinkModel(6, "https://instagram.com/modaurbana", "Instagram"),
-          LinkModel(7, "https://tiktok.com/@modaurbana", "TikTok"),
+          Link(6, "https://instagram.com/modaurbana", "Instagram"),
+          Link(7, "https://tiktok.com/@modaurbana", "TikTok"),
         ],
-        UbicationModel(2, "Medellín"),
+        Ubication(2, "Medellín"),
         // categoría 3: Ropa
         [_allCategories.firstWhere((c) => c.id == 3)],
         3.5,
@@ -91,10 +91,10 @@ class BusinessProvider {
         "Calle 9 #16-30, Cali",
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
-          LinkModel(8, "https://facebook.com/paginaypluma", "Facebook"),
-          LinkModel(9, "https://instagram.com/paginaypluma", "Instagram"),
+          Link(8, "https://facebook.com/paginaypluma", "Facebook"),
+          Link(9, "https://instagram.com/paginaypluma", "Instagram"),
         ],
-        UbicationModel(3, "Cali"),
+        Ubication(3, "Cali"),
         // categoría 4: Librería
         [_allCategories.firstWhere((c) => c.id == 4)],
         3.5,
@@ -109,10 +109,10 @@ class BusinessProvider {
         "Av. Simón Bolívar #5-50, Barranquilla",
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
-          LinkModel(10, "https://facebook.com/fitlifebaq", "Facebook"),
-          LinkModel(11, "https://instagram.com/fitlifebaq", "Instagram"),
+          Link(10, "https://facebook.com/fitlifebaq", "Facebook"),
+          Link(11, "https://instagram.com/fitlifebaq", "Instagram"),
         ],
-        UbicationModel(4, "Barranquilla"),
+        Ubication(4, "Barranquilla"),
         // categoría 5: Gimnasio
         [_allCategories.firstWhere((c) => c.id == 5)],
         4.0,
@@ -127,15 +127,15 @@ class BusinessProvider {
         "Carrera 15 #8-90, Cartagena",
         "https://encrypted-tbgstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
-          LinkModel(12, "https://facebook.com/rutasy_destinos", "Facebook"),
-          LinkModel(13, "https://instagram.com/rutasy_destinos", "Instagram"),
-          LinkModel(
+          Link(12, "https://facebook.com/rutasy_destinos", "Facebook"),
+          Link(13, "https://instagram.com/rutasy_destinos", "Instagram"),
+          Link(
             14,
             "https://linkedin.com/company/rutasy_destinos",
             "LinkedIn",
           ),
         ],
-        UbicationModel(5, "Cartagena"),
+        Ubication(5, "Cartagena"),
         // categoría 6: Agencia de Viajes
         [_allCategories.firstWhere((c) => c.id == 6)],
         3.5,
@@ -150,11 +150,11 @@ class BusinessProvider {
         "Diagonal 20 #30-15, Bucaramanga",
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAw_UHRzFcfVBrK2mANMr6c9SY_y8CKxAxIw&s",
         [
-          LinkModel(15, "https://facebook.com/techconexion", "Facebook"),
-          LinkModel(16, "https://instagram.com/techconexion", "Instagram"),
-          LinkModel(17, "https://twitter.com/techconexion", "Twitter"),
+          Link(15, "https://facebook.com/techconexion", "Facebook"),
+          Link(16, "https://instagram.com/techconexion", "Instagram"),
+          Link(17, "https://twitter.com/techconexion", "Twitter"),
         ],
-        UbicationModel(6, "Bucaramanga"),
+        Ubication(6, "Bucaramanga"),
         // categoría 7: Electrónica
         [_allCategories.firstWhere((c) => c.id == 7)],
         3.5,
@@ -163,9 +163,9 @@ class BusinessProvider {
   }
 
   /// Retorna la lista de todas las categorías disponibles.
-  List<CategoryModel> getAllCategories() {
+  List<Category> getAllCategories() {
     // Devuelve copia si no quieres exponer la lista interna:
-    return List<CategoryModel>.from(_allCategories);
+    return List<Category>.from(_allCategories);
   }
 
   /// Crea un nuevo negocio en memoria, asignándole un ID automáticamente.
@@ -189,14 +189,14 @@ class BusinessProvider {
       return _businesses;
     }
     return _businesses.where((b) {
-      return b.categories.any((cat) => cat.name.toLowerCase().contains(key));
+      return b.categories.any((Category cat) => cat.name.toLowerCase().contains(key));
     }).toList();
   }
 
   /// Filtra negocios que tengan la categoría con el ID dado.
   List<Business> filterByCategoryId(int categoryId) {
     return _businesses.where((b) {
-      return b.categories.any((cat) => cat.id == categoryId);
+      return b.categories.any((Category cat) => cat.id == categoryId);
     }).toList();
   }
 
