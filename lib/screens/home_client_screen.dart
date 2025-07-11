@@ -53,7 +53,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
   void initState() {
     _loadCategories();
     super.initState();
-    business = businessService.getAll();
+    business = businessService.all();
     filteredBusiness = business;
   }
 

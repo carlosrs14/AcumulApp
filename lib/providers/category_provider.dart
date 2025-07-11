@@ -1,16 +1,18 @@
 import 'dart:convert';
+import 'dart:nativewrappers/_internal/vm/lib/developer.dart';
 
 import 'package:acumulapp/models/category.dart';
-import '../utils/utils.dart';
-import 'package:http/http.dart' as http;
+import 'package:acumulapp/services/category_service.dart';
 
 class CategoryProvider {
-  String urlApiCategory = "$urlApi/categories/";
-
-   Future<List<Category>> all() async {
+  CategoryService categoryService = CategoryService();
+  
+  CategoryProvider();
+  
+  Future<List<Category>> all() async {
     List<Category> categories = [];
     try {
-      final response = await http.get(Uri.parse(urlApiCategory));
+      final response = await categoryService.all();
 
       if (response.statusCode != 200) return [];
 
@@ -21,7 +23,7 @@ class CategoryProvider {
         categories.add(Category.fromJson(element));
       }
     } catch (e) {
-      print(e);
+      log(e.toString());
     }
     return categories;
   }

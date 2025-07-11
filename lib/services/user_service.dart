@@ -15,7 +15,7 @@ class UserService {
     );
   }
 
-  Future<http.Response> registro(User user) async {
+  Future<http.Response> register(User user) async {
     final Uri url = Uri.parse("$urlApi/auth/register/client");
     return await http.post(
       url,

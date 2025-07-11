@@ -9,7 +9,6 @@ void main() {
       UserProvider provider = UserProvider();
       User user = User(0, "carlos rincones", "c@gmail.com", "12345678");
       User? response = await provider.register(user);
-      print(response);
       expect(response != null, true);
     },
   );
