@@ -1,7 +1,9 @@
 import 'package:acumulapp/screens/home_client_screen.dart';
 import 'package:acumulapp/screens/user/login_screen.dart';
 import 'package:acumulapp/screens/user/register_screen.dart';
+import 'package:acumulapp/utils/jwt.dart';
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 
 void main() async {
   bool isLogged = await checkLoginStatus();
@@ -26,6 +28,7 @@ class MyApp extends StatelessWidget {
 }
 
 Future<bool> checkLoginStatus() async {
-  // Aquí va tu lógica real (ej. verificar token guardado)
-  return false; // o true
+  await initLocalStorage();
+  JwtController jwt = JwtController(localStorage);
+  return jwt.loadToken() != null;
 }
