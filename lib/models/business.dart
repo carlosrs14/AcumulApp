@@ -49,6 +49,7 @@ class Business {
 
   factory Business.fromJson(Map<String, dynamic> json) {
     List<Link> linksList = [];
+    List<Category> categoryList = [];
     if (json['links'] != null) {
       final l = json['links'] as List;
       linksList = l
@@ -58,27 +59,24 @@ class Business {
 
     Ubication? ubication;
     if (json.containsKey('ubication') && json['ubication'] != null) {
-      ubication = Ubication.fromJson(
-        json['ubication'] as Map<String, dynamic>,
-      );
+      ubication = Ubication.fromJson(json['ubication'] as Map<String, dynamic>);
     }
 
-    List<Category> categoriesList = [];
     if (json['categories'] != null) {
       final l = json['categories'] as List;
-      linksList = l
-          .map((item) => Link.fromJson(item as Map<String, dynamic>))
+      categoryList = l
+          .map((item) => Category.fromJson(item as Map<String, dynamic>))
           .toList();
     }
 
     return Business(
       json['id'] as int,
       json['name'] as String,
-      json['direction'] as String,
-      json['logoUrl'] as String,
+      json['address'] as String,
+      json['logoImage'] as String,
       linksList,
       ubication,
-      categoriesList,
+      categoryList,
       (json['rating'] ?? 0.0),
     );
   }

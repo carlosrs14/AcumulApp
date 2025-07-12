@@ -192,7 +192,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
               crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
-                Text(filteredBusiness[index].ubication!.name),
+                //Text(filteredBusiness[index].ubication!.name),
                 RatingBarIndicator(
                   rating: filteredBusiness[index].rating,
                   itemBuilder: (context, index) =>

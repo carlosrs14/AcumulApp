@@ -18,21 +18,16 @@ class User {
   String get password => _password;
   set password(String value) => _password = value;
 
-  
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       json['id'] as int,
       json['fullName'] as String,
       json['email'] as String,
-      json['password'] as String,
+      "",
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'fullName': _name,
-      'email': _email,
-      'password': _password,
-    };
+    return {'fullName': _name, 'email': _email, 'password': _password};
   }
 }

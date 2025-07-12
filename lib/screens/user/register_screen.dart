@@ -1,3 +1,5 @@
+import 'package:acumulapp/models/user.dart';
+import 'package:acumulapp/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -15,6 +17,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 }
 
 Widget cuerpo(BuildContext context) {
+  final UserProvider userProvider = UserProvider();
+  userProvider.init();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
 
@@ -55,7 +59,13 @@ Widget cuerpo(BuildContext context) {
         ),
         campoContrasena(passwordConfirmController),
         SizedBox(height: 30),
-        botonEntrar(emailController, passwordController, context),
+        botonEntrar(
+          userNameController,
+          emailController,
+          passwordController,
+          context,
+          userProvider,
+        ),
         SizedBox(height: 30),
         botonGoogle(),
       ],
@@ -106,16 +116,30 @@ Widget campoContrasena(TextEditingController passwordController) {
 }
 
 Widget botonEntrar(
+  TextEditingController userNameController,
   TextEditingController emailController,
   TextEditingController passwordController,
   BuildContext context,
+  UserProvider userProvider,
 ) {
   return Container(
     width: double.infinity,
     padding: EdgeInsets.symmetric(horizontal: 20),
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
-      onPressed: () {},
+      onPressed: () async {
+        User userRequest = User(
+          0,
+          userNameController.text,
+          emailController.text,
+          passwordController.text,
+        );
+        User? userResponse = await userProvider.register(userRequest);
+
+        if (userResponse != null) {
+          Navigator.pushNamed(context, '/home', arguments: userResponse);
+        }
+      },
       child: Text(
         "Registrar",
         style: TextStyle(color: Colors.white, fontSize: 15),

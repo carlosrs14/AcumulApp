@@ -19,7 +19,7 @@ class CategoryProvider {
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
 
-      for (var element in jsonData) {
+      for (var element in jsonData["data"]) {
         categories.add(Category.fromJson(element));
       }
     } catch (e) {

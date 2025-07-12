@@ -105,15 +105,6 @@ Widget botonEntrar(
         if (user != null) {
           Navigator.pushNamed(context, '/home', arguments: user);
         }
-
-        if (("Daniel") == emailController.text &&
-            ("1234") == passwordController.text) {
-          Navigator.pushNamed(
-            context,
-            '/home',
-            arguments: User(1, 'Daniel', 'daniel', '123123'),
-          );
-        }
       },
       child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 15)),
     ),

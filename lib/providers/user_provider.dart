@@ -26,6 +26,7 @@ class UserProvider with ChangeNotifier {
       final response = await userService.login(map);
 
       if (response.statusCode != 200) return null;
+
       JwtController jwt = JwtController(localStorage);
 
       String body = utf8.decode(response.bodyBytes);
@@ -33,6 +34,8 @@ class UserProvider with ChangeNotifier {
 
       final userData = jsonData['account'];
       final token = jsonData['token'];
+      log(userData.toString());
+      log(token.toString());
 
       jwt.saveToken(token);
       user = User.fromJson(userData);

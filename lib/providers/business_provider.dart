@@ -22,7 +22,7 @@ class BusinessProvider {
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
 
-      for (var element in jsonData) {
+      for (var element in jsonData['data']) {
         business.add(Business.fromJson(element));
       }
     } catch (e) {

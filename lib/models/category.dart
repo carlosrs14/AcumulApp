@@ -15,18 +15,10 @@ class Category {
   set description(String value) => _description = value;
 
   factory Category.fromJson(Map<String, dynamic> json) {
-    return Category(
-      json['id'] as int,
-      json['name'] as String,
-      json['description'] as String,
-    );
+    return Category(json['id'] as int, json['name'] as String, "");
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': _id,
-      'name': _name,
-      'description': _description,
-    };
+    return {'id': _id, 'name': _name, 'description': _description};
   }
 }
