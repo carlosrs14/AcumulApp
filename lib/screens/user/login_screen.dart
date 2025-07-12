@@ -18,6 +18,8 @@ class _InicioState extends State<InicioLogin> {
 
 Widget cuerpo(BuildContext context) {
   final UserProvider userProvider = UserProvider();
+  userProvider.init();
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 

@@ -2,13 +2,21 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:acumulapp/services/user_service.dart';
+import 'package:acumulapp/utils/jwt.dart';
 import 'package:flutter/material.dart';
 import 'package:acumulapp/models/user.dart';
+import 'package:localstorage/localstorage.dart';
 
 class UserProvider with ChangeNotifier {
-  UserService userService = UserService();
+  late UserService userService;
 
   UserProvider();
+
+  Future<void> init() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await initLocalStorage();
+    userService = UserService(localStorage);
+  }
 
   Future<User?> login(String email, String password) async {
     User user;
@@ -18,10 +26,16 @@ class UserProvider with ChangeNotifier {
       final response = await userService.login(map);
 
       if (response.statusCode != 200) return null;
+      JwtController jwt = JwtController(localStorage);
 
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-      user = User.fromJson(jsonData);
+
+      final userData = jsonData['account'];
+      final token = jsonData['token'];
+
+      jwt.saveToken(token);
+      user = User.fromJson(userData);
     } catch (e) {
       log(e.toString());
       return null;
@@ -38,12 +52,15 @@ class UserProvider with ChangeNotifier {
       if (response.statusCode != 200) {
         return null;
       }
+      JwtController jwt = JwtController(localStorage);
 
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
 
-      final userData = jsonData["account"];
+      final userData = jsonData['account'];
+      final token = jsonData['token'];
 
+      jwt.saveToken(token);
       userResponse = User.fromJson(userData);
     } catch (e) {
       log(e.toString());
