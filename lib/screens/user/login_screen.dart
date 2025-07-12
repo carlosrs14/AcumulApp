@@ -1,3 +1,5 @@
+import 'package:acumulapp/models/user.dart';
+import 'package:acumulapp/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 
 class InicioLogin extends StatefulWidget {
@@ -15,6 +17,7 @@ class _InicioState extends State<InicioLogin> {
 }
 
 Widget cuerpo(BuildContext context) {
+  final UserProvider userProvider = UserProvider();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -38,7 +41,7 @@ Widget cuerpo(BuildContext context) {
         ),
         campoContrasena(passwordController),
         SizedBox(height: 30),
-        botonEntrar(emailController, passwordController, context),
+        botonEntrar(emailController, passwordController, context, userProvider),
         SizedBox(height: 30),
         botonGoogle(),
         SizedBox(height: 30),
@@ -84,16 +87,30 @@ Widget botonEntrar(
   TextEditingController emailController,
   TextEditingController passwordController,
   BuildContext context,
+  UserProvider userProvider,
 ) {
   return Container(
     width: double.infinity,
     padding: EdgeInsets.symmetric(horizontal: 20),
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
-      onPressed: () {
+      onPressed: () async {
+        User? user = await userProvider.login(
+          emailController.text,
+          passwordController.text,
+        );
+
+        if (user != null) {
+          Navigator.pushNamed(context, '/home', arguments: user);
+        }
+
         if (("Daniel") == emailController.text &&
             ("1234") == passwordController.text) {
-          Navigator.pushNamed(context, '/');
+          Navigator.pushNamed(
+            context,
+            '/home',
+            arguments: User(1, 'Daniel', 'daniel', '123123'),
+          );
         }
       },
       child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 15)),

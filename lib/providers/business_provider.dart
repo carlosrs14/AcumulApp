@@ -14,11 +14,11 @@ class BusinessProvider {
     try {
       final response = await businessService.all();
 
-      if (response.statusCode != 200){
+      if (response.statusCode != 200) {
         log(response.body);
         return business;
       }
-      
+
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
 
@@ -30,7 +30,7 @@ class BusinessProvider {
     }
     return business;
   }
-  
+
   Future<Business?> get(int id) async {
     Business? business;
     try {
@@ -49,11 +49,35 @@ class BusinessProvider {
   }
 
   Future<List<Business>> filterByCategoryName(String categoryName) async {
-    return List.empty();
+    List<Business> business = [];
+    try {
+      final response = await businessService.all();
+
+      if (response.statusCode != 200) {
+        log(response.body);
+        return business;
+      }
+
+      String body = utf8.decode(response.bodyBytes);
+      final jsonData = jsonDecode(body);
+
+      for (var element in jsonData) {
+        business.add(Business.fromJson(element));
+      }
+
+      business = business.where((negocio) {
+        return negocio.categories.any(
+          (categoria) =>
+              categoria.name.toLowerCase() == categoryName.toLowerCase(),
+        );
+      }).toList();
+    } catch (e) {
+      log(e.toString());
+    }
+    return business;
   }
 
   Future<List<Business>> filterByCategoryId(int categoryId) async {
     return List.empty();
   }
-
 }

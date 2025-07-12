@@ -1,8 +1,10 @@
+import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/screens/app_bar_client.dart';
 import 'package:flutter/material.dart';
 
 class Ejemplo extends StatefulWidget {
-  const Ejemplo({super.key});
+  final User user;
+  const Ejemplo({super.key, required this.user});
 
   @override
   State<Ejemplo> createState() => _EjemploState();
@@ -11,6 +13,8 @@ class Ejemplo extends StatefulWidget {
 class _EjemploState extends State<Ejemplo> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppbarClient(currentScreen: "ejemplo"));
+    return Scaffold(
+      appBar: AppbarClient(currentScreen: "ejemplo", user: widget.user),
+    );
   }
 }

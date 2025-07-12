@@ -1,4 +1,5 @@
 import 'package:acumulapp/models/category.dart';
+import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/providers/category_provider.dart';
 import 'package:acumulapp/screens/app_bar_client.dart';
@@ -8,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class Inicioclienteview extends StatefulWidget {
-  const Inicioclienteview({super.key});
+  final User user;
+  const Inicioclienteview({super.key, required this.user});
 
   @override
   State<Inicioclienteview> createState() => _InicioclienteviewState();
@@ -25,6 +27,8 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
   String selectedCategory = 'All';
   bool _isLoadingCategories = true;
   String? _errorCategories;
+  bool _isLoadingBusiness = true;
+  String? _errorBusiness;
 
   List<Category> categoryList = [];
 
@@ -49,18 +53,42 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
     }
   }
 
+  Future<void> _loadBusiness() async {
+    setState(() {
+      _isLoadingBusiness = true;
+      _errorBusiness = null;
+    });
+    try {
+      final lista = await businessService.all();
+      setState(() {
+        business = lista;
+        filteredBusiness = business;
+      });
+    } catch (e) {
+      setState(() {
+        _errorBusiness = 'Error al cargar negocios';
+      });
+    } finally {
+      setState(() {
+        _isLoadingBusiness = false;
+      });
+    }
+  }
+
   @override
   void initState() {
     _loadCategories();
+    _loadBusiness();
     super.initState();
-    business = businessService.all();
-    filteredBusiness = business;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppbarClient(currentScreen: "InicioClientView"),
+      appBar: AppbarClient(
+        currentScreen: "InicioClientView",
+        user: widget.user,
+      ),
       body: Container(child: home()),
     );
   }
@@ -101,13 +129,13 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
               child: Text(value.name),
             );
           }).toList(),
-          onChanged: (String? newValue) {
+          onChanged: (String? newValue) async {
             if (newValue != null) {
+              List<Business> negociosFiltrados = await businessService
+                  .filterByCategoryName(newValue);
               setState(() {
                 selectedCategory = newValue;
-                filteredBusiness = businessService.filterByCategoryName(
-                  selectedCategory,
-                );
+                filteredBusiness = negociosFiltrados;
               });
             }
           },

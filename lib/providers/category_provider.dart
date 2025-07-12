@@ -1,14 +1,14 @@
 import 'dart:convert';
-import 'dart:nativewrappers/_internal/vm/lib/developer.dart';
+import 'dart:developer';
 
 import 'package:acumulapp/models/category.dart';
 import 'package:acumulapp/services/category_service.dart';
 
 class CategoryProvider {
   CategoryService categoryService = CategoryService();
-  
+
   CategoryProvider();
-  
+
   Future<List<Category>> all() async {
     List<Category> categories = [];
     try {

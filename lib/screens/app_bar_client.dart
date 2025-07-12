@@ -1,11 +1,17 @@
+import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/screens/home_client_screen.dart';
 import 'package:acumulapp/screens/ejemplo.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class AppbarClient extends StatefulWidget implements PreferredSizeWidget {
+  final User user;
   final String currentScreen;
-  const AppbarClient({super.key, required this.currentScreen});
+  const AppbarClient({
+    super.key,
+    required this.currentScreen,
+    required this.user,
+  });
 
   @override
   State<AppbarClient> createState() => _AppbarState();
@@ -30,7 +36,7 @@ class _AppbarState extends State<AppbarClient> {
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
-                          Inicioclienteview(),
+                          Inicioclienteview(user: widget.user),
                       transitionDuration: Duration(seconds: 0),
                     ),
                   );
@@ -46,7 +52,7 @@ class _AppbarState extends State<AppbarClient> {
                   context,
                   PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
-                        Ejemplo(),
+                        Ejemplo(user: widget.user),
                     transitionDuration: Duration(seconds: 0),
                   ),
                 );
@@ -61,7 +67,7 @@ class _AppbarState extends State<AppbarClient> {
                   context,
                   PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
-                        Ejemplo(),
+                        Ejemplo(user: widget.user),
                     transitionDuration: Duration(seconds: 0),
                   ),
                 );
@@ -76,7 +82,7 @@ class _AppbarState extends State<AppbarClient> {
                   context,
                   PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) =>
-                        Ejemplo(),
+                        Ejemplo(user: widget.user),
                     transitionDuration: Duration(seconds: 0),
                   ),
                 );
