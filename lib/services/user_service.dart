@@ -35,7 +35,7 @@ class UserService {
     return await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: user.toJson(),
+      body: jsonEncode(user.toJson()),
     );
   }
 
