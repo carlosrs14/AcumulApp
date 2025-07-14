@@ -18,8 +18,8 @@ class CategoryProvider {
 
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-
-      for (var element in jsonData["data"]) {
+      log(jsonData.toString());
+      for (var element in jsonData) {
         categories.add(Category.fromJson(element));
       }
     } catch (e) {

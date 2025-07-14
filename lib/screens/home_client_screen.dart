@@ -39,6 +39,8 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
     });
     try {
       final lista = await categoryService.all();
+      lista.insert(0, Category(-1, "All", "All"));
+
       setState(() {
         categoryList = lista;
       });
@@ -79,6 +81,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
   void initState() {
     _loadCategories();
     _loadBusiness();
+
     super.initState();
   }
 
@@ -89,7 +92,9 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
         currentScreen: "InicioClientView",
         user: widget.user,
       ),
-      body: Container(child: home()),
+      body: _isLoadingBusiness || _isLoadingCategories
+          ? Center(child: CircularProgressIndicator())
+          : Container(child: home()),
     );
   }
 
@@ -99,7 +104,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
         SizedBox(height: 10),
         Row(
           children: [
-            SizedBox(width: 20),
+            SizedBox(width: 10),
             search(),
             SizedBox(width: 10),
             filtro(),
@@ -130,9 +135,17 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
             );
           }).toList(),
           onChanged: (String? newValue) async {
+            if (newValue == "All") {
+              setState(() {
+                selectedCategory = "All";
+                filteredBusiness = business;
+              });
+              return;
+            }
             if (newValue != null) {
               List<Business> negociosFiltrados = await businessService
                   .filterByCategoryName(newValue);
+
               setState(() {
                 selectedCategory = newValue;
                 filteredBusiness = negociosFiltrados;
@@ -146,7 +159,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
 
   Widget search() {
     return SizedBox(
-      width: 220,
+      width: 200,
       height: 40,
 
       child: TextField(
@@ -192,7 +205,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
               crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
-                //Text(filteredBusiness[index].ubication!.name),
+                Text(filteredBusiness[index].direction),
                 RatingBarIndicator(
                   rating: filteredBusiness[index].rating,
                   itemBuilder: (context, index) =>
@@ -216,6 +229,16 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                 child: ClipOval(
                   child: Image.network(
                     filteredBusiness[index].logoUrl,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      );
+                    },
                     errorBuilder: (context, error, stackTrace) {
                       return Text(
                         filteredBusiness[index].name[0],

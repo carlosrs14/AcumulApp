@@ -21,7 +21,7 @@ class BusinessProvider {
 
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-
+      log(jsonData['data'].toString());
       for (var element in jsonData['data']) {
         business.add(Business.fromJson(element));
       }
@@ -60,17 +60,10 @@ class BusinessProvider {
 
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-
-      for (var element in jsonData) {
+      log(jsonData['data'].toString());
+      for (var element in jsonData['data']) {
         business.add(Business.fromJson(element));
       }
-
-      business = business.where((negocio) {
-        return negocio.categories.any(
-          (categoria) =>
-              categoria.name.toLowerCase() == categoryName.toLowerCase(),
-        );
-      }).toList();
     } catch (e) {
       log(e.toString());
     }
