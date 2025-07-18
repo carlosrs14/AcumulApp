@@ -18,8 +18,8 @@ class CardService {
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
-      }
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
     );
   }
 
@@ -29,20 +29,20 @@ class CardService {
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
-      }
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
     );
   }
 
-  Future<http.Response> create(Card card) async {
+  Future<http.Response> create(BusinessCard card) async {
     final Uri url = Uri.parse("$urlApi/card");
     return await http.post(
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
       },
-      body: jsonEncode(card.toJson())
+      body: jsonEncode(card.toJson()),
     );
   }
 }

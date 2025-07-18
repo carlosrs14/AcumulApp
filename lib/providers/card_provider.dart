@@ -9,8 +9,8 @@ class CardProvider {
 
   CardProvider();
 
-  Future<List<Card>> all() async {
-    List<Card> cards = [];
+  Future<List<BusinessCard>> all() async {
+    List<BusinessCard> cards = [];
     try {
       final response = await cardService.all();
 
@@ -23,7 +23,7 @@ class CardProvider {
       final jsonData = jsonDecode(body);
 
       for (var element in jsonData) {
-        cards.add(Card.fromJson(element));
+        cards.add(BusinessCard.fromJson(element));
       }
     } catch (e) {
       log(e.toString());
@@ -31,8 +31,8 @@ class CardProvider {
     return cards;
   }
 
-  Future<List<Card>> filterByBusiness(int idBusiness) async {
-    List<Card> cards = [];
+  Future<List<BusinessCard>> filterByBusiness(int idBusiness) async {
+    List<BusinessCard> cards = [];
     try {
       final response = await cardService.filterByBusiness(idBusiness);
 
@@ -40,12 +40,12 @@ class CardProvider {
         log(response.body);
         return cards;
       }
-      
+
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-
-      for (var element in jsonData) {
-        cards.add(Card.fromJson(element));
+      log(jsonData["data"].toString());
+      for (var element in jsonData["data"]) {
+        cards.add(BusinessCard.fromJson(element));
       }
     } catch (e) {
       log(e.toString());
@@ -53,8 +53,8 @@ class CardProvider {
     return cards;
   }
 
-  Future<Card?> create(Card card) async {
-    Card? cardResponse;
+  Future<BusinessCard?> create(BusinessCard card) async {
+    BusinessCard? cardResponse;
     try {
       final response = await cardService.create(card);
 
@@ -62,11 +62,11 @@ class CardProvider {
         log(response.body);
         return cardResponse;
       }
-      
+
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
 
-      cardResponse = Card.fromJson(jsonData);
+      cardResponse = BusinessCard.fromJson(jsonData);
     } catch (e) {
       log(e.toString());
     }
