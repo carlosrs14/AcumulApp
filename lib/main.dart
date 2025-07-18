@@ -1,4 +1,8 @@
+import 'package:acumulapp/models/business.dart';
+import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/user.dart';
+import 'package:acumulapp/screens/business_cards_screen.dart';
+import 'package:acumulapp/screens/business_info_screen.dart';
 import 'package:acumulapp/screens/home_client_screen.dart';
 import 'package:acumulapp/screens/user/login_screen.dart';
 import 'package:acumulapp/screens/user/register_screen.dart';
@@ -39,7 +43,24 @@ class MyApp extends StatelessWidget {
 
           case '/login':
             return MaterialPageRoute(builder: (_) => InicioLogin());
-
+          case '/business_details':
+            final args = settings.arguments;
+            final business_details = args as BusinessDetailsArguments;
+            return MaterialPageRoute(
+              builder: (_) => BusinessInfo(
+                business: business_details.business,
+                user: business_details.user,
+              ),
+            );
+          case '/business_cards':
+            final args = settings.arguments;
+            final business_details = args as BusinessDetailsArguments;
+            return MaterialPageRoute(
+              builder: (_) => BusinessCardsScreen(
+                business: business_details.business,
+                user: business_details.user,
+              ),
+            );
           default:
             return MaterialPageRoute(
               builder: (_) =>

@@ -1,3 +1,4 @@
+import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/category.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/business_provider.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:acumulapp/models/business.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'dart:async';
 
 class Inicioclienteview extends StatefulWidget {
   final User user;
@@ -17,9 +19,9 @@ class Inicioclienteview extends StatefulWidget {
 }
 
 class _InicioclienteviewState extends State<Inicioclienteview> {
-  final BusinessProvider businessService = BusinessProvider();
-  final CategoryProvider categoryService = CategoryProvider();
-
+  final BusinessProvider businessProvider = BusinessProvider();
+  final CategoryProvider categoryProvider = CategoryProvider();
+  Timer? _debounce;
   List<Business> business = [];
   List<Business> filteredBusiness = [];
   final TextEditingController _searchController = TextEditingController();
@@ -38,7 +40,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
       _errorCategories = null;
     });
     try {
-      final lista = await categoryService.all();
+      final lista = await categoryProvider.all();
       lista.insert(0, Category(-1, "All", "All"));
 
       setState(() {
@@ -61,7 +63,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
       _errorBusiness = null;
     });
     try {
-      final lista = await businessService.all();
+      final lista = await businessProvider.all();
       setState(() {
         business = lista;
         filteredBusiness = business;
@@ -135,21 +137,8 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
             );
           }).toList(),
           onChanged: (String? newValue) async {
-            if (newValue == "All") {
-              setState(() {
-                selectedCategory = "All";
-                filteredBusiness = business;
-              });
-              return;
-            }
             if (newValue != null) {
-              List<Business> negociosFiltrados = await businessService
-                  .filterByCategoryName(newValue);
-
-              setState(() {
-                selectedCategory = newValue;
-                filteredBusiness = negociosFiltrados;
-              });
+              filtros(_searchController.text, newValue);
             }
           },
         ),
@@ -164,10 +153,9 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
 
       child: TextField(
         onChanged: (value) {
-          setState(() {
-            filteredBusiness = business.where((negocio) {
-              return negocio.name.toLowerCase().contains(value.toLowerCase());
-            }).toList();
+          if (_debounce?.isActive ?? false) _debounce!.cancel();
+          _debounce = Timer(const Duration(milliseconds: 500), () async {
+            filtros(value, selectedCategory);
           });
         },
         controller: _searchController,
@@ -185,6 +173,39 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
     );
   }
 
+  void filtros(String query, String categoria) async {
+    if (categoria == "All" && query.trim().isEmpty) {
+      setState(() {
+        selectedCategory = "All";
+        filteredBusiness = business;
+      });
+      return;
+    }
+    List<Business> negociosFiltrados;
+    if (categoria == "All") {
+      cargatrue();
+      negociosFiltrados = await businessProvider.filterByName(query);
+      setState(() {
+        selectedCategory = "All";
+        filteredBusiness = negociosFiltrados;
+      });
+      cargafalse();
+      return;
+    }
+    cargatrue();
+    negociosFiltrados = await businessProvider.filterByNameAndCategory(
+      query,
+      categoria,
+    );
+
+    setState(() {
+      selectedCategory = categoria;
+      filteredBusiness = negociosFiltrados;
+    });
+
+    cargafalse();
+  }
+
   Widget listaBusiness() {
     return ListView.builder(
       itemCount: filteredBusiness.length,
@@ -198,7 +219,14 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
           ),
           child: ListTile(
             onTap: () {
-              //ir a detalles de negocio
+              Navigator.pushNamed(
+                context,
+                '/business_details',
+                arguments: BusinessDetailsArguments(
+                  business: filteredBusiness[index],
+                  user: widget.user,
+                ),
+              );
             },
             title: Text(filteredBusiness[index].name),
             subtitle: Column(
@@ -250,27 +278,34 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
               ),
             ),
             trailing: Container(
-              width: 159,
-              height: 55,
+              width: 180,
+              height: 50,
               padding: EdgeInsets.all(1),
 
               child: Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40),
-                      side: BorderSide(color: Colors.black, width: 1),
-                    ),
-                  ),
+                child: ElevatedButton.icon(
                   onPressed: () {
-                    // ir a tarjertas de negocio
+                    Navigator.pushNamed(
+                      context,
+                      "/business_cards",
+                      arguments: BusinessDetailsArguments(
+                        business: filteredBusiness[index],
+                        user: widget.user,
+                      ),
+                    );
                   },
-                  child: Row(
-                    children: [
-                      Text("Ver tarjetas"),
-                      SizedBox(width: 10),
-                      Icon(MdiIcons.cardsOutline),
-                    ],
+                  icon: Icon(MdiIcons.cardsOutline, size: 20),
+                  iconAlignment: IconAlignment.end,
+                  label: Text("Ver tarjetas"),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.purple,
+                    backgroundColor: Colors.purple.shade50,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(color: Colors.purple),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    textStyle: TextStyle(fontSize: 14),
                   ),
                 ),
               ),
@@ -279,5 +314,17 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
         );
       },
     );
+  }
+
+  void cargatrue() {
+    setState(() {
+      _isLoadingCategories = true;
+    });
+  }
+
+  void cargafalse() {
+    setState(() {
+      _isLoadingCategories = false;
+    });
   }
 }
