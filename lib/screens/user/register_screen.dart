@@ -133,6 +133,7 @@ Widget botonEntrar(
           userNameController.text,
           emailController.text,
           passwordController.text,
+          "client"
         );
         User? userResponse = await userProvider.register(userRequest);
 
