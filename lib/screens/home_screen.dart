@@ -4,6 +4,7 @@ import 'package:acumulapp/screens/business_info_screen.dart';
 import 'package:acumulapp/screens/client_cards_screen.dart';
 import 'package:acumulapp/screens/ejemplo.dart';
 import 'package:acumulapp/screens/home_client_screen.dart';
+import 'package:acumulapp/screens/user/user_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -51,7 +52,7 @@ class HomeScreenState extends State<HomeScreen> {
             builder = (context) => Ejemplo(user: widget.user);
             break;
           case 3:
-            builder = (context) => Ejemplo(user: widget.user);
+            builder = (context) => UserProfileScreen(user: widget.user);
             break;
           default:
             builder = (context) => Inicioclienteview(user: widget.user);
