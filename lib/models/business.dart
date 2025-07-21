@@ -3,49 +3,26 @@ import 'package:acumulapp/models/link.dart';
 import 'package:acumulapp/models/ubication.dart';
 
 class Business {
-  int _id;
-  String _name;
-  String _direction;
-  String _logoUrl;
-  List<Link> _links;
-  Ubication? _ubication;
-  List<Category> _categories;
-  double _rating;
+  int id;
+  String name;
+  String? direction;
+  String? logoUrl;
+  List<Link>? links;
+  Ubication? ubication;
+  List<Category>? categories;
+  double? rating;
 
   Business(
-    this._id,
-    this._name,
-    this._direction,
-    this._logoUrl,
-    this._links,
-    this._ubication,
-    this._categories,
-    this._rating,
+    this.id,
+    this.name, {
+      this.direction,
+      this.logoUrl,
+      this.links,
+      this.ubication,
+      this.categories,
+      this.rating
+    }
   );
-
-  int get id => _id;
-  set id(int value) => _id = value;
-
-  String get name => _name;
-  set name(String value) => _name = value;
-
-  String get direction => _direction;
-  set direction(String value) => _direction = value;
-
-  String get logoUrl => _logoUrl;
-  set logoUrl(String value) => _logoUrl = value;
-
-  List<Link> get links => _links;
-  set links(List<Link> value) => _links = value;
-
-  Ubication? get ubication => _ubication;
-  set ubication(Ubication? value) => _ubication = value;
-
-  List<Category> get categories => _categories;
-  set categories(List<Category> value) => _categories = value;
-
-  double get rating => _rating;
-  set rating(double value) => _rating = value;
 
   factory Business.fromJson(Map<String, dynamic> json) {
     List<Link> linksList = [];
@@ -72,26 +49,25 @@ class Business {
     return Business(
       json['id'] as int,
       json['name'] as String,
-      json['address'] as String,
-      json['logoImage'] as String,
-      linksList,
-      ubication,
-      categoryList,
-      (json['rating'] ?? 0.0),
+      direction: json['address'] as String,
+      logoUrl:  json['logoImage'] as String,
+      links:  linksList,
+      ubication:  ubication,
+      categories: categoryList,
+      rating:  (json['rating'] ?? 0.0),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': _id,
-      'name': _name,
-      'direction': _direction,
-      'logoUrl': _logoUrl,
-      'links': _links.map((link) => link.toJson()).toList(),
-      // Solo incluyo ubication si no es null
-      if (_ubication != null) 'ubication': _ubication!.toJson(),
-      'categories': _categories.map((category) => category.toJson()).toList(),
-      'rating': _rating,
+      'id': id,
+      'name': name,
+      'direction': direction,
+      'logoUrl': logoUrl,
+      'links': links!.map((link) => link.toJson()).toList(),
+      'ubication': ubication!.toJson(),
+      'categories': categories!.map((category) => category.toJson()).toList(),
+      'rating': rating,
     };
   }
 }

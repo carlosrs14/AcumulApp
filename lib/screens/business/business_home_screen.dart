@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'package:acumulapp/models/user.dart';
+import 'package:acumulapp/models/collaborator.dart';
 import 'package:flutter/material.dart';
 import 'package:acumulapp/screens/business/manage_cards_screen.dart';
 import 'package:acumulapp/screens/business/business_profile_screen.dart';
 
 class BusinessHomeScreen extends StatefulWidget {
-  final User user;
+  final Collaborator user;
   const BusinessHomeScreen({super.key, required this.user});
 
   @override
@@ -30,7 +30,6 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> with SingleTick
 
   @override
   Widget build(BuildContext context) {
-    //log(widget.user.idBusiness!.toString());// aquiiii
     return Scaffold(
       appBar: AppBar(
         title: const Text('Panel de Negocio'),

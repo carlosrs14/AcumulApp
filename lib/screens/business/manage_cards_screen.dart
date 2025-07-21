@@ -1,12 +1,12 @@
 
 import 'package:acumulapp/models/card.dart';
-import 'package:acumulapp/models/user.dart';
+import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/providers/card_provider.dart';
 import 'package:acumulapp/screens/business/add_edit_card_screen.dart';
 import 'package:flutter/material.dart';
 
 class ManageCardsScreen extends StatefulWidget {
-  final User user;
+  final Collaborator user;
   const ManageCardsScreen({super.key, required this.user});
 
   @override
@@ -16,7 +16,8 @@ class ManageCardsScreen extends StatefulWidget {
 class _ManageCardsScreenState extends State<ManageCardsScreen> {
   final CardProvider _cardProvider = CardProvider();
   late Future<List<BusinessCard>> _cardsFuture;
-
+  int indexSelected = 0;
+  
   @override
   void initState() {
     super.initState();
@@ -25,7 +26,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
 
   void _loadCards() {
     setState(() {
-      _cardsFuture = _cardProvider.filterByBusiness(widget.user.idBusiness!);
+      _cardsFuture = _cardProvider.filterByBusiness(widget.user.business[indexSelected].id);
     });
   }
 

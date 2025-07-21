@@ -1,4 +1,6 @@
 import 'package:acumulapp/models/business_datails_arguments.dart';
+import 'package:acumulapp/models/client.dart';
+import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/screens/business/business_home_screen.dart';
 import 'package:acumulapp/screens/business_cards_screen.dart';
@@ -34,13 +36,13 @@ class MyApp extends StatelessWidget {
             }
 
             final user = args;
-            if (user.role == 'collaborator') {
+            if (user.userType == 'collaborator') {
               return MaterialPageRoute(
-                builder: (_) => BusinessHomeScreen(user: user),
+                builder: (_) => BusinessHomeScreen(user: user as Collaborator),
               );
             }
 
-            return MaterialPageRoute(builder: (_) => HomeScreen(user: user));
+            return MaterialPageRoute(builder: (_) => HomeScreen(user: user as Client));
 
           case '/register':
             return MaterialPageRoute(builder: (_) => RegisterScreen());

@@ -98,7 +98,7 @@ class BusinessProvider {
       }).toList();
 
       business = business.where((negocio) {
-        return negocio.categories.any(
+        return negocio.categories!.any(
           (categoria) =>
               categoria.name.toLowerCase() == categoryName.toLowerCase(),
         );

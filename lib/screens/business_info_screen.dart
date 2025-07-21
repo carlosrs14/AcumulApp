@@ -87,7 +87,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                             ],
                           ),
                           SizedBox(height: 10),
-                          Text(widget.business.direction),
+                          Text(widget.business.direction!),
                         ],
                       ),
 
@@ -116,7 +116,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
       child: Center(
         child: ClipOval(
           child: Image.network(
-            widget.business.logoUrl,
+            widget.business.logoUrl!,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) return child;
               return Center(
@@ -149,7 +149,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
   Widget ratingbar() {
     return Container(
       child: RatingBarIndicator(
-        rating: widget.business.rating,
+        rating: widget.business.rating!,
         itemBuilder: (context, index) =>
             Icon(MdiIcons.star, color: Colors.amber),
         itemCount: 5,
@@ -200,7 +200,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
 
-        children: widget.business.categories.map((category) {
+        children: widget.business.categories!.map((category) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 2),
             child: Text(category.name, style: TextStyle(fontSize: 16)),

@@ -1,3 +1,4 @@
+import 'package:acumulapp/models/client.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -128,7 +129,7 @@ Widget botonEntrar(
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
       onPressed: () async {
-        User userRequest = User(
+        User userRequest = Client(
           0,
           userNameController.text,
           emailController.text,

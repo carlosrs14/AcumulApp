@@ -233,10 +233,10 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 4),
-                Text(filteredBusiness[index].direction),
+                Text(filteredBusiness[index].direction!),
                 SizedBox(height: 4),
                 RatingBarIndicator(
-                  rating: filteredBusiness[index].rating,
+                  rating: filteredBusiness[index].rating!,
                   itemBuilder: (context, index) =>
                       Icon(MdiIcons.star, color: Colors.amber),
                   itemCount: 5,
@@ -256,7 +256,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
               child: Center(
                 child: ClipOval(
                   child: Image.network(
-                    filteredBusiness[index].logoUrl,
+                    filteredBusiness[index].logoUrl!,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
                       return Center(

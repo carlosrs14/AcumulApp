@@ -1,13 +1,6 @@
-import 'dart:ffi';
-
-import 'package:acumulapp/models/business.dart';
-import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/user.dart';
-import 'package:acumulapp/screens/home_screen.dart';
-import 'package:acumulapp/screens/business_cards_screen.dart';
 import 'package:acumulapp/screens/user/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -65,7 +58,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                             children: [buttomSignOut()],
                           ),
                           SizedBox(height: 20),
-                          imagen_negocio(),
+                          imagenNegocio(),
                           SizedBox(height: 30),
                           name(),
                           SizedBox(height: 12),
@@ -90,7 +83,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget imagen_negocio() {
+  Widget imagenNegocio() {
     return Container(
       width: 120,
       height: 120,
@@ -114,7 +107,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
               );
             },
             errorBuilder: (context, error, stackTrace) {
-              return Text(widget.user.name[0], style: TextStyle(fontSize: 40));
+              return Text(widget.user.name[0].toUpperCase(), style: TextStyle(fontSize: 40));
             },
           ),
         ),
@@ -136,7 +129,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
         Icon(MdiIcons.email, color: Colors.grey[700], size: 18),
         SizedBox(width: 6),
         Text(
-          widget.user.email ?? '-',
+          widget.user.email,
           style: TextStyle(fontSize: 16, color: Colors.grey[700]),
         ),
       ],
@@ -150,7 +143,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
         Icon(MdiIcons.security, color: Colors.grey[700], size: 18),
         SizedBox(width: 6),
         Text(
-          widget.user.role ?? '-',
+          widget.user.userType,
           style: TextStyle(fontSize: 16, color: Colors.grey[700]),
         ),
       ],

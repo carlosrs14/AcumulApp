@@ -59,14 +59,14 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                   Center(
                     child: CircleAvatar(
                       radius: 50,
-                      backgroundImage: NetworkImage(business.logoUrl),
+                      backgroundImage: NetworkImage(business.logoUrl!),
                       backgroundColor: Colors.grey[200],
                     ),
                   ),
                   const SizedBox(height: 20),
                   Text(business.name, style: Theme.of(context).textTheme.headlineSmall),
                   const SizedBox(height: 10),
-                  Text(business.direction, style: Theme.of(context).textTheme.bodyLarge),
+                  Text(business.direction!, style: Theme.of(context).textTheme.bodyLarge),
                   const SizedBox(height: 10),
                   Row(
                     children: [
@@ -77,9 +77,9 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                   ),
                   const SizedBox(height: 20),
                   const Divider(),
-                  _buildLinks(business.links),
+                  _buildLinks(business.links!),
                   const Divider(),
-                  _buildCategories(business.categories),
+                  _buildCategories(business.categories!),
                 ],
               ),
             );

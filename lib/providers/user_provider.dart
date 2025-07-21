@@ -38,7 +38,7 @@ class UserProvider with ChangeNotifier {
       log(token.toString());
 
       jwt.saveToken(token);
-      user = User.fromJson(userData);
+      user = userFactory(userData);
     } catch (e) {
       log(e.toString());
       return null;
@@ -64,7 +64,7 @@ class UserProvider with ChangeNotifier {
       final token = jsonData['token'];
 
       jwt.saveToken(token);
-      userResponse = User.fromJson(userData);
+      userResponse = userFactory(userData);
     } catch (e) {
       log(e.toString());
       return null;
@@ -86,7 +86,7 @@ class UserProvider with ChangeNotifier {
 
       final userData = jsonData["account"];
 
-      userResponse = User.fromJson(userData);
+      userResponse = userFactory(userData);
     } catch (e) {
       log(e.toString());
     }
@@ -107,7 +107,7 @@ class UserProvider with ChangeNotifier {
 
       final userData = jsonData["account"];
 
-      userResponse = User.fromJson(userData);
+      userResponse = userFactory(userData);
     } catch (e) {
       log(e.toString());
     }
@@ -128,7 +128,7 @@ class UserProvider with ChangeNotifier {
 
       final userData = jsonData["account"];
 
-      userResponse = User.fromJson(userData);
+      userResponse = userFactory(userData);
     } catch (e) {
       log(e.toString());
     }

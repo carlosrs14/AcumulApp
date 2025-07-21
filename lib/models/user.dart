@@ -1,46 +1,25 @@
-class User {
-  int _id;
-  String _name;
-  String _email;
-  String _password;
-  String _role;
-  int? _idBusiness;
+import 'package:acumulapp/models/client.dart';
+import 'package:acumulapp/models/collaborator.dart';
 
-  User(this._id, this._name, this._email, this._password, this._role);
+abstract class User {
+  int id;
+  String name;
+  String email;
+  String password;
+  String userType;
 
-  int get id => _id;
-  set id(int value) => _id = value;
+  User(this.id, this.name, this.email, this.password, this.userType);
 
-  int? get idBusiness => _idBusiness;
-  set idBusiness(int? value) => _idBusiness = value;
+  Map<String, dynamic> toJson();
+}
 
-  String get name => _name;
-  set name(String value) => _name = value;
-
-  String get email => _email;
-  set email(String value) => _email = value;
-
-  String get password => _password;
-  set password(String value) => _password = value;
-
-  String get role => _role;
-  set role(String value) => _role = value;
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    User user = User(
-      json['id'] as int,
-      json['fullName'] as String,
-      json['email'] as String,
-      "",
-      json['userType'] as String,
-    );
-    user._idBusiness = json['collaboratorDetails'][0]['businessId'] as int;
-    //log(json['collaboratorDetails']);
-    //log(user._idBusiness.toString());
-    return user;
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'fullName': _name, 'email': _email, 'password': _password, 'userType': _role};
+User userFactory(Map<String, dynamic> json) {
+  switch (json['userType'] as String) {
+    case 'collaborator':
+      return Collaborator.fromJson(json);
+    case 'client':
+      return Client.fromJson(json);       
+    default:
+      throw Exception('Unknown user type');
   }
 }
