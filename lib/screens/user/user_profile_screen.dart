@@ -1,5 +1,5 @@
 import 'package:acumulapp/models/user.dart';
-import 'package:acumulapp/screens/user/login_screen.dart';
+import 'package:acumulapp/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
