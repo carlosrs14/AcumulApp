@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/user.dart';
@@ -52,7 +50,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(height: 20),
-                          imagen_negocio(),
+                          imagenNegocio(),
                           SizedBox(height: 30),
                           name(),
                           Container(
@@ -99,7 +97,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
     );
   }
 
-  Widget imagen_negocio() {
+  Widget imagenNegocio() {
     return Container(
       width: 140,
       height: 120,

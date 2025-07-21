@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:acumulapp/models/user.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    //log(widget.user.idBusiness!.toString());// aquiiii
     return Scaffold(
       appBar: AppBar(
         title: const Text('Panel de Negocio'),

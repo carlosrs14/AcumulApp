@@ -25,7 +25,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
 
   void _loadCards() {
     setState(() {
-      _cardsFuture = _cardProvider.filterByBusiness(widget.user.id);
+      _cardsFuture = _cardProvider.filterByBusiness(widget.user.idBusiness!);
     });
   }
 
@@ -84,22 +84,37 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
               itemBuilder: (context, index) {
                 final card = cards[index];
                 return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    title: Text(card.description),
-                    subtitle: Text('Sellos: ${card.maxStamp}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+                  elevation: 4,
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () => _navigateAndReload(
-                            AddEditCardScreen(card: card, idBusiness: widget.user.id),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _deleteCard(card.id),
+                        Text(card.description, style: Theme.of(context).textTheme.bodySmall),
+                        const SizedBox(height: 10),
+                        Text('Vence en ${card.expiration} días'),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Sellos: ${card.maxStamp}'),
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit, color: Colors.blue),
+                                  onPressed: () => _navigateAndReload(
+                                    AddEditCardScreen(card: card, idBusiness: widget.user.id),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete, color: Colors.red),
+                                  onPressed: () => _deleteCard(card.id),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -114,6 +129,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
         onPressed: () => _navigateAndReload(
           AddEditCardScreen(idBusiness: widget.user.id),
         ),
+        tooltip: 'Añadir nueva tarjeta',
         child: const Icon(Icons.add),
       ),
     );

@@ -1,0 +1,13 @@
+clase abstracta User para que cliente y colaborador hereden de esa
+clase colaborador con su lista de bussiness, ademas hay que ponerle el rol
+en todas las partes del user ponerle Cliente
+
+hacer los constructores con los named parametros para que algunos no sean obligatorios
+
+los widgets por separados hacerlos una clase y guardarlos en la carpeta widgets
+
+organizar la carpeta de screens
+
+// 
+
+configuaraciones del usuario

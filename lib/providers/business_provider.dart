@@ -48,7 +48,7 @@ class BusinessProvider {
     return business;
   }
 
-  Future<List<Business>> filterByName(String Name) async {
+  Future<List<Business>> filterByName(String name) async {
     List<Business> business = [];
     try {
       final response = await businessService.all();
@@ -65,7 +65,7 @@ class BusinessProvider {
         business.add(Business.fromJson(element));
       }
       business = business.where((negocio) {
-        return negocio.name.toLowerCase().contains(Name.toLowerCase());
+        return negocio.name.toLowerCase().contains(name.toLowerCase());
       }).toList();
     } catch (e) {
       log(e.toString());
@@ -74,7 +74,7 @@ class BusinessProvider {
   }
 
   Future<List<Business>> filterByNameAndCategory(
-    String Name,
+    String name,
     String categoryName,
   ) async {
     List<Business> business = [];
@@ -94,7 +94,7 @@ class BusinessProvider {
       }
 
       business = business.where((negocio) {
-        return negocio.name.toLowerCase().contains(Name.toLowerCase());
+        return negocio.name.toLowerCase().contains(name.toLowerCase());
       }).toList();
 
       business = business.where((negocio) {
