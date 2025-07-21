@@ -1,4 +1,3 @@
-
 import 'package:acumulapp/models/card.dart';
 import 'package:acumulapp/providers/card_provider.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +38,8 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
         _expiration,
         _maxStamp,
         _description,
+        "",
+        "",
       );
 
       bool success = false;
@@ -87,14 +88,18 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
               ),
               TextFormField(
                 initialValue: _maxStamp.toString(),
-                decoration: const InputDecoration(labelText: 'Máximo de Sellos'),
+                decoration: const InputDecoration(
+                  labelText: 'Máximo de Sellos',
+                ),
                 keyboardType: TextInputType.number,
                 validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
                 onSaved: (value) => _maxStamp = int.parse(value!),
               ),
               TextFormField(
                 initialValue: _expiration.toString(),
-                decoration: const InputDecoration(labelText: 'Expiración (días)'),
+                decoration: const InputDecoration(
+                  labelText: 'Expiración (días)',
+                ),
                 keyboardType: TextInputType.number,
                 validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
                 onSaved: (value) => _expiration = int.parse(value!),
