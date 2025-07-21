@@ -3,7 +3,6 @@ import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/screens/business/business_home_screen.dart';
 import 'package:acumulapp/screens/business_cards_screen.dart';
 import 'package:acumulapp/screens/business_info_screen.dart';
-import 'package:acumulapp/screens/home_client_screen.dart';
 import 'package:acumulapp/screens/home_screen.dart';
 import 'package:acumulapp/screens/user/login_screen.dart';
 import 'package:acumulapp/screens/user/register_screen.dart';

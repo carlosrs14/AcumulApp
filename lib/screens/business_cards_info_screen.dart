@@ -1,5 +1,4 @@
 import 'package:acumulapp/models/business.dart';
-import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/card.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:flutter/material.dart';

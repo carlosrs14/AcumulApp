@@ -1,5 +1,4 @@
 import 'package:acumulapp/models/user.dart';
-import 'package:acumulapp/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class Ejemplo extends StatefulWidget {

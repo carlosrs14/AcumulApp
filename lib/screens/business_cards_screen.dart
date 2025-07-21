@@ -4,7 +4,6 @@ import 'package:acumulapp/models/card.dart';
 import 'package:acumulapp/providers/card_provider.dart';
 import 'package:acumulapp/screens/business_cards_info_screen.dart';
 
-import 'package:acumulapp/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 

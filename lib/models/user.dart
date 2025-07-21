@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 class User {
   int _id;
   String _name;

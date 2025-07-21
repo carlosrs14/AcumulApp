@@ -1,12 +1,9 @@
-import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/user.dart';
-import 'package:acumulapp/screens/business_info_screen.dart';
 import 'package:acumulapp/screens/client_cards_screen.dart';
 import 'package:acumulapp/screens/ejemplo.dart';
 import 'package:acumulapp/screens/home_client_screen.dart';
 import 'package:acumulapp/screens/user/user_profile_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   final User user;

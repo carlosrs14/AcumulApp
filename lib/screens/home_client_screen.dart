@@ -1,9 +1,7 @@
-import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/category.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/providers/category_provider.dart';
-import 'package:acumulapp/screens/home_screen.dart';
 import 'package:acumulapp/screens/business_cards_screen.dart';
 import 'package:acumulapp/screens/business_info_screen.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
