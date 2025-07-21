@@ -72,4 +72,40 @@ class CardProvider {
     }
     return cardResponse;
   }
+
+  Future<BusinessCard?> update(BusinessCard card) async {
+    BusinessCard? cardResponse;
+    try {
+      final response = await cardService.update(card);
+
+      if (response.statusCode != 200) {
+        log(response.body);
+        return cardResponse;
+      }
+
+      String body = utf8.decode(response.bodyBytes);
+      final jsonData = jsonDecode(body);
+
+      cardResponse = BusinessCard.fromJson(jsonData);
+    } catch (e) {
+      log(e.toString());
+    }
+    return cardResponse;
+  }
+
+  Future<bool> delete(int id) async {
+    try {
+      final response = await cardService.delete(id);
+
+      if (response.statusCode != 200) {
+        log(response.body);
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
 }
