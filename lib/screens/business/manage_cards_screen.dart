@@ -106,7 +106,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                                 IconButton(
                                   icon: const Icon(Icons.edit, color: Colors.blue),
                                   onPressed: () => _navigateAndReload(
-                                    AddEditCardScreen(card: card, idBusiness: widget.user.id),
+                                    AddEditCardScreen(card: card, idBusiness: widget.user.business[indexSelected].id),
                                   ),
                                 ),
                                 IconButton(
@@ -128,7 +128,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateAndReload(
-          AddEditCardScreen(idBusiness: widget.user.id),
+          AddEditCardScreen(idBusiness: widget.user.business[indexSelected].id),
         ),
         tooltip: 'Añadir nueva tarjeta',
         child: const Icon(Icons.add),

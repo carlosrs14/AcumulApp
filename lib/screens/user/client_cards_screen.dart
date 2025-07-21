@@ -38,16 +38,13 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
       _errorCardsActivate = false;
     });
     try {
-      // final lista = await userCardProvider.filterByClient(
-      //   widget.user.id,
-      //   idState,
-      // );
+      final lista = await userCardProvider.filterByClient(
+        widget.user.id,
+        idState,
+      );
 
-      setState(() async {
-        userCards = await userCardProvider.filterByClient(
-          widget.user.id,
-          idState,
-        );
+      setState(() {
+        userCards = lista;
       });
     } catch (e) {
       setState(() {
@@ -62,8 +59,8 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
 
   @override
   void initState() {
-    _loadCards(selectedState);
     super.initState();
+    _loadCards(selectedState);
   }
 
   @override
@@ -153,7 +150,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                       Icon(Icons.stars, size: 18, color: Colors.grey[700]),
                       const SizedBox(width: 4),
                       Text(
-                        "Bounty: ${card.bounty}",
+                        "Bounty: ${card.businessCard}",
                         style: TextStyle(fontSize: 14),
                       ),
                     ],
@@ -172,7 +169,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          "Restricciones: ${card.restrictions}",
+                          "Restricciones: ${card.id}",
                           style: TextStyle(fontSize: 14),
                         ),
                       ),
@@ -239,6 +236,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
   void filtros(String query, int idState) async {
     setState(() {
       selectedState = idState;
+      _loadCards(selectedState);
     });
   }
 }

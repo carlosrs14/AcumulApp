@@ -21,7 +21,7 @@ class UserCardService {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${jwt?.loadToken()}',
       },
-      body: jsonEncode(userCard.toJson()),
+      body: jsonEncode(userCard.toJsonCreate()),
     );
   }
 

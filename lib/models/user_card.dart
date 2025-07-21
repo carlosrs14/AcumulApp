@@ -1,82 +1,55 @@
+import 'package:acumulapp/models/card.dart';
+import 'package:acumulapp/models/client.dart';
+
 class UserCard {
-  int _id;
-  int _currentStamps;
-  int _totalStamps;
-  String _code;
-  String _name;
-  String _bounty;
-  String _restrictions;
-  String _state;
-  DateTime _date;
+  int id;
+  int idClient;
+  int businessCard;
+  String? state;
+  int? currentStamps;
+  String? code;
+  DateTime? date;
 
   UserCard(
-    this._id,
-    this._currentStamps,
-    this._totalStamps,
-    this._code,
-    this._name,
-    this._bounty,
-    this._restrictions,
-    this._state,
-    this._date
+    this.id,
+    this.idClient,
+    this.businessCard, {
+      this.state,
+      this.currentStamps,
+      this.code,
+      this.date
+    }
   );
 
-  int get id => _id;
-  set id(int value) => _id = value;
-
-  int get currentStamps => _currentStamps;
-  set currentStamps(int value) => _currentStamps = value;
-
-  int get totalStamps => _totalStamps;
-  set totalStamps(int value) => _totalStamps = value;
-
-  String get code => _code;
-  set code(String value) => _code = value;
-
-  String get name => _name;
-  set name(String value) => _name = value;
-
-  String get bounty => _bounty;
-  set bounty(String value) => _bounty = value;
-
-  String get restrictions => _restrictions;
-  set restrictions(String value) => _restrictions = value;
-
-  String get state => _state;
-  set state(String value) => _state = value;
-
-  DateTime get date => _date;
-  set date(DateTime value) => _date = value;
     // fromJson: convierte campo "date" de string ISO 8601 a DateTime
   factory UserCard.fromJson(Map<String, dynamic> json) {
     // Puede ser que json['date'] sea null o distinto formato; aquí asumo ISO 8601 String
-    String dateStr = json['date'] as String;
+    String dateStr = json['expirationDate'] as String;
     DateTime parsedDate = DateTime.parse(dateStr);
     return UserCard(
       json['id'] as int,
-      json['currentStamps'] as int,
-      json['totalStamps'] as int,
-      json['code'] as String,
-      json['name'] as String,
-      json['bounty'] as String,
-      json['restrictions'] as String,
-      json['state'] as String,
-      parsedDate
+      json['idClient'],
+      json['idCard'],
+      currentStamps: json['currentStamps']
     );
   }
 
   // toJson: convierte DateTime a String ISO 8601
   Map<String, dynamic> toJson() {
     return {
-      'id': _id,
-      'currentStamps': _currentStamps,
-      'totalStamps': _totalStamps,
-      'code': _code,
-      'name': _name,
-      'bounty': _bounty,
-      'restrictions': _restrictions,
-      'state': _state,
-      'date': _date.toIso8601String(),
+      'id': id,
+      'currentStamps': currentStamps,
+      'code': code,
+      'state': state,
+      'date': date!.toIso8601String(),
+    };
+  }
+
+  Map<String, dynamic> toJsonCreate() {
+    return {
+      'idClient': idClient,
+      'idCard': businessCard,
+      'maxStamp': businessCard
     };
   }
 }

@@ -61,7 +61,7 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
     return Scaffold(
       body: _isLoadingBusinessCards
           ? Center(child: CircularProgressIndicator())
-          : businessCardsList.length == 0
+          : businessCardsList.isEmpty
           ? Center(child: Text("No hay tarjetas disponibles"))
           : Container(child: cuerpo()),
     );

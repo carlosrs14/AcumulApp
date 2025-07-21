@@ -39,7 +39,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
     _userCardsFuture.then((userCards) {
       setState(() {
         _filteredUserCards = userCards
-            .where((userCard) => userCard.name.toLowerCase().contains(query))
+            .where((userCard) => userCard.id.toString().toLowerCase().contains(query))
             .toList();
       });
     });
@@ -88,9 +88,9 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
                       return Card(
                         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         child: ListTile(
-                          title: Text(userCard.name),
-                          subtitle: Text('Sellos: ${userCard.currentStamps}/${userCard.totalStamps}'),
-                          trailing: Text(userCard.state, style: TextStyle(color: userCard.state == 'active' ? Colors.green : Colors.red)),
+                          title: Text(userCard.id.toString()),
+                          subtitle: Text('Sellos: ${userCard.currentStamps}/${userCard.businessCard}'),
+                          trailing: Text(userCard.state!, style: TextStyle(color: userCard.state == 'active' ? Colors.green : Colors.red)),
                         ),
                       );
                     },

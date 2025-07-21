@@ -187,7 +187,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
-          textStyle: TextStyle(fontSize: 14),
+          textStyle: TextStyle(fontSize: 11),
           elevation: 4,
         ),
       ),
@@ -207,7 +207,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
-          textStyle: TextStyle(fontSize: 14),
+          textStyle: TextStyle(fontSize: 11),
           elevation: 4,
         ),
       ),
