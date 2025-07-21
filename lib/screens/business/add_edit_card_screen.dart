@@ -1,4 +1,3 @@
-
 import 'package:acumulapp/models/card.dart';
 import 'package:acumulapp/providers/card_provider.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +38,8 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
         _expiration,
         _maxStamp,
         _description,
+        "",
+        "",
       );
 
       bool success = false;
@@ -75,66 +76,42 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextFormField(
-                    initialValue: _description,
-                    decoration: const InputDecoration(
-                      labelText: 'Descripción',
-                      icon: Icon(Icons.description),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
-                    onSaved: (value) => _description = value!,
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    initialValue: _maxStamp.toString(),
-                    decoration: const InputDecoration(
-                      labelText: 'Máximo de Sellos',
-                      icon: Icon(Icons.star),
-                      border: OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
-                    onSaved: (value) => _maxStamp = int.parse(value!),
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    initialValue: _expiration.toString(),
-                    decoration: const InputDecoration(
-                      labelText: 'Expiración (días)',
-                      icon: Icon(Icons.timer),
-                      border: OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
-                    onSaved: (value) => _expiration = int.parse(value!),
-                  ),
-                  const SizedBox(height: 30),
-                  ElevatedButton(
-                    onPressed: _saveCard,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text('Guardar'),
-                  ),
-                ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                initialValue: _description,
+                decoration: const InputDecoration(labelText: 'Descripción'),
+                validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
+                onSaved: (value) => _description = value!,
               ),
-            ),
+              TextFormField(
+                initialValue: _maxStamp.toString(),
+                decoration: const InputDecoration(
+                  labelText: 'Máximo de Sellos',
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
+                onSaved: (value) => _maxStamp = int.parse(value!),
+              ),
+              TextFormField(
+                initialValue: _expiration.toString(),
+                decoration: const InputDecoration(
+                  labelText: 'Expiración (días)',
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
+                onSaved: (value) => _expiration = int.parse(value!),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _saveCard,
+                child: const Text('Guardar'),
+              ),
+            ],
           ),
         ),
       ),

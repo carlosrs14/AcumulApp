@@ -1,7 +1,8 @@
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/user.dart';
-import 'package:acumulapp/screens/app_bar_client.dart';
+import 'package:acumulapp/screens/home_screen.dart';
+import 'package:acumulapp/screens/business_cards_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -16,11 +17,19 @@ class BusinessInfo extends StatefulWidget {
 }
 
 class _BusinessInfoState extends State<BusinessInfo> {
+  late double screenWidth;
   @override
   Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppbarClient(currentScreen: "busines_info", user: widget.user),
-      body: cuerpo(),
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          padding: EdgeInsets.all(12),
+          child: cuerpo(),
+        ),
+      ),
     );
   }
 
@@ -66,14 +75,14 @@ class _BusinessInfoState extends State<BusinessInfo> {
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 25,
+                                    horizontal: 10,
                                   ),
                                   child: categories(),
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 25,
+                                  horizontal: 10,
                                 ),
                                 child: ratingbar(),
                               ),
@@ -99,12 +108,12 @@ class _BusinessInfoState extends State<BusinessInfo> {
 
   Widget imagenNegocio() {
     return Container(
-      width: 140,
+      width: 120,
       height: 120,
       padding: EdgeInsets.all(1),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black, width: 1),
-        borderRadius: BorderRadius.circular(35),
+        borderRadius: BorderRadius.circular(70),
       ),
       child: Center(
         child: ClipOval(
@@ -146,7 +155,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
         itemBuilder: (context, index) =>
             Icon(MdiIcons.star, color: Colors.amber),
         itemCount: 5,
-        itemSize: 25.0,
+        itemSize: screenWidth * 0.065,
         direction: Axis.horizontal,
       ),
     );
@@ -154,34 +163,34 @@ class _BusinessInfoState extends State<BusinessInfo> {
 
   Widget buttom() {
     return Container(
-      width: 200,
+      width: screenWidth * 0.6,
       height: 55,
       padding: EdgeInsets.all(1),
 
       child: Center(
         child: ElevatedButton.icon(
           onPressed: () {
-            Navigator.pushNamed(
-              context,
-              "/business_cards",
-              arguments: BusinessDetailsArguments(
-                business: widget.business,
-                user: widget.user,
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => BusinessCardsScreen(
+                  business: widget.business,
+                  user: widget.user,
+                ),
               ),
             );
           },
           icon: Icon(MdiIcons.cardsOutline, size: 20),
           iconAlignment: IconAlignment.end,
-          label: Text("Ver tarjetas"),
+          label: Text("View cards"),
           style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.purple,
-            backgroundColor: Colors.purple.shade50,
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.deepPurple,
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 14),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
-              side: BorderSide(color: Colors.purple),
             ),
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            textStyle: TextStyle(fontSize: 16),
+            textStyle: TextStyle(fontSize: 14),
+            elevation: 4,
           ),
         ),
       ),

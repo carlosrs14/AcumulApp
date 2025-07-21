@@ -104,6 +104,18 @@ Widget botonEntrar(
 
         if (user != null) {
           Navigator.pushNamed(context, '/home', arguments: user);
+        } else {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Usuario o contraseña incorrectos',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.redAccent,
+              duration: Duration(seconds: 3),
+            ),
+          );
         }
       },
       child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 15)),

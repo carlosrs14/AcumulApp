@@ -23,18 +23,16 @@ class UserCardProvider {
       final jsonData = jsonDecode(body);
 
       userCardResponse = UserCard.fromJson(jsonData);
-
     } catch (e) {
       log(e.toString());
     }
     return userCardResponse;
   }
 
-  
-  Future<List<UserCard>> filterByClient(int idUser) async {
+  Future<List<UserCard>> filterByClient(int idUser, int idState) async {
     List<UserCard> cards = [];
     try {
-      final response = await userCardService.filterByClient(idUser);
+      final response = await userCardService.filterByClient(idUser, idState);
 
       if (response.statusCode != 200) {
         log(response.body);
@@ -43,9 +41,9 @@ class UserCardProvider {
 
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-
-      for (var element in jsonData) {
-       cards.add(UserCard.fromJson(element));
+      log(jsonData["data"].toString());
+      for (var element in jsonData["data"]) {
+        cards.add(UserCard.fromJson(element));
       }
     } catch (e) {
       log(e.toString());
@@ -54,9 +52,9 @@ class UserCardProvider {
   }
 
   Future<List<UserCard>> filterByBusiness(int idBusiness) async {
-        List<UserCard> cards = [];
+    List<UserCard> cards = [];
     try {
-      final response = await userCardService.filterByClient(idBusiness);
+      final response = await userCardService.filterByBusiness(idBusiness);
 
       if (response.statusCode != 200) {
         log(response.body);
@@ -67,7 +65,7 @@ class UserCardProvider {
       final jsonData = jsonDecode(body);
 
       for (var element in jsonData) {
-       cards.add(UserCard.fromJson(element));
+        cards.add(UserCard.fromJson(element));
       }
     } catch (e) {
       log(e.toString());
@@ -134,6 +132,7 @@ class UserCardProvider {
     }
     return userCardResponse;
   }
+
   Future<UserCard?> addStamp(String code, int stamps) async {
     UserCard? userCardResponse;
     try {
@@ -154,7 +153,7 @@ class UserCardProvider {
     return userCardResponse;
   }
 
-    Future<UserCard?> redeemCard(String code) async {
+  Future<UserCard?> redeemCard(String code) async {
     UserCard? userCardResponse;
     try {
       final response = await userCardService.redeemCard(code);

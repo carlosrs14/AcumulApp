@@ -1,82 +1,103 @@
-import 'package:acumulapp/models/business.dart';
-import 'package:acumulapp/models/user.dart';
-import 'package:acumulapp/models/card.dart';
-import 'package:acumulapp/providers/card_provider.dart';
-import 'package:acumulapp/screens/business_cards_info_screen.dart';
+import 'dart:async';
+import 'dart:developer';
 
-import 'package:acumulapp/screens/home_screen.dart';
+import 'package:acumulapp/models/card.dart';
+import 'package:acumulapp/models/user.dart';
+import 'package:acumulapp/models/user_card.dart';
+import 'package:acumulapp/providers/user_card_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-class BusinessCardsScreen extends StatefulWidget {
-  final Business business;
+class ClientCardsScreen extends StatefulWidget {
   final User user;
-  const BusinessCardsScreen({
-    super.key,
-    required this.business,
-    required this.user,
-  });
+  const ClientCardsScreen({super.key, required this.user});
 
   @override
-  State<BusinessCardsScreen> createState() => _BusinessCardsScreenState();
+  State<ClientCardsScreen> createState() => _ClientCardsScreenState();
 }
 
-class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
-  final CardProvider cardProvider = CardProvider();
+class _ClientCardsScreenState extends State<ClientCardsScreen> {
+  final UserCardProvider userCardProvider = UserCardProvider();
+  Timer? _debounce;
+  List<UserCard> userCards = [];
+  late double screenWidth;
+  Map<int, String> stateList = {
+    1: "Activo",
+    2: "nose",
+    3: "Redimido",
+    4: "Inactivo",
+    5: "Vencido",
+  };
+  int selectedState = 4;
 
-  bool _isLoadingBusinessCards = true;
-  String? _errorBusinessCards;
+  bool _isLoadingCardsActivate = true;
+  bool _errorCardsActivate = false;
 
-  List<BusinessCard> businessCardsList = [];
-
-  Future<void> _loadBusinessCards() async {
+  Future<void> _loadCards(int idState) async {
     setState(() {
-      _isLoadingBusinessCards = true;
-      _errorBusinessCards = null;
+      _isLoadingCardsActivate = true;
+      _errorCardsActivate = false;
     });
     try {
-      final lista = await cardProvider.filterByBusiness(widget.business.id);
+      // final lista = await userCardProvider.filterByClient(
+      //   widget.user.id,
+      //   idState,
+      // );
 
-      setState(() {
-        businessCardsList = lista;
+      setState(() async {
+        userCards = await userCardProvider.filterByClient(
+          widget.user.id,
+          idState,
+        );
       });
     } catch (e) {
       setState(() {
-        _errorBusinessCards = 'Error al cargar categorías';
+        _errorCardsActivate = true;
       });
     } finally {
       setState(() {
-        _isLoadingBusinessCards = false;
+        _isLoadingCardsActivate = false;
       });
     }
   }
 
   @override
   void initState() {
-    _loadBusinessCards();
+    _loadCards(selectedState);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isLoadingBusinessCards
-          ? Center(child: CircularProgressIndicator())
-          : businessCardsList.length == 0
-          ? Center(child: Text("No hay tarjetas disponibles"))
-          : Container(child: cuerpo()),
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          padding: EdgeInsets.all(12),
+          child: cuerpo(),
+        ),
+      ),
     );
   }
 
   Widget cuerpo() {
-    return Column(children: [Expanded(child: listCards())]);
+    return Column(
+      children: [
+        Row(mainAxisAlignment: MainAxisAlignment.end, children: [filtro()]),
+        Expanded(child: listCards()),
+      ],
+    );
   }
 
   Widget listCards() {
+    log(userCards.length.toString());
     return ListView.builder(
-      itemCount: businessCardsList.length,
+      itemCount: userCards.length,
+
       itemBuilder: (context, index) {
-        final card = businessCardsList[index];
+        final card = userCards[index];
+
         return Card(
           elevation: 4,
 
@@ -89,15 +110,15 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
             padding: const EdgeInsets.all(8.0),
             child: ListTile(
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => BusinessInfoCards(
-                      business: widget.business,
-                      user: widget.user,
-                      businessCard: businessCardsList[index],
-                    ),
-                  ),
-                );
+                // Navigator.of(context).push(
+                //   MaterialPageRoute(
+                //     builder: (_) => BusinessInfoCards(
+                //       business: widget.business,
+                //       user: widget.user,
+                //       businessCard: businessCardsList[index],
+                //     ),
+                //   ),
+                // );
               },
               title: Text(
                 "Card",
@@ -122,7 +143,7 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        "Expirataion: ${card.expiration}",
+                        "CurrentStamps: ${card.currentStamps}",
                         style: TextStyle(fontSize: 14),
                       ),
                     ],
@@ -133,7 +154,7 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
                       Icon(Icons.stars, size: 18, color: Colors.grey[700]),
                       const SizedBox(width: 4),
                       Text(
-                        "Max Stamp: ${card.maxStamp}",
+                        "Bounty: ${card.bounty}",
                         style: TextStyle(fontSize: 14),
                       ),
                     ],
@@ -170,8 +191,8 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
   Widget addCardButton() {
     return ElevatedButton.icon(
       onPressed: () {},
-      icon: Icon(MdiIcons.cardsOutline),
-      label: Text("Add Card"),
+      icon: Icon(MdiIcons.qrcode),
+      label: Text(""),
       iconAlignment: IconAlignment.end,
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.white,
@@ -182,5 +203,43 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
         elevation: 4,
       ),
     );
+  }
+
+  Widget filtro() {
+    return Container(
+      height: 40,
+      padding: EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.black26),
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(1, 2)),
+        ],
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<int>(
+          value: selectedState,
+          icon: Icon(Icons.arrow_drop_down),
+          items: stateList.entries.map((entry) {
+            return DropdownMenuItem<int>(
+              value: entry.key,
+              child: Text(entry.value),
+            );
+          }).toList(),
+          onChanged: (int? newValue) async {
+            if (newValue != null) {
+              filtros("", newValue);
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  void filtros(String query, int idState) async {
+    setState(() {
+      selectedState = idState;
+    });
   }
 }
