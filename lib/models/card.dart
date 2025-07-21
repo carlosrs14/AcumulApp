@@ -4,6 +4,8 @@ class BusinessCard {
   int _expiration;
   int _maxStamp;
   String _description;
+  String _restrictions;
+  String _reward;
 
   BusinessCard(
     this._id,
@@ -11,6 +13,8 @@ class BusinessCard {
     this._expiration,
     this._maxStamp,
     this._description,
+    this._restrictions,
+    this._reward,
   );
 
   int get id => _id;
@@ -25,6 +29,12 @@ class BusinessCard {
   int get maxStamp => _maxStamp;
   set maxStamp(int value) => _maxStamp = value;
 
+  String get restrictions => _restrictions;
+  set restrictions(String value) => _restrictions = value;
+
+  String get reward => _reward;
+  set reward(String value) => _reward = value;
+
   String get description => _description;
   set description(String value) => _description = value;
 
@@ -35,6 +45,8 @@ class BusinessCard {
       json['expiration'] as int,
       json['maxStamp'] as int,
       json['description'] as String,
+      json['restrictions'] as String,
+      json['reward'] as String,
     );
   }
 
@@ -45,6 +57,8 @@ class BusinessCard {
       "expiration": _expiration,
       "maxStamp": _maxStamp,
       "description": _description,
+      "restrictions": _restrictions,
+      "reward": _reward,
     };
   }
 }

@@ -19,33 +19,33 @@ class UserCardService {
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
       },
-      body: jsonEncode(userCard.toJson())
+      body: jsonEncode(userCard.toJson()),
     );
   }
 
-  //TODO
-  Future<http.Response> filterByClient(int idUser) async {
-    final Uri url = Uri.parse("$urlApi/client-card/client");
+  Future<http.Response> filterByClient(int idUser, int idState) async {
+    final Uri url = Uri.parse(
+      "$urlApi/client-card/client?idClient=$idUser&idState=$idState",
+    );
     return await http.get(
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
-      }
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
     );
   }
 
-  //TODO
   Future<http.Response> filterByBusiness(int idBusiness) async {
-    final Uri url = Uri.parse("$urlApi/client-card/business");
+    final Uri url = Uri.parse("$urlApi/client-card/business/$idBusiness");
     return await http.get(
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
-      }
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
     );
   }
 
@@ -55,8 +55,8 @@ class UserCardService {
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
-      }
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
     );
   }
 
@@ -66,8 +66,8 @@ class UserCardService {
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
-      }
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
     );
   }
 
@@ -77,8 +77,8 @@ class UserCardService {
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
-      }
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
     );
   }
 
@@ -88,11 +88,11 @@ class UserCardService {
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
       },
       body: {
-        jsonEncode({"stamps": stamps})
-      }
+        jsonEncode({"stamps": stamps}),
+      },
     );
   }
 
@@ -102,8 +102,8 @@ class UserCardService {
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
-      }
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
     );
   }
 }

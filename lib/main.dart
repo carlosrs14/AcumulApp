@@ -1,6 +1,7 @@
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/user.dart';
+import 'package:acumulapp/screens/home_screen.dart';
 import 'package:acumulapp/screens/business_cards_screen.dart';
 import 'package:acumulapp/screens/business_info_screen.dart';
 import 'package:acumulapp/screens/home_client_screen.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: user != null ? Inicioclienteview(user: user!) : InicioLogin(),
+      home: user != null ? HomeScreen(user: user!) : InicioLogin(),
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/home':
@@ -34,9 +35,7 @@ class MyApp extends StatelessWidget {
             }
 
             final user = args as User;
-            return MaterialPageRoute(
-              builder: (_) => Inicioclienteview(user: user),
-            );
+            return MaterialPageRoute(builder: (_) => HomeScreen(user: user));
 
           case '/register':
             return MaterialPageRoute(builder: (_) => RegisterScreen());
