@@ -9,14 +9,27 @@ class BusinessService {
     jwt = JwtController(localStorage);
   }
 
-  Future<http.Response> all() async {
-    final Uri url = Uri.parse("$urlApi/business");
+  Future<http.Response> all(
+    String? name,
+    int? category,
+    int page,
+    int size,
+  ) async {
+    final Map<String, String> queryParams = {
+      'page': page.toString(),
+      'size': size.toString(),
+      if (name != null && name.isNotEmpty) 'name': name,
+      if (category != null && category != 0) 'category': category.toString(),
+    };
+
+    final Uri url = Uri.http('3.129.14.200', '/api/v1/business', queryParams);
+
     return http.get(
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
-      }
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
     );
   }
 
@@ -26,8 +39,8 @@ class BusinessService {
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
-      }
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
     );
   }
 
@@ -38,8 +51,8 @@ class BusinessService {
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}'
-      }
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
     );
   }
 }
