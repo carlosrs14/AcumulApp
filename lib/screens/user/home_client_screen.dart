@@ -260,7 +260,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                 Text(filteredBusiness[index].direction!),
                 SizedBox(height: 4),
                 RatingBarIndicator(
-                  rating: filteredBusiness[index].rating!,
+                  rating: 3.5,
                   itemBuilder: (context, index) =>
                       Icon(MdiIcons.star, color: Colors.amber),
                   itemCount: 5,

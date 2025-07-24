@@ -26,7 +26,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
 
   void _loadCards() {
     setState(() {
-      //_cardsFuture = _cardProvider.filterByBusiness(widget.user.business[indexSelected].id, 10, 1);
+      //_cardsFuture = _cardProvider.filterByBusiness(widget.user.business[indexSelected].id);
     });
   }
 

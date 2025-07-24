@@ -18,9 +18,13 @@ class UserProvider with ChangeNotifier {
     userService = UserService(localStorage);
   }
 
-  Future<User?> login(String email, String password) async {
+  Future<User?> login(String email, String password, String accountType) async {
     User user;
-    Map<String, String> map = {'email': email, 'password': password};
+    Map<String, String> map = {
+      'email': email,
+      'password': password,
+      'userType': accountType
+    };
 
     try {
       final response = await userService.login(map);

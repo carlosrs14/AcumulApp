@@ -13,7 +13,7 @@ class UserService {
   }
 
   Future<http.Response> login(Map<String, String> data) async {
-    final Uri url = Uri.parse("$urlApi/auth/login");
+    final Uri url = Uri.parse("$urlApi/auth/login?userType=${data['userType']}");
     return await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
