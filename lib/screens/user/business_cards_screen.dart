@@ -8,6 +8,7 @@ import 'package:acumulapp/providers/card_provider.dart';
 import 'package:acumulapp/providers/user_card_provider.dart';
 import 'package:acumulapp/screens/user/QrCode_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_info_screen.dart';
+import 'package:acumulapp/widgets/pagination.dart';
 
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -33,6 +34,9 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
   String? _errorBusinessCards;
 
   List<BusinessCard> businessCardsList = [];
+  int currentPage = 1;
+  int itemsPerPage = 10;
+  int totalPage = 10;
 
   Future<void> _loadBusinessCards() async {
     setState(() {
@@ -40,10 +44,17 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
       _errorBusinessCards = null;
     });
     try {
-      final lista = await cardProvider.filterByBusiness(widget.business.id);
+      final paginationData = await cardProvider.filterByBusiness(
+        widget.business.id,
+        itemsPerPage,
+        currentPage,
+      );
 
       setState(() {
-        businessCardsList = lista;
+        businessCardsList = paginationData!.list as List<BusinessCard>;
+        currentPage = paginationData.currentPage;
+        itemsPerPage = paginationData.pageSize;
+        totalPage = paginationData.totalPages;
       });
     } catch (e) {
       setState(() {
@@ -74,7 +85,30 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
   }
 
   Widget cuerpo() {
-    return Column(children: [Expanded(child: listCards())]);
+    return Column(
+      children: [
+        Expanded(child: listCards()),
+        PaginacionWidget(
+          currentPage: currentPage,
+          itemsPerPage: itemsPerPage,
+          totalItems: businessCardsList.length,
+          totalPages: totalPage,
+          onPageChanged: (newPage) {
+            setState(() {
+              currentPage = newPage;
+              _loadBusinessCards();
+            });
+          },
+          onItemsPerPageChanged: (newCount) {
+            setState(() {
+              itemsPerPage = newCount;
+              currentPage = 1;
+              _loadBusinessCards();
+            });
+          },
+        ),
+      ],
+    );
   }
 
   Widget listCards() {
@@ -105,7 +139,7 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
                 );
               },
               title: Text(
-                "Card",
+                card.name,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -120,30 +154,27 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      Icon(
-                        Icons.calendar_today,
-                        size: 18,
-                        color: Colors.grey[700],
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        "Expirataion: ${card.expiration}",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
                       Icon(Icons.stars, size: 18, color: Colors.grey[700]),
                       const SizedBox(width: 4),
                       Text(
-                        "Max Stamp: ${card.maxStamp}",
+                        "Bounty: ${card.reward}",
                         style: TextStyle(fontSize: 14),
                       ),
                     ],
                   ),
 
+                  const SizedBox(height: 12),
+
+                  Row(
+                    children: [
+                      Icon(MdiIcons.stamper, size: 18, color: Colors.grey[700]),
+                      const SizedBox(width: 4),
+                      Text(
+                        "MaxStamp: ${card.maxStamp}",
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 12),
 
                   Row(

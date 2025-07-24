@@ -32,11 +32,19 @@ class CardProvider {
     return cards;
   }
 
-  Future<PaginationData?> filterByBusiness(int idBusiness, int size, int page) async {
+  Future<PaginationData?> filterByBusiness(
+    int idBusiness,
+    int size,
+    int page,
+  ) async {
     List<BusinessCard> cards = [];
     PaginationData? paginationData;
     try {
-      final response = await cardService.filterByBusiness(idBusiness, size, page);
+      final response = await cardService.filterByBusiness(
+        idBusiness,
+        size,
+        page,
+      );
 
       if (response.statusCode != 200) {
         log(response.body);
@@ -45,7 +53,7 @@ class CardProvider {
 
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-      log(jsonData["data"].toString());
+      log(jsonData.toString());
       for (var element in jsonData["data"]) {
         cards.add(BusinessCard.fromJson(element));
       }

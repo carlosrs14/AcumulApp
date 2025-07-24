@@ -4,6 +4,7 @@ import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/providers/category_provider.dart';
 import 'package:acumulapp/screens/user/business_cards_screen.dart';
 import 'package:acumulapp/screens/user/business_info_screen.dart';
+import 'package:acumulapp/widgets/pagination.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:acumulapp/models/business.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,10 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
   bool _errorCategories = false;
   bool _isLoadingBusiness = true;
   bool _errorBusiness = false;
+
+  int currentPage = 1;
+  int itemsPerPage = 10;
+  int totalPage = 10;
 
   List<Category> categoryList = [];
 
@@ -115,6 +120,25 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
         ),
         SizedBox(height: 10),
         Expanded(child: listaBusiness()),
+        PaginacionWidget(
+          currentPage: currentPage,
+          itemsPerPage: itemsPerPage,
+          totalItems: filteredBusiness.length,
+          totalPages: totalPage,
+          onPageChanged: (newPage) {
+            setState(() {
+              currentPage = newPage;
+              _loadBusiness();
+            });
+          },
+          onItemsPerPageChanged: (newCount) {
+            setState(() {
+              itemsPerPage = newCount;
+              currentPage = 1;
+              _loadBusiness();
+            });
+          },
+        ),
       ],
     );
   }
