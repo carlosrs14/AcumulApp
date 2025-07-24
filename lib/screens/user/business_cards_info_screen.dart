@@ -1,6 +1,9 @@
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/card.dart';
 import 'package:acumulapp/models/user.dart';
+import 'package:acumulapp/models/user_card.dart';
+import 'package:acumulapp/providers/user_card_provider.dart';
+import 'package:acumulapp/screens/user/QrCode_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -21,6 +24,7 @@ class BusinessInfoCards extends StatefulWidget {
 }
 
 class _BusinessInfoCardsState extends State<BusinessInfoCards> {
+  UserCardProvider userCardProvider = UserCardProvider();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +45,10 @@ class _BusinessInfoCardsState extends State<BusinessInfoCards> {
       elevation: 8,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
-        side: BorderSide(color: Colors.deepPurple.shade300, width: 2),
+        side: BorderSide(
+          color: Theme.of(context).colorScheme.primary,
+          width: 2,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -53,7 +60,7 @@ class _BusinessInfoCardsState extends State<BusinessInfoCards> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.deepPurple[800],
+                color: Theme.of(context).colorScheme.primary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -104,12 +111,51 @@ class _BusinessInfoCardsState extends State<BusinessInfoCards> {
 
   Widget addCardButton() {
     return ElevatedButton.icon(
-      onPressed: () {},
+      onPressed: () async {
+        UserCard? userCard = await userCardProvider.create(
+          UserCard(0, widget.user.id, widget.businessCard.id),
+        );
+        if (userCard != null && userCard.code != null) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => QrCodeScreen(
+                code: userCard!.code!,
+                text:
+                    "Presenta este QR al negocio para que te activen tu tarjeta",
+              ),
+            ),
+          );
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Tarjeta creada exitosamente',
+                style: TextStyle(color: Colors.black),
+              ),
+              backgroundColor: Colors.greenAccent,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                '"Alancazaste la cantidad maxima de tarjetas"',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.redAccent,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      },
       icon: Icon(MdiIcons.cardsOutline),
+      iconAlignment: IconAlignment.end,
       label: Text("Add Card"),
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.white,
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Theme.of(context).colorScheme.primary,
 
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         textStyle: TextStyle(fontSize: 16),

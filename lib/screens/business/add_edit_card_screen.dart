@@ -37,6 +37,7 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
         widget.idBusiness,
         _expiration,
         _maxStamp,
+        "",
         _description,
         "",
         "",

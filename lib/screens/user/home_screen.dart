@@ -74,7 +74,7 @@ class HomeScreenState extends State<HomeScreen> {
             });
           },
           type: BottomNavigationBarType.shifting,
-          selectedItemColor: Colors.deepPurpleAccent,
+          selectedItemColor: Theme.of(context).colorScheme.primary,
           unselectedItemColor: Colors.grey,
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),

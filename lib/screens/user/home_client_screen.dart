@@ -298,7 +298,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                   label: Text(""),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    backgroundColor: Colors.deepPurple,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
 
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),

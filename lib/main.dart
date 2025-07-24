@@ -11,10 +11,21 @@ import 'package:acumulapp/screens/user/register_screen.dart';
 import 'package:acumulapp/utils/jwt.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:provider/provider.dart';
+import 'package:acumulapp/screens/theme_provider.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   final user = await getLoggedUser();
-  runApp(MyApp(isLogged: user != null, user: user));
+  final savedColor = await ThemeProvider.getSavedColor();
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(savedColor),
+      child: MyApp(isLogged: user != null, user: user),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -24,7 +35,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
+      theme: themeProvider.themeData,
       home: user != null ? HomeScreen(user: user!) : InicioLogin(),
       onGenerateRoute: (settings) {
         switch (settings.name) {
@@ -42,7 +55,9 @@ class MyApp extends StatelessWidget {
               );
             }
 
-            return MaterialPageRoute(builder: (_) => HomeScreen(user: user as Client));
+            return MaterialPageRoute(
+              builder: (_) => HomeScreen(user: user as Client),
+            );
 
           case '/register':
             return MaterialPageRoute(builder: (_) => RegisterScreen());

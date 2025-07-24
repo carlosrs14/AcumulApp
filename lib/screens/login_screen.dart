@@ -23,32 +23,48 @@ Widget cuerpo(BuildContext context) {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  return Container(
-    decoration: BoxDecoration(color: Colors.white),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        nombre(),
-        SizedBox(height: 160),
-        Container(
-          padding: EdgeInsets.only(left: 20),
-          alignment: Alignment.centerLeft,
-          child: Text("Email", style: TextStyle(fontSize: 15)),
-        ),
-        campoEmail(emailController),
-        Container(
-          padding: EdgeInsets.only(left: 20),
-          alignment: Alignment.centerLeft,
-          child: Text("Password", style: TextStyle(fontSize: 15)),
-        ),
-        campoContrasena(passwordController),
-        SizedBox(height: 30),
-        botonEntrar(emailController, passwordController, context, userProvider),
-        SizedBox(height: 30),
-        botonGoogle(),
-        SizedBox(height: 30),
-        irARegistrar(context),
-      ],
+  return SafeArea(
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Container(
+              decoration: BoxDecoration(color: Colors.white),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  nombre(),
+                  SizedBox(height: 160),
+                  Container(
+                    padding: EdgeInsets.only(left: 20),
+                    alignment: Alignment.centerLeft,
+                    child: Text("Email", style: TextStyle(fontSize: 15)),
+                  ),
+                  campoEmail(emailController),
+                  Container(
+                    padding: EdgeInsets.only(left: 20),
+                    alignment: Alignment.centerLeft,
+                    child: Text("Password", style: TextStyle(fontSize: 15)),
+                  ),
+                  campoContrasena(passwordController),
+                  SizedBox(height: 30),
+                  botonEntrar(
+                    emailController,
+                    passwordController,
+                    context,
+                    userProvider,
+                  ),
+                  SizedBox(height: 30),
+                  botonGoogle(context),
+                  SizedBox(height: 30),
+                  irARegistrar(context),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     ),
   );
 }
@@ -95,7 +111,9 @@ Widget botonEntrar(
     width: double.infinity,
     padding: EdgeInsets.symmetric(horizontal: 20),
     child: ElevatedButton(
-      style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
       onPressed: () async {
         User? user = await userProvider.login(
           emailController.text,
@@ -123,12 +141,14 @@ Widget botonEntrar(
   );
 }
 
-Widget botonGoogle() {
+Widget botonGoogle(BuildContext context) {
   return Container(
     width: double.infinity,
     padding: EdgeInsets.symmetric(horizontal: 20),
     child: ElevatedButton(
-      style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
       onPressed: () {},
       child: Text(
         "Login with Google",

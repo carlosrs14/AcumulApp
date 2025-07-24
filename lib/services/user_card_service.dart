@@ -25,9 +25,14 @@ class UserCardService {
     );
   }
 
-  Future<http.Response> filterByClient(int idUser, int idState) async {
+  Future<http.Response> filterByClient(
+    int idUser,
+    int idState,
+    int size,
+    int page,
+  ) async {
     final Uri url = Uri.parse(
-      "$urlApi/client-card/client?idClient=$idUser&idState=$idState",
+      "$urlApi/client-card/client?idClient=$idUser&idState=$idState&size=$size&page=$page",
     );
     return await http.get(
       url,

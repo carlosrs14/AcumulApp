@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/models/user_card.dart';
 import 'package:acumulapp/providers/user_card_provider.dart';
+import 'package:acumulapp/screens/user/QrCode_screen.dart';
+import 'package:acumulapp/widgets/pagination.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -22,29 +24,38 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
   late double screenWidth;
   Map<int, String> stateList = {
     1: "Activo",
-    2: "nose",
+    2: "Completado",
     3: "Redimido",
     4: "Inactivo",
     5: "Vencido",
   };
-  int selectedState = 4;
+  int selectedState = 1;
+  int currentPage = 1;
+  int itemsPerPage = 10;
+  int totalPage = 10;
 
   bool _isLoadingCardsActivate = true;
   bool _errorCardsActivate = false;
 
-  Future<void> _loadCards(int idState) async {
+  Future<void> _loadCards() async {
     setState(() {
       _isLoadingCardsActivate = true;
       _errorCardsActivate = false;
     });
     try {
-      final lista = await userCardProvider.filterByClient(
+      final paginationData = await userCardProvider.filterByClient(
         widget.user.id,
-        idState,
+        selectedState,
+        itemsPerPage,
+        currentPage,
       );
 
       setState(() {
-        userCards = lista;
+        userCards = paginationData!.list as List<UserCard>;
+
+        currentPage = paginationData.currentPage;
+        itemsPerPage = paginationData.pageSize;
+        totalPage = paginationData.totalPages;
       });
     } catch (e) {
       setState(() {
@@ -60,29 +71,72 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadCards(selectedState);
+    _loadCards();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          padding: EdgeInsets.all(12),
-          child: cuerpo(),
+      body: _isLoadingCardsActivate
+          ? Center(child: CircularProgressIndicator())
+          : _errorCardsActivate
+          ? Center(child: Text("Error"))
+          : userCards.isEmpty
+          ? noCards()
+          : Container(child: cuerpo()),
+    );
+  }
+
+  Widget noCards() {
+    return SafeArea(
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        padding: EdgeInsets.all(12),
+        child: Column(
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: [filtro()]),
+            Expanded(
+              child: Center(
+                child: Text("No hay tarjetas", style: TextStyle(fontSize: 17)),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget cuerpo() {
-    return Column(
-      children: [
-        Row(mainAxisAlignment: MainAxisAlignment.end, children: [filtro()]),
-        Expanded(child: listCards()),
-      ],
+    return SafeArea(
+      child: Container(
+        child: Column(
+          children: [
+            Row(mainAxisAlignment: MainAxisAlignment.end, children: [filtro()]),
+            Expanded(child: listCards()),
+
+            PaginacionWidget(
+              currentPage: currentPage,
+              itemsPerPage: itemsPerPage,
+              totalItems: userCards.length,
+              totalPages: totalPage,
+              onPageChanged: (newPage) {
+                setState(() {
+                  currentPage = newPage;
+                  _loadCards();
+                });
+              },
+              onItemsPerPageChanged: (newCount) {
+                setState(() {
+                  itemsPerPage = newCount;
+                  currentPage = 1;
+                  _loadCards();
+                });
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -117,14 +171,14 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                 // );
               },
               title: Text(
-                "Card",
+                card.businessCard!.name,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-              trailing: addCardButton(),
+              trailing: qrState(card, selectedState),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
 
@@ -132,11 +186,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      Icon(
-                        Icons.calendar_today,
-                        size: 18,
-                        color: Colors.grey[700],
-                      ),
+                      Icon(MdiIcons.stamper, size: 18, color: Colors.grey[700]),
                       const SizedBox(width: 4),
                       Text(
                         "CurrentStamps: ${card.currentStamps}",
@@ -150,12 +200,24 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                       Icon(Icons.stars, size: 18, color: Colors.grey[700]),
                       const SizedBox(width: 4),
                       Text(
-                        "Bounty: ${card.businessCard}",
+                        "Bounty: ${card.businessCard!.reward}",
                         style: TextStyle(fontSize: 14),
                       ),
                     ],
                   ),
 
+                  const SizedBox(height: 12),
+
+                  Row(
+                    children: [
+                      Icon(MdiIcons.stamper, size: 18, color: Colors.grey[700]),
+                      const SizedBox(width: 4),
+                      Text(
+                        "MaxStamp: ${card.businessCard!.maxStamp}",
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 12),
 
                   Row(
@@ -169,7 +231,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          "Restricciones: ${card.id}",
+                          "Restricciones: ${card.businessCard!.restrictions}",
                           style: TextStyle(fontSize: 14),
                         ),
                       ),
@@ -184,15 +246,64 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
     );
   }
 
-  Widget addCardButton() {
+  Widget qrState(UserCard userCard, int selectedState) {
+    switch (selectedState) {
+      case 1:
+        return addCardButton(
+          userCard,
+          true,
+          "Presenta este QR en el negocio para recibir tus sellos.",
+        );
+      case 2:
+        return addCardButton(
+          userCard,
+          true,
+          "Presenta este QR en el negocio para recibi tu recompensa.",
+        );
+      case 3:
+        return addCardButton(userCard, false, "");
+      case 4:
+        return addCardButton(
+          userCard,
+          true,
+          "Presenta este QR al negocio para que te activen tu tarjeta",
+        );
+      case 5:
+        return addCardButton(userCard, false, "");
+      default:
+        return Text('');
+    }
+  }
+
+  Widget addCardButton(UserCard userCard, bool mostrar, String texto) {
     return ElevatedButton.icon(
-      onPressed: () {},
+      onPressed: () {
+        if (userCard.code != null) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => QrCodeScreen(code: userCard.code!, text: texto),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Error de conexion',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.redAccent,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      },
       icon: Icon(MdiIcons.qrcode),
       label: Text(""),
       iconAlignment: IconAlignment.end,
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.white,
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Theme.of(context).colorScheme.primary,
 
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         textStyle: TextStyle(fontSize: 14),
@@ -236,7 +347,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
   void filtros(String query, int idState) async {
     setState(() {
       selectedState = idState;
-      _loadCards(selectedState);
+      _loadCards();
     });
   }
 }

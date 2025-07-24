@@ -182,7 +182,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
           label: Text("View cards"),
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,
-            backgroundColor: Colors.deepPurple,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             padding: EdgeInsets.symmetric(horizontal: 30, vertical: 14),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),

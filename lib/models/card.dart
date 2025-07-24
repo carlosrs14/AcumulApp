@@ -3,6 +3,7 @@ class BusinessCard {
   int idBusiness;
   int expiration;
   int maxStamp;
+  String name;
   String description;
   String restrictions;
   String reward;
@@ -12,6 +13,7 @@ class BusinessCard {
     this.idBusiness,
     this.expiration,
     this.maxStamp,
+    this.name,
     this.description,
     this.restrictions,
     this.reward,
@@ -23,6 +25,7 @@ class BusinessCard {
       json['idBusiness'] as int,
       json['expiration'] as int,
       json['maxStamp'] as int,
+      json['name'] as String,
       json['description'] as String,
       json['restrictions'] as String,
       json['reward'] as String,
@@ -35,6 +38,7 @@ class BusinessCard {
       "idBusiness": idBusiness,
       "expiration": expiration,
       "maxStamp": maxStamp,
+      "name": name,
       "description": description,
       "restrictions": restrictions,
       "reward": reward,

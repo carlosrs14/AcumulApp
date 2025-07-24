@@ -1,7 +1,10 @@
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/screens/login_screen.dart';
+import 'package:acumulapp/screens/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 class UserProfileScreen extends StatefulWidget {
   final User user;
@@ -107,7 +110,10 @@ class UserProfileScreenState extends State<UserProfileScreen> {
               );
             },
             errorBuilder: (context, error, stackTrace) {
-              return Text(widget.user.name[0].toUpperCase(), style: TextStyle(fontSize: 40));
+              return Text(
+                widget.user.name[0].toUpperCase(),
+                style: TextStyle(fontSize: 40),
+              );
             },
           ),
         ),
@@ -158,12 +164,16 @@ class UserProfileScreenState extends State<UserProfileScreen> {
           (Route<dynamic> route) => false,
         );
       },
-      icon: Icon(MdiIcons.logout, color: Colors.deepPurple, size: 20),
+      icon: Icon(
+        MdiIcons.logout,
+        color: Theme.of(context).colorScheme.primary,
+        size: 20,
+      ),
       iconAlignment: IconAlignment.end,
       label: Text(
         "Sign out",
         style: TextStyle(
-          color: Colors.deepPurple,
+          color: Theme.of(context).colorScheme.primary,
           fontSize: 16,
           fontWeight: FontWeight.w500,
         ),
@@ -177,17 +187,56 @@ class UserProfileScreenState extends State<UserProfileScreen> {
   Widget buttomCustomizeTheme() {
     return Center(
       child: ElevatedButton.icon(
-        onPressed: () {},
+        onPressed: () {
+          Color selectedColor = Theme.of(context).colorScheme.primary;
+
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Selecciona un color'),
+                content: SingleChildScrollView(
+                  child: ColorPicker(
+                    pickerColor: selectedColor,
+                    onColorChanged: (color) {
+                      selectedColor = color;
+                    },
+                    enableAlpha: false,
+                    displayThumbColor: true,
+                    showLabel: true,
+                    pickerAreaHeightPercent: 0.7,
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('Cancelar'),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  TextButton(
+                    child: const Text('Aplicar'),
+                    onPressed: () {
+                      Provider.of<ThemeProvider>(
+                        context,
+                        listen: false,
+                      ).setPrimaryColor(selectedColor);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
         icon: Icon(MdiIcons.palette, size: 19),
         iconAlignment: IconAlignment.end,
-        label: Text("Customize Theme"),
+        label: const Text("Customize Theme"),
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
-          backgroundColor: Colors.deepPurple,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
-          textStyle: TextStyle(fontSize: 11),
+          textStyle: const TextStyle(fontSize: 11),
           elevation: 4,
         ),
       ),
@@ -203,7 +252,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
         label: Text("Edit profile"),
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
-          backgroundColor: Colors.deepPurple,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),

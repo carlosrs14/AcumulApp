@@ -20,56 +20,69 @@ class _RegisterScreenState extends State<RegisterScreen> {
 Widget cuerpo(BuildContext context) {
   final UserProvider userProvider = UserProvider();
   userProvider.init();
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
-
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmController =
       TextEditingController();
 
-  return Container(
-    decoration: BoxDecoration(color: Colors.white),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        nombre(),
-        SizedBox(height: 160),
-        Container(
-          padding: EdgeInsets.only(left: 20),
-          alignment: Alignment.centerLeft,
-          child: Text("User name", style: TextStyle(fontSize: 15)),
-        ),
-        userName(userNameController),
-        Container(
-          padding: EdgeInsets.only(left: 20),
-          alignment: Alignment.centerLeft,
-          child: Text("Email", style: TextStyle(fontSize: 15)),
-        ),
-        campoEmail(emailController),
-        Container(
-          padding: EdgeInsets.only(left: 20),
-          alignment: Alignment.centerLeft,
-          child: Text("Password", style: TextStyle(fontSize: 15)),
-        ),
-        campoContrasena(passwordController),
-
-        Container(
-          padding: EdgeInsets.only(left: 20),
-          alignment: Alignment.centerLeft,
-          child: Text("Password confirm", style: TextStyle(fontSize: 15)),
-        ),
-        campoContrasena(passwordConfirmController),
-        SizedBox(height: 30),
-        botonEntrar(
-          userNameController,
-          emailController,
-          passwordController,
-          context,
-          userProvider,
-        ),
-        SizedBox(height: 30),
-        botonGoogle(),
-      ],
+  return SafeArea(
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Container(
+              decoration: BoxDecoration(color: Colors.white),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  nombre(),
+                  SizedBox(height: 160),
+                  Container(
+                    padding: EdgeInsets.only(left: 20),
+                    alignment: Alignment.centerLeft,
+                    child: Text("User name", style: TextStyle(fontSize: 15)),
+                  ),
+                  userName(userNameController),
+                  Container(
+                    padding: EdgeInsets.only(left: 20),
+                    alignment: Alignment.centerLeft,
+                    child: Text("Email", style: TextStyle(fontSize: 15)),
+                  ),
+                  campoEmail(emailController),
+                  Container(
+                    padding: EdgeInsets.only(left: 20),
+                    alignment: Alignment.centerLeft,
+                    child: Text("Password", style: TextStyle(fontSize: 15)),
+                  ),
+                  campoContrasena(passwordController),
+                  Container(
+                    padding: EdgeInsets.only(left: 20),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Password confirm",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ),
+                  campoContrasena(passwordConfirmController),
+                  SizedBox(height: 30),
+                  botonEntrar(
+                    userNameController,
+                    emailController,
+                    passwordController,
+                    context,
+                    userProvider,
+                  ),
+                  SizedBox(height: 30),
+                  botonGoogle(),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     ),
   );
 }
@@ -134,7 +147,7 @@ Widget botonEntrar(
           userNameController.text,
           emailController.text,
           passwordController.text,
-          "client"
+          "client",
         );
         User? userResponse = await userProvider.register(userRequest);
 
