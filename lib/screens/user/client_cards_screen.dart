@@ -336,6 +336,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
           }).toList(),
           onChanged: (int? newValue) async {
             if (newValue != null) {
+              currentPage = 1;
               filtros("", newValue);
             }
           },

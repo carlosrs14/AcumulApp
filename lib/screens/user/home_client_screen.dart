@@ -62,16 +62,29 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
     }
   }
 
-  Future<void> _loadBusiness() async {
+  Future<void> _loadBusiness(
+    String? name,
+    int? category,
+    int page,
+    int size,
+  ) async {
     setState(() {
       _isLoadingBusiness = true;
       _errorBusiness = false;
     });
     try {
-      final lista = await businessProvider.all();
+      final paginationData = await businessProvider.all(
+        name,
+        category,
+        page,
+        size,
+      );
       setState(() {
-        business = lista;
+        business = paginationData!.list as List<Business>;
         filteredBusiness = business;
+        currentPage = paginationData.currentPage;
+        itemsPerPage = paginationData.pageSize;
+        totalPage = paginationData.totalPages;
       });
     } catch (e) {
       setState(() {
@@ -87,7 +100,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
   @override
   void initState() {
     _loadCategories();
-    _loadBusiness();
+    _loadBusiness(null, null, currentPage, itemsPerPage);
     super.initState();
   }
 
@@ -128,14 +141,32 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
           onPageChanged: (newPage) {
             setState(() {
               currentPage = newPage;
-              _loadBusiness();
+              _loadBusiness(
+                _searchController.text.isEmpty ? null : _searchController.text,
+                selectedCategory == 'All'
+                    ? null
+                    : categoryList
+                          .firstWhere((c) => c.name == selectedCategory)
+                          .id,
+                newPage,
+                itemsPerPage,
+              );
             });
           },
           onItemsPerPageChanged: (newCount) {
             setState(() {
               itemsPerPage = newCount;
               currentPage = 1;
-              _loadBusiness();
+              _loadBusiness(
+                _searchController.text.isEmpty ? null : _searchController.text,
+                selectedCategory == 'All'
+                    ? null
+                    : categoryList
+                          .firstWhere((c) => c.name == selectedCategory)
+                          .id,
+                currentPage,
+                itemsPerPage,
+              );
             });
           },
         ),
@@ -203,28 +234,20 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
   }
 
   void filtros(String query, String categoria) async {
-    if (categoria == "All" && query.trim().isEmpty) {
-      setState(() {
-        selectedCategory = "All";
-        filteredBusiness = business;
-      });
-      return;
-    }
-    List<Business> negociosFiltrados;
-    cargatrue();
-    if (categoria == "All") {
-      negociosFiltrados = await businessProvider.filterByName(query);
-    } else {
-      negociosFiltrados = await businessProvider.filterByNameAndCategory(
-        query,
-        categoria,
-      );
-    }
+    String? name = query.trim().isEmpty ? null : query.trim();
+    int? category = categoria == "All"
+        ? null
+        : categoryList.firstWhere((c) => c.name == categoria).id;
+
     setState(() {
       selectedCategory = categoria;
-      filteredBusiness = negociosFiltrados;
+      currentPage = 1;
     });
-    cargafalse();
+
+    await _loadBusiness(name, category, currentPage, itemsPerPage);
+    setState(() {
+      filteredBusiness = business;
+    });
   }
 
   Widget listaBusiness() {
