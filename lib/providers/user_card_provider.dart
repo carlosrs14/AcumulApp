@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:acumulapp/models/paginationData.dart';
-import 'package:acumulapp/models/user.dart';
+import 'package:acumulapp/models/pagination_data.dart';
 import 'package:acumulapp/models/user_card.dart';
 import 'package:acumulapp/services/user_card_service.dart';
 

@@ -1,5 +1,3 @@
-import 'package:acumulapp/models/user_card.dart';
-
 class PaginationData {
   List<dynamic> list;
   int totalPages;
@@ -14,4 +12,5 @@ class PaginationData {
     this.currentPage,
     this.pageSize,
   );
+
 }
