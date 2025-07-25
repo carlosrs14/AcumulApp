@@ -10,10 +10,10 @@ class Collaborator extends User {
     business = [];
 
     for (int i = 0; i < collaboratorDetails.length; i++) {
-      roles.add(collaboratorDetails[0]['role']);
+      roles.add(collaboratorDetails[i]['role']);
       business.add(Business(
-        collaboratorDetails[0]['businessId'],
-        collaboratorDetails[0]['role']
+        collaboratorDetails[i]['businessId'],
+        collaboratorDetails[i]['businessName']
       ));
     }
   }

@@ -1,33 +1,39 @@
 
 import 'package:acumulapp/models/card.dart';
 import 'package:acumulapp/models/collaborator.dart';
+import 'package:acumulapp/models/pagination_data.dart';
 import 'package:acumulapp/providers/card_provider.dart';
 import 'package:acumulapp/screens/business/add_edit_card_screen.dart';
 import 'package:flutter/material.dart';
 
 class ManageCardsScreen extends StatefulWidget {
+  final int selectedIndex = 0;
   final Collaborator user;
-  const ManageCardsScreen({super.key, required this.user});
+
+  const ManageCardsScreen({Key? key, required this.user}) : super(key: key);
 
   @override
-  State<ManageCardsScreen> createState() => _ManageCardsScreenState();
+  _ManageCardsScreenState createState() => _ManageCardsScreenState();
 }
 
 class _ManageCardsScreenState extends State<ManageCardsScreen> {
+  late Future<PaginationData?> _cardsFuture;
   final CardProvider _cardProvider = CardProvider();
-  late Future<List<BusinessCard>> _cardsFuture;
-  int indexSelected = 0;
-  
+
   @override
   void initState() {
     super.initState();
-    _loadCards();
+    _cardsFuture = _loadCards();
   }
 
-  void _loadCards() {
-    setState(() {
-      //_cardsFuture = _cardProvider.filterByBusiness(widget.user.business[indexSelected].id);
-    });
+  Future<PaginationData?> _loadCards() async {
+    try {
+      return await _cardProvider.filterByBusiness(widget.user.business[widget.selectedIndex].id, 10, 1);
+    } catch (e) {
+      // Handle error appropriately
+      print(e);
+      return null;
+    }
   }
 
   void _navigateAndReload(Widget screen) async {
@@ -37,7 +43,9 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
     );
 
     if (result == true) {
-      _loadCards();
+      setState(() {
+        _cardsFuture = _loadCards();
+      });
     }
   }
 
@@ -57,7 +65,9 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
     if (confirmed == true) {
       final success = await _cardProvider.delete(cardId);
       if (success) {
-        _loadCards();
+        setState(() {
+          _cardsFuture = _loadCards();
+        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Error al eliminar la tarjeta')),
@@ -69,17 +79,20 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<BusinessCard>>(
+      appBar: AppBar(
+        title: const Text('Gestionar Tarjetas'),
+      ),
+      body: FutureBuilder<PaginationData?>(
         future: _cardsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          } else if (!snapshot.hasData || snapshot.data!.list.isEmpty) {
             return const Center(child: Text('No tienes tarjetas creadas.'));
           } else {
-            final cards = snapshot.data!;
+            final cards = snapshot.data!.list;
             return ListView.builder(
               itemCount: cards.length,
               itemBuilder: (context, index) {
@@ -106,7 +119,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                                 IconButton(
                                   icon: const Icon(Icons.edit, color: Colors.blue),
                                   onPressed: () => _navigateAndReload(
-                                    AddEditCardScreen(card: card, idBusiness: widget.user.business[indexSelected].id),
+                                    AddEditCardScreen(card: card, idBusiness: widget.user.business[widget.selectedIndex].id),
                                   ),
                                 ),
                                 IconButton(
@@ -128,7 +141,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateAndReload(
-          AddEditCardScreen(idBusiness: widget.user.business[indexSelected].id),
+          AddEditCardScreen(idBusiness: widget.user.business[widget.selectedIndex].id),
         ),
         tooltip: 'Añadir nueva tarjeta',
         child: const Icon(Icons.add),

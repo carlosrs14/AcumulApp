@@ -1,12 +1,12 @@
 
 import 'package:acumulapp/models/business.dart';
-import 'package:acumulapp/models/user.dart';
+import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/providers/business_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BusinessProfileScreen extends StatefulWidget {
-  final User user;
+  final Collaborator user;
   const BusinessProfileScreen({super.key, required this.user});
 
   @override
@@ -16,6 +16,8 @@ class BusinessProfileScreen extends StatefulWidget {
 class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   final BusinessProvider _businessProvider = BusinessProvider();
   late Future<Business?> _businessFuture;
+  int indexSelected = 0;
+
 
   @override
   void initState() {
@@ -41,7 +43,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
-                        _businessFuture = _businessProvider.get(widget.user.id);
+                        _businessFuture = _businessProvider.get(widget.user.business[indexSelected].id);
                       });
                     },
                     child: const Text('Reintentar'),

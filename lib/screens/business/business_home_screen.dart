@@ -30,6 +30,12 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    
+    for (var e in widget.user.business) {
+      log(e.id.toString());
+      log(e.name);  
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Panel de Negocio'),
