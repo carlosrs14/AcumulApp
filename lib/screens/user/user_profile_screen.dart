@@ -3,6 +3,7 @@ import 'package:acumulapp/screens/login_screen.dart';
 import 'package:acumulapp/screens/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -16,9 +17,11 @@ class UserProfileScreen extends StatefulWidget {
 
 class UserProfileScreenState extends State<UserProfileScreen> {
   late double screenWidth;
+  late double screenHeight;
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -28,6 +31,15 @@ class UserProfileScreenState extends State<UserProfileScreen> {
           child: cuerpo(),
         ),
       ),
+      floatingActionButton: SpeedDial(
+        direction: SpeedDialDirection.left,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        icon: MdiIcons.pencil,
+        children: [
+          SpeedDialChild(child: Icon(MdiIcons.palette), onTap: customizeTheme),
+          SpeedDialChild(child: Icon(MdiIcons.accountEdit)),
+        ],
+      ),
     );
   }
 
@@ -35,7 +47,11 @@ class UserProfileScreenState extends State<UserProfileScreen> {
     return SafeArea(
       child: Card(
         elevation: 4,
-        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        margin: EdgeInsets.only(
+          bottom: screenHeight * 0.1,
+          right: screenWidth * 0.03,
+          left: screenWidth * 0.03,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
@@ -69,11 +85,6 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                           SizedBox(height: 8),
                           role(),
                         ],
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [buttomCustomizeTheme(), buttomEditProfile()],
                       ),
                     ],
                   ),
@@ -184,62 +195,44 @@ class UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget buttomCustomizeTheme() {
-    return Center(
-      child: ElevatedButton.icon(
-        onPressed: () {
-          Color selectedColor = Theme.of(context).colorScheme.primary;
+  void customizeTheme() {
+    Color selectedColor = Theme.of(context).colorScheme.primary;
 
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Selecciona un color'),
-                content: SingleChildScrollView(
-                  child: ColorPicker(
-                    pickerColor: selectedColor,
-                    onColorChanged: (color) {
-                      selectedColor = color;
-                    },
-                    enableAlpha: false,
-                    displayThumbColor: true,
-                    showLabel: true,
-                    pickerAreaHeightPercent: 0.7,
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text('Cancelar'),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                  TextButton(
-                    child: const Text('Aplicar'),
-                    onPressed: () {
-                      Provider.of<ThemeProvider>(
-                        context,
-                        listen: false,
-                      ).setPrimaryColor(selectedColor);
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        },
-        icon: Icon(MdiIcons.palette, size: 19),
-        iconAlignment: IconAlignment.end,
-        label: const Text("Customize Theme"),
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white,
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Selecciona un color'),
+          content: SingleChildScrollView(
+            child: ColorPicker(
+              pickerColor: selectedColor,
+              onColorChanged: (color) {
+                selectedColor = color;
+              },
+              enableAlpha: false,
+              displayThumbColor: true,
+              showLabel: true,
+              pickerAreaHeightPercent: 0.7,
+            ),
           ),
-          textStyle: const TextStyle(fontSize: 11),
-          elevation: 4,
-        ),
-      ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('Aplicar'),
+              onPressed: () {
+                Provider.of<ThemeProvider>(
+                  context,
+                  listen: false,
+                ).setPrimaryColor(selectedColor);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

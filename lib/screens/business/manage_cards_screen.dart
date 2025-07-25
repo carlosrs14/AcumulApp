@@ -1,4 +1,3 @@
-
 import 'package:acumulapp/models/card.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/pagination_data.dart';
@@ -28,7 +27,11 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
 
   Future<PaginationData?> _loadCards() async {
     try {
-      return await _cardProvider.filterByBusiness(widget.user.business[widget.selectedIndex].id, 10, 1);
+      return await _cardProvider.filterByBusiness(
+        widget.user.business[widget.selectedIndex].id,
+        10,
+        1,
+      );
     } catch (e) {
       // Handle error appropriately
       print(e);
@@ -54,10 +57,18 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Confirmar Eliminación'),
-        content: const Text('¿Estás seguro de que quieres eliminar esta tarjeta?'),
+        content: const Text(
+          '¿Estás seguro de que quieres eliminar esta tarjeta?',
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Eliminar')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Eliminar'),
+          ),
         ],
       ),
     );
@@ -79,9 +90,6 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gestionar Tarjetas'),
-      ),
       body: FutureBuilder<PaginationData?>(
         future: _cardsFuture,
         builder: (context, snapshot) {
@@ -99,14 +107,22 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                 final card = cards[index];
                 return Card(
                   elevation: 4,
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(card.description, style: Theme.of(context).textTheme.bodySmall),
+                        Text(
+                          card.description,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                         const SizedBox(height: 10),
                         Text('Vence en ${card.expiration} días'),
                         const SizedBox(height: 10),
@@ -117,13 +133,25 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                             Row(
                               children: [
                                 IconButton(
-                                  icon: const Icon(Icons.edit, color: Colors.blue),
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    color: Colors.blue,
+                                  ),
                                   onPressed: () => _navigateAndReload(
-                                    AddEditCardScreen(card: card, idBusiness: widget.user.business[widget.selectedIndex].id),
+                                    AddEditCardScreen(
+                                      card: card,
+                                      idBusiness: widget
+                                          .user
+                                          .business[widget.selectedIndex]
+                                          .id,
+                                    ),
                                   ),
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.delete, color: Colors.red),
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
                                   onPressed: () => _deleteCard(card.id),
                                 ),
                               ],
@@ -141,7 +169,9 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateAndReload(
-          AddEditCardScreen(idBusiness: widget.user.business[widget.selectedIndex].id),
+          AddEditCardScreen(
+            idBusiness: widget.user.business[widget.selectedIndex].id,
+          ),
         ),
         tooltip: 'Añadir nueva tarjeta',
         child: const Icon(Icons.add),

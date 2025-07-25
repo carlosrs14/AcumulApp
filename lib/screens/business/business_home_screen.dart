@@ -13,53 +13,86 @@ class BusinessHomeScreen extends StatefulWidget {
   State<BusinessHomeScreen> createState() => _BusinessHomeScreenState();
 }
 
-class _BusinessHomeScreenState extends State<BusinessHomeScreen> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
+  int _selectedIndex = 0;
+
+  final List<GlobalKey<NavigatorState>> navigatorKeys = [
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+  ];
+
+  Future<bool> _onWillPop() async {
+    final currentNavigator = navigatorKeys[_selectedIndex].currentState!;
+    if (currentNavigator.canPop()) {
+      currentNavigator.pop();
+      return false;
+    }
+    return true;
+  }
+
+  Widget _buildTab(int index) {
+    return Navigator(
+      key: navigatorKeys[index],
+      onGenerateRoute: (RouteSettings settings) {
+        WidgetBuilder builder;
+
+        switch (index) {
+          case 0:
+            builder = (context) =>
+                const Center(child: Text('Bienvenido al Panel de Negocio'));
+            break;
+          case 1:
+            builder = (context) => ManageCardsScreen(user: widget.user);
+            break;
+          case 2:
+            builder = (context) => BusinessProfileScreen(user: widget.user);
+            break;
+          default:
+            builder = (context) =>
+                const Center(child: Text('Bienvenido al Panel de Negocio'));
+        }
+
+        return MaterialPageRoute(builder: builder, settings: settings);
+      },
+    );
+  }
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
+    for (var negocio in widget.user.business) {
+      log(negocio.id.toString());
+      log(negocio.name);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    
-    for (var e in widget.user.business) {
-      log(e.id.toString());
-      log(e.name);  
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Panel de Negocio'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(icon: Icon(Icons.home), text: 'Inicio'),
-            Tab(icon: Icon(Icons.credit_card), text: 'Tarjetas'),
-            Tab(icon: Icon(Icons.person), text: 'Perfil'),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Panel de Negocio')),
+        body: _buildTab(_selectedIndex),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+          type: BottomNavigationBarType.shifting,
+          selectedItemColor: Theme.of(context).colorScheme.primary,
+          unselectedItemColor: Colors.grey,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.credit_card),
+              label: 'Tarjetas',
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
           ],
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          // Contenido de la pestaña de Inicio
-          const Center(
-            child: Text('Bienvenido al Panel de Negocio'),
-          ),
-          // Contenido de la pestaña de Tarjetas
-          ManageCardsScreen(user: widget.user),
-          // Contenido de la pestaña de Perfil
-          BusinessProfileScreen(user: widget.user),
-        ],
       ),
     );
   }
