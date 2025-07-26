@@ -16,9 +16,12 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
   final _formKey = GlobalKey<FormState>();
   final CardProvider _cardProvider = CardProvider();
 
-  late String _description;
   late int _maxStamp;
   late int _expiration;
+  late String _description;
+  late String _name;
+  late String _rewards;
+  late String _restrictions;
 
   @override
   void initState() {
@@ -26,6 +29,9 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
     _description = widget.card?.description ?? '';
     _maxStamp = widget.card?.maxStamp ?? 0;
     _expiration = widget.card?.expiration ?? 0;
+    _name = widget.card?.name ?? '';
+    _rewards = widget.card?.reward ?? '';
+    _restrictions = widget.card?.restrictions ?? '';
   }
 
   void _saveCard() async {
@@ -37,10 +43,10 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
         widget.idBusiness,
         _expiration,
         _maxStamp,
-        "",
+        _name,
         _description,
-        "",
-        "",
+        _restrictions,
+        _rewards,
       );
 
       bool success = false;
@@ -84,7 +90,15 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
           child: Column(
             children: [
               TextFormField(
+                initialValue: _name,
+                
+                decoration: const InputDecoration(labelText: 'Nombre'),
+                validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
+                onSaved: (value) => _name = value!,
+              ),
+              TextFormField(
                 initialValue: _description,
+                maxLines: 3,
                 decoration: const InputDecoration(labelText: 'Descripción'),
                 validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
                 onSaved: (value) => _description = value!,
@@ -106,6 +120,20 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
                 keyboardType: TextInputType.number,
                 validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
                 onSaved: (value) => _expiration = int.parse(value!),
+              ),
+              TextFormField(
+                initialValue: _rewards,
+                maxLines: 3,
+                decoration: const InputDecoration(labelText: 'Recompensa'),
+                validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
+                onSaved: (value) => _rewards = value!,
+              ),
+              TextFormField(
+                initialValue: _restrictions,
+                maxLines: 3,
+                decoration: const InputDecoration(labelText: 'Restricciones'),
+                validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
+                onSaved: (value) => _restrictions = value!,
               ),
               const SizedBox(height: 20),
               ElevatedButton(
