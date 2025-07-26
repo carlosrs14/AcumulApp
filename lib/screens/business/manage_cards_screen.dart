@@ -4,6 +4,7 @@ import 'package:acumulapp/models/pagination_data.dart';
 import 'package:acumulapp/providers/card_provider.dart';
 import 'package:acumulapp/screens/business/add_edit_card_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ManageCardsScreen extends StatefulWidget {
   final int selectedIndex = 0;
@@ -80,6 +81,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
           _cardsFuture = _loadCards();
         });
       } else {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Error al eliminar la tarjeta')),
         );
@@ -104,57 +106,126 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
             return ListView.builder(
               itemCount: cards.length,
               itemBuilder: (context, index) {
-                final card = cards[index];
+                BusinessCard card = cards[index];
                 return Card(
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(
-                    horizontal: 16,
+                    horizontal: 12,
                     vertical: 8,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(12),
+                    side: const BorderSide(color: Colors.black),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          card.description,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        const SizedBox(height: 10),
-                        Text('Vence en ${card.expiration} días'),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Sellos: ${card.maxStamp}'),
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: Colors.blue,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                card.name,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.stars,
+                                    size: 18,
+                                    color: Colors.grey[700],
                                   ),
-                                  onPressed: () => _navigateAndReload(
-                                    AddEditCardScreen(
-                                      card: card,
-                                      idBusiness: widget
-                                          .user
-                                          .business[widget.selectedIndex]
-                                          .id,
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      "Bounty: ${card.reward}",
+                                      style: const TextStyle(fontSize: 14),
                                     ),
                                   ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Icon(
+                                    MdiIcons.stamper,
+                                    size: 18,
+                                    color: Colors.grey[700],
                                   ),
-                                  onPressed: () => _deleteCard(card.id),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      "MaxStamp: ${card.maxStamp}",
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.info_outline,
+                                    size: 18,
+                                    color: Colors.grey[700],
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      "Restricciones: ${card.restrictions}",
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Icon(
+                                    MdiIcons.comment,
+                                    size: 18,
+                                    color: Colors.grey[700],
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      "Description: ${card.description}",
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Botones a la derecha
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit, color: Colors.blue),
+                              onPressed: () => _navigateAndReload(
+                                AddEditCardScreen(
+                                  card: card,
+                                  idBusiness: widget
+                                      .user
+                                      .business[widget.selectedIndex]
+                                      .id,
                                 ),
-                              ],
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () => _deleteCard(card.id),
                             ),
                           ],
                         ),

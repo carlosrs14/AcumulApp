@@ -25,7 +25,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _businessFuture = _businessProvider.get(widget.user.id);
+    _businessFuture = _businessProvider.get(widget.user.business[0].id);
   }
 
   @override

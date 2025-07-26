@@ -23,7 +23,7 @@ class UserProvider with ChangeNotifier {
     Map<String, String> map = {
       'email': email,
       'password': password,
-      'userType': accountType
+      'userType': accountType,
     };
 
     try {
@@ -66,7 +66,7 @@ class UserProvider with ChangeNotifier {
 
       final userData = jsonData['account'];
       final token = jsonData['token'];
-
+      log(jsonEncode(userData));
       jwt.saveToken(token);
       userResponse = userFactory(userData);
     } catch (e) {
@@ -84,12 +84,13 @@ class UserProvider with ChangeNotifier {
       if (response.statusCode != 200) {
         return null;
       }
-
+      JwtController jwt = JwtController(localStorage);
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
 
       final userData = jsonData["account"];
-
+      final token = jsonData['token'];
+      jwt.saveToken(token);
       userResponse = userFactory(userData);
     } catch (e) {
       log(e.toString());

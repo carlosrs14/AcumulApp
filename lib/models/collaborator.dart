@@ -5,16 +5,27 @@ class Collaborator extends User {
   late List<Business> business;
   late List<String> roles;
 
-  Collaborator(super.id, super.name, super.email, super.password, super.userType, List<dynamic> collaboratorDetails) {
+  Collaborator(
+    super.id,
+    super.name,
+    super.email,
+    super.password,
+    super.userType,
+    List<dynamic>? collaboratorDetails,
+  ) {
     roles = [];
     business = [];
 
-    for (int i = 0; i < collaboratorDetails.length; i++) {
-      roles.add(collaboratorDetails[i]['role']);
-      business.add(Business(
-        collaboratorDetails[i]['businessId'],
-        collaboratorDetails[i]['businessName']
-      ));
+    if (collaboratorDetails != null) {
+      for (int i = 0; i < collaboratorDetails.length; i++) {
+        roles.add(collaboratorDetails[i]['role']);
+        business.add(
+          Business(
+            collaboratorDetails[i]['businessId'],
+            collaboratorDetails[i]['businessName'],
+          ),
+        );
+      }
     }
   }
 
@@ -23,9 +34,10 @@ class Collaborator extends User {
     return {
       'id': id,
       'fullName': name,
-      'email': password,
+      'email': email,
+      'password': password,
       'userType': userType,
-      'business': business
+      'business': business,
     };
   }
 
@@ -34,9 +46,9 @@ class Collaborator extends User {
       json['id'] as int,
       json['fullName'] as String,
       json['email'] as String,
-      '',//json['password'] as String,
+      '', //json['password'] as String,
       json['userType'] as String,
-      json['collaboratorDetails']
+      json['collaboratorDetails'],
     );
   }
 }

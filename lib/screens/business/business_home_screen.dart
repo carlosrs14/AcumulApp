@@ -43,10 +43,12 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
                 const Center(child: Text('Bienvenido al Panel de Negocio'));
             break;
           case 1:
-            builder = (context) => ManageCardsScreen(user: widget.user);
+            builder = (context) =>
+                SafeArea(child: ManageCardsScreen(user: widget.user));
             break;
           case 2:
-            builder = (context) => BusinessProfileScreen(user: widget.user);
+            builder = (context) =>
+                SafeArea(child: BusinessProfileScreen(user: widget.user));
             break;
           default:
             builder = (context) =>
@@ -72,7 +74,6 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        appBar: AppBar(title: const Text('Panel de Negocio')),
         body: _buildTab(_selectedIndex),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,

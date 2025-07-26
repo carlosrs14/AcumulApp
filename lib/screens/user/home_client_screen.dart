@@ -261,7 +261,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(color: Colors.black12),
           ),
-          child: ListTile(
+          child: InkWell(
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -272,88 +272,99 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                 ),
               );
             },
-            title: Text(
-              filteredBusiness[index].name,
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 4),
-                Text(filteredBusiness[index].direction!),
-                SizedBox(height: 4),
-                RatingBarIndicator(
-                  rating: 3.5,
-                  itemBuilder: (context, index) =>
-                      Icon(MdiIcons.star, color: Colors.amber),
-                  itemCount: 5,
-                  itemSize: 20.0,
-                  direction: Axis.horizontal,
-                ),
-              ],
-            ),
-            leading: Container(
-              width: 55,
-              height: 55,
-              padding: EdgeInsets.all(1),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black26, width: 1),
-                borderRadius: BorderRadius.circular(35),
-              ),
-              child: Center(
-                child: ClipOval(
-                  child: Image.network(
-                    filteredBusiness[index].logoUrl!,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return Text(
-                        filteredBusiness[index].name[0],
-                        style: TextStyle(fontSize: 20),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
-            trailing: Container(
-              width: screenWidth * 0.2,
-              height: 50,
-
-              child: Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => BusinessCardsScreen(
-                          business: filteredBusiness[index],
-                          user: widget.user,
-                        ),
-                      ),
-                    );
-                  },
-                  icon: Icon(MdiIcons.cardsOutline, size: 20),
-                  iconAlignment: IconAlignment.end,
-                  label: Text(""),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+            child: Padding(
+              padding: EdgeInsets.all(12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 55,
+                    height: 55,
+                    padding: EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black26, width: 1),
+                      borderRadius: BorderRadius.circular(35),
                     ),
-                    textStyle: TextStyle(fontSize: 14),
-                    elevation: 4,
+                    child: ClipOval(
+                      child: Image.network(
+                        filteredBusiness[index].logoUrl!,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(
+                            child: Text(
+                              filteredBusiness[index].name[0],
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ),
-                ),
+
+                  SizedBox(width: 12),
+
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          filteredBusiness[index].name,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(filteredBusiness[index].direction ?? ''),
+                        SizedBox(height: 4),
+                        RatingBarIndicator(
+                          rating: 3.5,
+                          itemBuilder: (context, _) =>
+                              Icon(MdiIcons.star, color: Colors.amber),
+                          itemCount: 5,
+                          itemSize: 20.0,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Container(
+                    height: 40,
+                    width: 70,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => BusinessCardsScreen(
+                              business: filteredBusiness[index],
+                              user: widget.user,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Icon(MdiIcons.cardsOutline, size: 20),
+
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 4,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

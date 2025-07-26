@@ -124,75 +124,95 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(color: Colors.black),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListTile(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => BusinessInfoCards(
-                      business: widget.business,
-                      user: widget.user,
-                      businessCard: businessCardsList[index],
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => BusinessInfoCards(
+                    business: widget.business,
+                    user: widget.user,
+                    businessCard: businessCardsList[index],
+                  ),
+                ),
+              );
+            },
+            child: Padding(
+              padding: EdgeInsets.all(18),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          card.name,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.stars,
+                              size: 18,
+                              color: Colors.grey[700],
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                "Bounty: ${card.reward}",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Icon(
+                              MdiIcons.stamper,
+                              size: 18,
+                              color: Colors.grey[700],
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                "MaxStamp: ${card.maxStamp}",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              size: 18,
+                              color: Colors.grey[700],
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                "Restricciones: ${card.restrictions}",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                );
-              },
-              title: Text(
-                card.name,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              trailing: addCardButton(card),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
 
-                children: [
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Icon(Icons.stars, size: 18, color: Colors.grey[700]),
-                      const SizedBox(width: 4),
-                      Text(
-                        "Bounty: ${card.reward}",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  Row(
-                    children: [
-                      Icon(MdiIcons.stamper, size: 18, color: Colors.grey[700]),
-                      const SizedBox(width: 4),
-                      Text(
-                        "MaxStamp: ${card.maxStamp}",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.info_outline,
-                        size: 18,
-                        color: Colors.grey[700],
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          "Restricciones: ${card.restrictions}",
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ],
+                  Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(left: 12),
+                    child: addCardButton(card),
                   ),
                 ],
               ),

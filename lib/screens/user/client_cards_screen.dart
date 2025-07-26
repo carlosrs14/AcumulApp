@@ -5,6 +5,7 @@ import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/models/user_card.dart';
 import 'package:acumulapp/providers/user_card_provider.dart';
 import 'package:acumulapp/screens/user/QrCode_screen.dart';
+import 'package:acumulapp/screens/user/business_cards_info_screen.dart';
 import 'package:acumulapp/widgets/pagination.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -150,92 +151,120 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
 
         return Card(
           elevation: 4,
-
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(color: Colors.black),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListTile(
-              onTap: () {
-                // Navigator.of(context).push(
-                //   MaterialPageRoute(
-                //     builder: (_) => BusinessInfoCards(
-                //       business: widget.business,
-                //       user: widget.user,
-                //       businessCard: businessCardsList[index],
-                //     ),
-                //   ),
-                // );
-              },
-              title: Text(
-                card.businessCard!.name,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              trailing: qrState(card, selectedState),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () {
+              // Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (_) => BusinessInfoCards(
+              //       business: widget.business,
+              //       user: widget.user,
+              //       businessCard: card.businessCard!,
+              //     ),
+              //   ),
+              // );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(18),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Icon(MdiIcons.stamper, size: 18, color: Colors.grey[700]),
-                      const SizedBox(width: 4),
-                      Text(
-                        "CurrentStamps: ${card.currentStamps}",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Icon(Icons.stars, size: 18, color: Colors.grey[700]),
-                      const SizedBox(width: 4),
-                      Text(
-                        "Bounty: ${card.businessCard!.reward}",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  Row(
-                    children: [
-                      Icon(MdiIcons.stamper, size: 18, color: Colors.grey[700]),
-                      const SizedBox(width: 4),
-                      Text(
-                        "MaxStamp: ${card.businessCard!.maxStamp}",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.info_outline,
-                        size: 18,
-                        color: Colors.grey[700],
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          "Restricciones: ${card.businessCard!.restrictions}",
-                          style: TextStyle(fontSize: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          card.businessCard!.name,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Icon(
+                              MdiIcons.stamper,
+                              size: 18,
+                              color: Colors.grey[700],
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                "CurrentStamps: ${card.currentStamps}",
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.stars,
+                              size: 18,
+                              color: Colors.grey[700],
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                "Bounty: ${card.businessCard!.reward}",
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Icon(
+                              MdiIcons.stamper,
+                              size: 18,
+                              color: Colors.grey[700],
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                "MaxStamp: ${card.businessCard!.maxStamp}",
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              size: 18,
+                              color: Colors.grey[700],
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                "Restricciones: ${card.businessCard!.restrictions}",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  // Botón a la derecha centrado verticalmente
+                  Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: qrState(card, selectedState),
+                    ),
                   ),
                 ],
               ),

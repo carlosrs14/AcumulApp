@@ -15,14 +15,13 @@ class Business {
   Business(
     this.id,
     this.name, {
-      this.direction,
-      this.logoUrl,
-      this.links,
-      this.ubication,
-      this.categories,
-      this.rating
-    }
-  );
+    this.direction,
+    this.logoUrl,
+    this.links,
+    this.ubication,
+    this.categories,
+    this.rating,
+  });
 
   factory Business.fromJson(Map<String, dynamic> json) {
     List<Link> linksList = [];
@@ -50,11 +49,11 @@ class Business {
       json['id'] as int,
       json['name'] as String,
       direction: json['address'] as String,
-      logoUrl:  json['logoImage'] as String,
-      links:  linksList,
-      ubication:  ubication,
+      logoUrl: json['logoImage'] as String,
+      links: linksList,
+      ubication: ubication,
       categories: categoryList,
-      rating:  (json['rating'] ?? 0.0),
+      rating: (json['rating'] ?? 0.0),
     );
   }
 
