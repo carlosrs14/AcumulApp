@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:acumulapp/models/card.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/pagination_data.dart';
@@ -34,8 +36,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
         1,
       );
     } catch (e) {
-      // Handle error appropriately
-      print(e);
+      log(e.toString());
       return null;
     }
   }
@@ -92,6 +93,9 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Gestión de tarjetas'),
+      ),
       body: FutureBuilder<PaginationData?>(
         future: _cardsFuture,
         builder: (context, snapshot) {

@@ -70,26 +70,34 @@ class UserCardProvider {
     return paginationData;
   }
 
-  Future<List<UserCard>> filterByBusiness(int idBusiness) async {
+  Future<PaginationData?> filterByBusiness(int idBusiness, int idState) async {
     List<UserCard> cards = [];
+    PaginationData? paginationData;
     try {
-      final response = await userCardService.filterByBusiness(idBusiness);
+      final response = await userCardService.filterByBusiness(idBusiness, idState);
 
       if (response.statusCode != 200) {
         log(response.body);
-        return cards;
+        return null;
       }
 
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-
-      for (var element in jsonData) {
+      log(jsonData.toString());
+      for (var element in jsonData["data"]) {
         cards.add(UserCard.fromJson(element));
       }
+      paginationData = PaginationData(
+        cards,
+        jsonData["pagination"]["total_pages"],
+        jsonData["pagination"]["total_items"],
+        jsonData["pagination"]["current_page"],
+        jsonData["pagination"]["page_size"],
+      );
     } catch (e) {
       log(e.toString());
     }
-    return cards;
+    return paginationData;
   }
 
   Future<UserCard?> getById(int id) async {

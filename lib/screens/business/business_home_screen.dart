@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:acumulapp/models/collaborator.dart';
+import 'package:acumulapp/screens/business/customer_management_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:acumulapp/screens/business/manage_cards_screen.dart';
 import 'package:acumulapp/screens/business/business_profile_screen.dart';
@@ -17,6 +18,7 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
   int _selectedIndex = 0;
 
   final List<GlobalKey<NavigatorState>> navigatorKeys = [
+    GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
@@ -44,9 +46,13 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
             break;
           case 1:
             builder = (context) =>
-                SafeArea(child: ManageCardsScreen(user: widget.user));
+                SafeArea(child: CustomerManagementScreen(user: widget.user));
             break;
           case 2:
+            builder = (context) =>
+                SafeArea(child: ManageCardsScreen(user: widget.user));
+            break;
+          case 3:
             builder = (context) =>
                 SafeArea(child: BusinessProfileScreen(user: widget.user));
             break;
@@ -87,6 +93,7 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
           unselectedItemColor: Colors.grey,
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+            BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Clientes'),
             BottomNavigationBarItem(
               icon: Icon(Icons.credit_card),
               label: 'Tarjetas',

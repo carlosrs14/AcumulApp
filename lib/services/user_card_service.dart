@@ -43,8 +43,8 @@ class UserCardService {
     );
   }
 
-  Future<http.Response> filterByBusiness(int idBusiness) async {
-    final Uri url = Uri.parse("$urlApi/client-card/business/$idBusiness");
+  Future<http.Response> filterByBusiness(int idBusiness, int idState) async {
+    final Uri url = Uri.parse("$urlApi/client-card/business?idState=$idState&idBusiness=$idBusiness");
     return await http.get(
       url,
       headers: {

@@ -31,6 +31,9 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Mi negocio'),
+      ),
       body: FutureBuilder<Business?>(
         future: _businessFuture,
         builder: (context, snapshot) {

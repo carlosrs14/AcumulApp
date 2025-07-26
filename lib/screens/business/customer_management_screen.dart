@@ -1,11 +1,15 @@
 
-import 'package:acumulapp/models/user.dart';
+import 'dart:developer';
+
+import 'package:acumulapp/models/collaborator.dart';
+import 'package:acumulapp/models/pagination_data.dart';
 import 'package:acumulapp/models/user_card.dart';
 import 'package:acumulapp/providers/user_card_provider.dart';
 import 'package:flutter/material.dart';
 
 class CustomerManagementScreen extends StatefulWidget {
-  final User user;
+  final indexSelected = 0;
+  final Collaborator user;
   const CustomerManagementScreen({super.key, required this.user});
 
   @override
@@ -14,35 +18,39 @@ class CustomerManagementScreen extends StatefulWidget {
 
 class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
   final UserCardProvider _userCardProvider = UserCardProvider();
-  late Future<List<UserCard>> _userCardsFuture;
-  List<UserCard> _filteredUserCards = [];
+  late Future<PaginationData?> _cardsUserFuture;
+  int idStateSelected = 3;
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _loadUserCards();
-    _searchController.addListener(_filterUserCards);
+    _cardsUserFuture =  _loadUserCards();
   }
 
-  void _loadUserCards() {
-    _userCardsFuture = _userCardProvider.filterByBusiness(widget.user.id);
-    _userCardsFuture.then((userCards) {
-      setState(() {
-        _filteredUserCards = userCards;
-      });
-    });
+  Future<PaginationData?> _loadUserCards() async {
+    try {
+      return await _userCardProvider.filterByBusiness(
+        widget.user.business[widget.indexSelected].id,
+        idStateSelected
+      );
+    } catch (e) {
+      log(e.toString());
+      return null;
+    }
   }
 
-  void _filterUserCards() {
-    final query = _searchController.text.toLowerCase();
-    _userCardsFuture.then((userCards) {
+    void _navigateAndReload(Widget screen) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => screen),
+    );
+
+    if (result == true) {
       setState(() {
-        _filteredUserCards = userCards
-            .where((userCard) => userCard.id.toString().toLowerCase().contains(query))
-            .toList();
+        _cardsUserFuture = _loadUserCards();
       });
-    });
+    }
   }
 
   @override
@@ -71,24 +79,28 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<UserCard>>(
-              future: _userCardsFuture,
+            child: FutureBuilder<PaginationData?>(
+              future: _cardsUserFuture,
               builder: (context, snapshot) {
+                List cards = [];
+                if (snapshot.data != null) {
+                  cards = snapshot.data!.list;
+                }
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                } else if (!snapshot.hasData || snapshot.data!.list.isEmpty) {
                   return const Center(child: Text('No tienes clientes aún.'));
                 } else {
                   return ListView.builder(
-                    itemCount: _filteredUserCards.length,
+                    itemCount: cards.length,
                     itemBuilder: (context, index) {
-                      final userCard = _filteredUserCards[index];
+                      final UserCard userCard = cards[index];
                       return Card(
                         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         child: ListTile(
-                          title: Text(userCard.id.toString()),
+                          title: Text(userCard.code ?? ''),
                           subtitle: Text('Sellos: ${userCard.currentStamps}/${userCard.businessCard}'),
                           trailing: Text(userCard.state!, style: TextStyle(color: userCard.state == 'active' ? Colors.green : Colors.red)),
                         ),
