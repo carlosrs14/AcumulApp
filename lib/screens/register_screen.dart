@@ -2,6 +2,7 @@ import 'package:acumulapp/models/client.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/user_provider.dart';
+import 'package:acumulapp/screens/business/update_info_screen.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -161,9 +162,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
             userResponse = await userProvider.registerBusiness(userRequest);
           }
 
-          if (userResponse != null) {
+          if (userResponse != null && "client" == userResponse.userType) {
             Navigator.pushNamed(context, '/home', arguments: userResponse);
+          } else if (userResponse != null &&
+              "collaborator" == userResponse.userType) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) =>
+                    UpdateInfoScreen(user: userResponse as Collaborator),
+              ),
+            );
           } else {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Error', style: TextStyle(color: Colors.white)),

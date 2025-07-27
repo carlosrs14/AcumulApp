@@ -61,4 +61,49 @@ class BusinessProvider {
     }
     return business;
   }
+
+  Future<Business?> update(Business business) async {
+    try {
+      final response = await businessService.updateBusiness(business);
+
+      if (response.statusCode == 200) {
+        final body = utf8.decode(response.bodyBytes);
+        final jsonData = jsonDecode(body);
+        return Business.fromJson(jsonData);
+      } else {
+        log('Error al actualizar negocio: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      log('Excepción en update(): $e');
+      return null;
+    }
+  }
+
+  Future<bool> updateCategories(Business business) async {
+    try {
+      final response = await businessService.updateCategories(business);
+
+      if (response.statusCode != 200) {
+        log(
+          "Error HTTP al actualizar categorías: ${response.statusCode} - ${response.body}",
+        );
+        return false;
+      }
+
+      final Map<String, dynamic> jsonData = jsonDecode(
+        utf8.decode(response.bodyBytes),
+      );
+
+      if (jsonData['message'] == 'Categorías actualizadas exitosamente.') {
+        return true;
+      } else {
+        log("Mensaje inesperado del servidor: ${jsonData['message']}");
+        return false;
+      }
+    } catch (e) {
+      log("Excepción en updateCategories: $e");
+      return false;
+    }
+  }
 }

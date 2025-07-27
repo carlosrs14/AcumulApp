@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:acumulapp/models/collaborator.dart';
@@ -13,26 +12,27 @@ class CustomerManagementScreen extends StatefulWidget {
   const CustomerManagementScreen({super.key, required this.user});
 
   @override
-  State<CustomerManagementScreen> createState() => _CustomerManagementScreenState();
+  State<CustomerManagementScreen> createState() =>
+      _CustomerManagementScreenState();
 }
 
 class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
   final UserCardProvider _userCardProvider = UserCardProvider();
   late Future<PaginationData?> _cardsUserFuture;
-  int idStateSelected = 3;
+  int idStateSelected = 1;
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _cardsUserFuture =  _loadUserCards();
+    _cardsUserFuture = _loadUserCards();
   }
 
   Future<PaginationData?> _loadUserCards() async {
     try {
       return await _userCardProvider.filterByBusiness(
         widget.user.business[widget.indexSelected].id,
-        idStateSelected
+        idStateSelected,
       );
     } catch (e) {
       log(e.toString());
@@ -40,7 +40,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
     }
   }
 
-    void _navigateAndReload(Widget screen) async {
+  void _navigateAndReload(Widget screen) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => screen),
@@ -62,9 +62,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gestión de Clientes'),
-      ),
+      appBar: AppBar(title: const Text('Gestión de Clientes')),
       body: Column(
         children: [
           Padding(
@@ -98,11 +96,23 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
                     itemBuilder: (context, index) {
                       final UserCard userCard = cards[index];
                       return Card(
-                        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         child: ListTile(
                           title: Text(userCard.code ?? ''),
-                          subtitle: Text('Sellos: ${userCard.currentStamps}/${userCard.businessCard}'),
-                          trailing: Text(userCard.state!, style: TextStyle(color: userCard.state == 'active' ? Colors.green : Colors.red)),
+                          subtitle: Text(
+                            'Sellos: ${userCard.currentStamps}/${userCard.businessCard!.maxStamp}',
+                          ),
+                          trailing: Text(
+                            userCard.state!,
+                            style: TextStyle(
+                              color: userCard.state == 'active'
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+                          ),
                         ),
                       );
                     },

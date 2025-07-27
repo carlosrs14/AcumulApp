@@ -87,7 +87,7 @@ class UserProvider with ChangeNotifier {
       JwtController jwt = JwtController(localStorage);
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-
+      log(jsonData["account"].toString());
       final userData = jsonData["account"];
       final token = jsonData['token'];
       jwt.saveToken(token);

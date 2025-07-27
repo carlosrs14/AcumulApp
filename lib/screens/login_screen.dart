@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -50,15 +52,21 @@ class _InicioLoginState extends State<InicioLogin> {
                       ),
                       _campoContrasena(passwordController),
                       Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 3),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 3,
+                        ),
                         child: DropdownButtonFormField<String>(
                           value: _accountType,
                           items: [
                             DropdownMenuItem(
-                                value: 'client', child: Text('Client')),
+                              value: 'client',
+                              child: Text('Client'),
+                            ),
                             DropdownMenuItem(
-                                value: 'business', child: Text('Business')),
+                              value: 'business',
+                              child: Text('Business'),
+                            ),
                           ],
                           onChanged: (String? newValue) {
                             setState(() {
@@ -137,6 +145,7 @@ class _InicioLoginState extends State<InicioLogin> {
           );
 
           if (user != null) {
+            log(user.toString());
             Navigator.pushNamed(context, '/home', arguments: user);
           } else {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -152,7 +161,10 @@ class _InicioLoginState extends State<InicioLogin> {
             );
           }
         },
-        child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 15)),
+        child: Text(
+          "Login",
+          style: TextStyle(color: Colors.white, fontSize: 15),
+        ),
       ),
     );
   }
