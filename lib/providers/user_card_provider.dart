@@ -70,11 +70,21 @@ class UserCardProvider {
     return paginationData;
   }
 
-  Future<PaginationData?> filterByBusiness(int idBusiness, int idState) async {
+  Future<PaginationData?> filterByBusiness(
+    int idBusiness,
+    int idState,
+    int size,
+    int page,
+  ) async {
     List<UserCard> cards = [];
     PaginationData? paginationData;
     try {
-      final response = await userCardService.filterByBusiness(idBusiness, idState);
+      final response = await userCardService.filterByBusiness(
+        idBusiness,
+        idState,
+        size,
+        page,
+      );
 
       if (response.statusCode != 200) {
         log(response.body);
