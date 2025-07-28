@@ -14,7 +14,11 @@ class ManageCardsScreen extends StatefulWidget {
   final int selectedIndex;
   final Collaborator user;
 
-  const ManageCardsScreen({super.key, required this.user, required this.selectedIndex});
+  const ManageCardsScreen({
+    super.key,
+    required this.user,
+    required this.selectedIndex,
+  });
 
   @override
   _ManageCardsScreenState createState() => _ManageCardsScreenState();
@@ -30,7 +34,6 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
 
   Future<void> _loadCards(int page, int size) async {
     try {
-
       final paginationData = await cardProvider.filterByBusiness(
         widget.user.business[widget.selectedIndex].id,
         size,
@@ -105,9 +108,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Gestión de tarjetas'),
-      ),
+      appBar: AppBar(title: Text('Gestión de tarjetas')),
       body: Column(
         children: [
           Expanded(
@@ -214,7 +215,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                             ],
                           ),
                         ),
-                
+
                         // Botones a la derecha
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -242,8 +243,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                   ),
                 );
               },
-            )
-              
+            ),
           ),
           PaginacionWidget(
             currentPage: currentPage,
@@ -263,17 +263,20 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                 _loadCards(currentPage, itemsPerPage);
               });
             },
-          )
+          ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateAndReload(
-          AddEditCardScreen(
-            idBusiness: widget.user.business[widget.selectedIndex].id,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 50.0),
+        child: FloatingActionButton(
+          onPressed: () => _navigateAndReload(
+            AddEditCardScreen(
+              idBusiness: widget.user.business[widget.selectedIndex].id,
+            ),
           ),
+          tooltip: 'Añadir nueva tarjeta',
+          child: const Icon(Icons.add),
         ),
-        tooltip: 'Añadir nueva tarjeta',
-        child: const Icon(Icons.add),
       ),
     );
   }
