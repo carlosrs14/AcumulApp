@@ -20,6 +20,8 @@ class UpdateInfoScreen extends StatefulWidget {
 }
 
 class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final ScrollController _scrollController = ScrollController();
   CategoryProvider categoryProvider = CategoryProvider();
   BusinessProvider businessProvider = BusinessProvider();
   List<Category> _allCategories = [];
@@ -35,6 +37,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
 
   TextEditingController nameTextEditting = TextEditingController();
   TextEditingController logoTextEditting = TextEditingController();
+  TextEditingController emailTextEditting = TextEditingController();
   TextEditingController addressTextEditting = TextEditingController();
 
   Future<void> _loadCategories() async {
@@ -68,41 +71,44 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     return SafeArea(
       child: Column(
         children: [
-          // Título fijo arriba
           Padding(padding: const EdgeInsets.all(16.0), child: titulo()),
-
-          // Todo lo demás scrollable
           Expanded(
             child: SingleChildScrollView(
+              controller: _scrollController,
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 32.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 100),
-                    name("Business name"),
-                    textFile(nameTextEditting),
-                    name("Logo"),
-                    textFile(logoTextEditting),
-                    name("Address"),
-                    textFile(addressTextEditting),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: _isLoadingCategories
-                          ? const Center(child: CircularProgressIndicator())
-                          : CategorySelector(
-                              categories: _allCategories,
-                              selectedIds: _selectedIds,
-                              onChanged: (newSelected) {
-                                setState(() {
-                                  _selectedIds = newSelected;
-                                });
-                              },
-                            ),
-                    ),
-                    SizedBox(height: 20),
-                    botonEntrar(),
-                  ],
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 100),
+                      name("Business name"),
+                      textFile(nameTextEditting, 3, false, false),
+                      name("Email"),
+                      textFile(emailTextEditting, 2, true, false),
+                      name("Logo"),
+                      textFile(logoTextEditting, 4, false, false),
+                      name("Address"),
+                      textFile(addressTextEditting, 5, false, false),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: _isLoadingCategories
+                            ? const Center(child: CircularProgressIndicator())
+                            : CategorySelector(
+                                categories: _allCategories,
+                                selectedIds: _selectedIds,
+                                onChanged: (newSelected) {
+                                  setState(() {
+                                    _selectedIds = newSelected;
+                                  });
+                                },
+                              ),
+                      ),
+                      SizedBox(height: 20),
+                      botonEntrar(),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -131,11 +137,17 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     );
   }
 
-  Widget textFile(TextEditingController textEditingController) {
+  Widget textFile(
+    TextEditingController controller,
+    int minimumQuantity,
+    bool email,
+    bool password,
+  ) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 3),
-      child: TextField(
-        controller: textEditingController,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
+      child: TextFormField(
+        obscureText: password,
+        controller: controller,
         decoration: InputDecoration(
           fillColor: Colors.white,
           filled: true,
@@ -143,6 +155,17 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
             borderSide: BorderSide(color: Colors.grey.shade200),
           ),
         ),
+        validator: (value) {
+          if (value == null || value.trim().isEmpty) {
+            return 'Este campo es obligatorio';
+          } else if (value.length < minimumQuantity) {
+            return 'Requiere una cantidad minima de $minimumQuantity caracteres';
+          } else if (email &&
+              !(value.contains("@") && value.contains(".com"))) {
+            return 'Debe ser un correo';
+          }
+          return null;
+        },
       ),
     );
   }
@@ -154,66 +177,85 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
         onPressed: () async {
+          if (!_formKey.currentState!.validate()) {
+            await Future.delayed(Duration(milliseconds: 100));
+            _scrollController.animateTo(
+              0.0,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+            return;
+          }
+
           late Business businessRequest;
           Business? businessResponse;
           Ubication ubication = Ubication(2, "nose");
           Collaborator colab = widget.user;
-          businessRequest = Business(
-            colab.business[0].id,
-            nameTextEditting.text,
-            email: colab.email,
-            ubication: ubication,
-            logoUrl: logoTextEditting.text,
-            direction: addressTextEditting.text,
-            categories: _selectedIds,
+          var indice = colab.roles.indexWhere(
+            (roles) => "owner" == roles.toLowerCase(),
           );
-
-          businessResponse = await businessProvider.update(businessRequest);
-
-          if (businessResponse != null) {
-            bool state = await businessProvider.updateCategories(
-              businessRequest,
+          log(indice.toString());
+          if (indice != -1) {
+            businessRequest = Business(
+              colab.business[indice].id,
+              nameTextEditting.text,
+              email: emailTextEditting.text,
+              ubication: ubication,
+              logoUrl: logoTextEditting.text,
+              direction: addressTextEditting.text,
+              categories: _selectedIds,
             );
-            if (state) {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Update sucefull',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  backgroundColor: Colors.green,
-                  duration: Duration(seconds: 3),
-                ),
-              );
 
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (_) => BusinessHomeScreen(user: widget.user),
-                ),
+            businessResponse = await businessProvider.update(businessRequest);
+            if (!mounted) return;
+            if (businessResponse != null) {
+              bool state = await businessProvider.updateCategories(
+                businessRequest,
               );
+              if (state) {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Update sucefull',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (_) => BusinessHomeScreen(user: widget.user),
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Error',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.redAccent,
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+              }
             } else {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Error', style: TextStyle(color: Colors.white)),
+                  content: Text(
+                    'Error de conexion',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   backgroundColor: Colors.redAccent,
                   duration: Duration(seconds: 3),
                 ),
               );
             }
-          } else {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Error de conexion',
-                  style: TextStyle(color: Colors.white),
-                ),
-                backgroundColor: Colors.redAccent,
-                duration: Duration(seconds: 3),
-              ),
-            );
           }
         },
         child: Text(

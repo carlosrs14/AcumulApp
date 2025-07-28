@@ -1,4 +1,6 @@
+import 'package:acumulapp/utils/categories_icons.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer';
 import 'package:acumulapp/models/category.dart';
 
 class CategorySelector extends StatefulWidget {
@@ -23,6 +25,7 @@ class _CategorySelectorState extends State<CategorySelector> {
   @override
   void initState() {
     super.initState();
+
     _selected = [...widget.selectedIds];
   }
 
@@ -52,35 +55,50 @@ class _CategorySelectorState extends State<CategorySelector> {
       itemBuilder: (_, index) {
         final cat = widget.categories[index];
         final isSelected = _selected.contains(cat);
-
+        log(normalize(cat.name).toString());
         return GestureDetector(
           onTap: () => toggle(cat),
           child: Stack(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjoiZKXKK0QE9L6irH-kxQAR74aaG5aYLSLg&s",
+              SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: isSelected ? Colors.grey[300] : Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isSelected ? Colors.purple : Colors.transparent,
+                      width: 2,
                     ),
-                    fit: BoxFit.cover,
-                    colorFilter: isSelected
-                        ? ColorFilter.mode(
-                            Colors.black.withOpacity(0.5),
-                            BlendMode.darken,
-                          )
-                        : null,
                   ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: Text(
-                    cat.name,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          categoryIcons[normalize(cat.name)] ?? Icons.category,
+                          size: 40,
+                          color: isSelected
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.black54,
+                        ),
+                        const SizedBox(height: 8),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Text(
+                            cat.name,
+                            style: TextStyle(
+                              color: isSelected ? Colors.purple : Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

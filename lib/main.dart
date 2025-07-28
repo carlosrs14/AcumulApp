@@ -54,7 +54,10 @@ class MyApp extends StatelessWidget {
             final user = args;
             if (user.userType == 'collaborator') {
               user as Collaborator;
-              if ("N/A" == user.business[0].name) {
+              var indice = user.roles.indexWhere(
+                (roles) => "owner" == roles.toLowerCase(),
+              );
+              if (-1 != indice && "N/A" == user.business[indice].name) {
                 return MaterialPageRoute(
                   builder: (_) => UpdateInfoScreen(user: user),
                 );

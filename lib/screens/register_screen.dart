@@ -27,6 +27,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController passwordConfirmController =
       TextEditingController();
   String _accountType = "client";
+  final _formKey = GlobalKey<FormState>();
+  final ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: cuerpo());
@@ -36,51 +39,84 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return SafeArea(
       child: LayoutBuilder(
         builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: Container(
-                decoration: BoxDecoration(color: Colors.white),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    nombre(),
-                    SizedBox(height: 160),
-                    Container(
-                      padding: EdgeInsets.only(left: 20),
-                      alignment: Alignment.centerLeft,
-                      child: Text("User name", style: TextStyle(fontSize: 15)),
-                    ),
-                    userName(),
-                    Container(
-                      padding: EdgeInsets.only(left: 20),
-                      alignment: Alignment.centerLeft,
-                      child: Text("Email", style: TextStyle(fontSize: 15)),
-                    ),
-                    campoEmail(),
-                    Container(
-                      padding: EdgeInsets.only(left: 20),
-                      alignment: Alignment.centerLeft,
-                      child: Text("Password", style: TextStyle(fontSize: 15)),
-                    ),
-                    campoContrasena(passwordController),
-                    Container(
-                      padding: EdgeInsets.only(left: 20),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Password confirm",
-                        style: TextStyle(fontSize: 15),
+          return Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                nombre(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(color: Colors.white),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 160),
+                            Container(
+                              padding: EdgeInsets.only(left: 20),
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "User name",
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                            textFile(userNameController, 3, false, false, null),
+                            Container(
+                              padding: EdgeInsets.only(left: 20),
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Email",
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                            textFile(emailController, 3, true, false, null),
+                            Container(
+                              padding: EdgeInsets.only(left: 20),
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Password",
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                            textFile(
+                              passwordController,
+                              3,
+                              false,
+                              true,
+                              passwordConfirmController,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 20),
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Password confirm",
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ),
+                            textFile(
+                              passwordConfirmController,
+                              3,
+                              false,
+                              true,
+                              passwordController,
+                            ),
+                            acountypes(),
+                            SizedBox(height: 30),
+                            botonEntrar(),
+                            SizedBox(height: 30),
+                            botonGoogle(),
+                          ],
+                        ),
                       ),
                     ),
-                    campoContrasena(passwordConfirmController),
-                    acountypes(),
-                    SizedBox(height: 30),
-                    botonEntrar(),
-                    SizedBox(height: 30),
-                    botonGoogle(),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
           );
         },
@@ -137,6 +173,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
         onPressed: () async {
+          if (!_formKey.currentState!.validate()) {
+            await Future.delayed(Duration(milliseconds: 100));
+            _scrollController.animateTo(
+              0.0,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+            return;
+          }
           late User userRequest;
           User? userResponse;
 
@@ -187,6 +232,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
           "Registrar",
           style: TextStyle(color: Colors.white, fontSize: 15),
         ),
+      ),
+    );
+  }
+
+  Widget textFile(
+    TextEditingController controller,
+    int minimumQuantity,
+    bool email,
+    bool password,
+    TextEditingController? matchController,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
+      child: TextFormField(
+        obscureText: password,
+        controller: controller,
+        decoration: InputDecoration(
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade200),
+          ),
+        ),
+        validator: (value) {
+          if (value == null || value.trim().isEmpty) {
+            return 'Este campo es obligatorio';
+          } else if (value.length < minimumQuantity) {
+            return 'Requiere una cantidad minima de $minimumQuantity caracteres';
+          } else if (email &&
+              !(value.contains("@") && value.contains(".com"))) {
+            return 'Debe ser un correo';
+          } else if (matchController != null && value != matchController.text) {
+            return 'Las contraseñas no coinciden';
+          }
+          return null;
+        },
       ),
     );
   }

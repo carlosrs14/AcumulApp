@@ -12,6 +12,8 @@ class InicioLogin extends StatefulWidget {
 }
 
 class _InicioLoginState extends State<InicioLogin> {
+  final _formKey = GlobalKey<FormState>();
+  final ScrollController _scrollController = ScrollController();
   String _accountType = 'client';
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -29,66 +31,83 @@ class _InicioLoginState extends State<InicioLogin> {
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: Container(
-                  decoration: BoxDecoration(color: Colors.white),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _nombre(),
-                      SizedBox(height: 160),
-                      Container(
-                        padding: EdgeInsets.only(left: 20),
-                        alignment: Alignment.centerLeft,
-                        child: Text("Email", style: TextStyle(fontSize: 15)),
-                      ),
-                      _campoEmail(emailController),
-                      Container(
-                        padding: EdgeInsets.only(left: 20),
-                        alignment: Alignment.centerLeft,
-                        child: Text("Password", style: TextStyle(fontSize: 15)),
-                      ),
-                      _campoContrasena(passwordController),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 3,
+            return Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  _nombre(),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: constraints.maxHeight,
                         ),
-                        child: DropdownButtonFormField<String>(
-                          value: _accountType,
-                          items: [
-                            DropdownMenuItem(
-                              value: 'client',
-                              child: Text('Client'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'business',
-                              child: Text('Business'),
-                            ),
-                          ],
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _accountType = newValue!;
-                            });
-                          },
-                          decoration: InputDecoration(
-                            labelText: 'Account Type',
-                            fillColor: Colors.white,
-                            filled: true,
+                        child: Container(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: 160),
+                              Container(
+                                padding: EdgeInsets.only(left: 20),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Email",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              textFile(emailController, 3, true, false),
+                              Container(
+                                padding: EdgeInsets.only(left: 20),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Password",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              textFile(passwordController, 3, false, true),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 3,
+                                ),
+                                child: DropdownButtonFormField<String>(
+                                  value: _accountType,
+                                  items: [
+                                    DropdownMenuItem(
+                                      value: 'client',
+                                      child: Text('Client'),
+                                    ),
+                                    DropdownMenuItem(
+                                      value: 'business',
+                                      child: Text('Business'),
+                                    ),
+                                  ],
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      _accountType = newValue!;
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                    labelText: 'Account Type',
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 30),
+                              _botonEntrar(context),
+                              SizedBox(height: 30),
+                              _botonGoogle(context),
+                              SizedBox(height: 30),
+                              _irARegistrar(context),
+                            ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 30),
-                      _botonEntrar(context),
-                      SizedBox(height: 30),
-                      _botonGoogle(context),
-                      SizedBox(height: 30),
-                      _irARegistrar(context),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             );
           },
@@ -129,6 +148,39 @@ class _InicioLoginState extends State<InicioLogin> {
     );
   }
 
+  Widget textFile(
+    TextEditingController controller,
+    int minimumQuantity,
+    bool email,
+    bool password,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
+      child: TextFormField(
+        obscureText: password,
+        controller: controller,
+        decoration: InputDecoration(
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade200),
+          ),
+        ),
+        validator: (value) {
+          if (value == null || value.trim().isEmpty) {
+            return 'Este campo es obligatorio';
+          } else if (value.length < minimumQuantity) {
+            return 'Requiere una cantidad minima de $minimumQuantity caracteres';
+          } else if (email &&
+              !(value.contains("@") && value.contains(".com"))) {
+            return 'Debe ser un correo';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
   Widget _botonEntrar(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -138,6 +190,15 @@ class _InicioLoginState extends State<InicioLogin> {
           backgroundColor: Theme.of(context).colorScheme.primary,
         ),
         onPressed: () async {
+          if (!_formKey.currentState!.validate()) {
+            await Future.delayed(Duration(milliseconds: 100));
+            _scrollController.animateTo(
+              0.0,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+            return;
+          }
           User? user = await userProvider.login(
             emailController.text,
             passwordController.text,
