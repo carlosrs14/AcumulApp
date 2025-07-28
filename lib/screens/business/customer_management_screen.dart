@@ -8,9 +8,9 @@ import 'package:acumulapp/providers/user_card_provider.dart';
 import 'package:flutter/material.dart';
 
 class CustomerManagementScreen extends StatefulWidget {
-  final indexSelected = 0;
+  final int indexSelected;
   final Collaborator user;
-  const CustomerManagementScreen({super.key, required this.user});
+  const CustomerManagementScreen({super.key, required this.user, required this.indexSelected});
 
   @override
   State<CustomerManagementScreen> createState() => _CustomerManagementScreenState();

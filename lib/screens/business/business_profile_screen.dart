@@ -11,7 +11,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class BusinessProfileScreen extends StatefulWidget {
   final Collaborator user;
-  const BusinessProfileScreen({super.key, required this.user});
+  final int selectedIndex;
+  const BusinessProfileScreen({super.key, required this.user, required this.selectedIndex});
 
   @override
   State<BusinessProfileScreen> createState() => _BusinessProfileScreenState();

@@ -16,6 +16,7 @@ class BusinessHomeScreen extends StatefulWidget {
 
 class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
   int _selectedIndex = 0;
+  int selectedBusiness = 0;
 
   final List<GlobalKey<NavigatorState>> navigatorKeys = [
     GlobalKey<NavigatorState>(),
@@ -46,15 +47,15 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
             break;
           case 1:
             builder = (context) =>
-                SafeArea(child: CustomerManagementScreen(user: widget.user));
+                SafeArea(child: CustomerManagementScreen(user: widget.user, indexSelected: selectedBusiness));
             break;
           case 2:
             builder = (context) =>
-                SafeArea(child: ManageCardsScreen(user: widget.user));
+                SafeArea(child: ManageCardsScreen(user: widget.user,  selectedIndex: selectedBusiness));
             break;
           case 3:
             builder = (context) =>
-                SafeArea(child: BusinessProfileScreen(user: widget.user));
+                SafeArea(child: BusinessProfileScreen(user: widget.user, selectedIndex: selectedBusiness));
             break;
           default:
             builder = (context) =>

@@ -3,42 +3,54 @@ import 'dart:developer';
 import 'package:acumulapp/models/card.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/pagination_data.dart';
+import 'package:acumulapp/models/user_card.dart';
 import 'package:acumulapp/providers/card_provider.dart';
 import 'package:acumulapp/screens/business/add_edit_card_screen.dart';
+import 'package:acumulapp/widgets/pagination.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ManageCardsScreen extends StatefulWidget {
-  final int selectedIndex = 0;
+  final int selectedIndex;
   final Collaborator user;
 
-  const ManageCardsScreen({Key? key, required this.user}) : super(key: key);
+  const ManageCardsScreen({super.key, required this.user, required this.selectedIndex});
 
   @override
   _ManageCardsScreenState createState() => _ManageCardsScreenState();
 }
 
 class _ManageCardsScreenState extends State<ManageCardsScreen> {
-  late Future<PaginationData?> _cardsFuture;
-  final CardProvider _cardProvider = CardProvider();
+  final CardProvider cardProvider = CardProvider();
+
+  int currentPage = 1;
+  int itemsPerPage = 10;
+  int totalPage = 10;
+  List<BusinessCard> cards = [];
+
+  Future<void> _loadCards(int page, int size) async {
+    try {
+
+      final paginationData = await cardProvider.filterByBusiness(
+        widget.user.business[widget.selectedIndex].id,
+        size,
+        page,
+      );
+      setState(() {
+        cards = paginationData!.list as List<BusinessCard>;
+        currentPage = paginationData.currentPage;
+        itemsPerPage = paginationData.pageSize;
+        totalPage = paginationData.totalPages;
+      });
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 
   @override
   void initState() {
+    _loadCards(currentPage, itemsPerPage);
     super.initState();
-    _cardsFuture = _loadCards();
-  }
-
-  Future<PaginationData?> _loadCards() async {
-    try {
-      return await _cardProvider.filterByBusiness(
-        widget.user.business[widget.selectedIndex].id,
-        10,
-        1,
-      );
-    } catch (e) {
-      log(e.toString());
-      return null;
-    }
   }
 
   void _navigateAndReload(Widget screen) async {
@@ -49,7 +61,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
 
     if (result == true) {
       setState(() {
-        _cardsFuture = _loadCards();
+        _loadCards(currentPage, itemsPerPage);
       });
     }
   }
@@ -76,10 +88,10 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
     );
 
     if (confirmed == true) {
-      final success = await _cardProvider.delete(cardId);
+      final success = await cardProvider.delete(cardId);
       if (success) {
         setState(() {
-          _cardsFuture = _loadCards();
+          _loadCards(currentPage, itemsPerPage);
         });
       } else {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -96,18 +108,10 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
       appBar: AppBar(
         title: Text('Gestión de tarjetas'),
       ),
-      body: FutureBuilder<PaginationData?>(
-        future: _cardsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.list.isEmpty) {
-            return const Center(child: Text('No tienes tarjetas creadas.'));
-          } else {
-            final cards = snapshot.data!.list;
-            return ListView.builder(
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
               itemCount: cards.length,
               itemBuilder: (context, index) {
                 BusinessCard card = cards[index];
@@ -210,7 +214,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                             ],
                           ),
                         ),
-
+                
                         // Botones a la derecha
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -238,9 +242,29 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                   ),
                 );
               },
-            );
-          }
-        },
+            )
+              
+          ),
+          PaginacionWidget(
+            currentPage: currentPage,
+            itemsPerPage: itemsPerPage,
+            totalItems: cards.length,
+            totalPages: totalPage,
+            onPageChanged: (newPage) {
+              setState(() {
+                currentPage = newPage;
+                _loadCards(newPage, itemsPerPage);
+              });
+            },
+            onItemsPerPageChanged: (newCount) {
+              setState(() {
+                itemsPerPage = newCount;
+                currentPage = 1;
+                _loadCards(currentPage, itemsPerPage);
+              });
+            },
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateAndReload(
