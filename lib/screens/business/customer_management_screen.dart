@@ -3,11 +3,16 @@ import 'package:acumulapp/models/user_card.dart';
 import 'package:acumulapp/providers/user_card_provider.dart';
 import 'package:acumulapp/widgets/pagination.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class CustomerManagementScreen extends StatefulWidget {
   final int indexSelected;
   final Collaborator user;
-  const CustomerManagementScreen({super.key, required this.user, required this.indexSelected});
+  const CustomerManagementScreen({
+    super.key,
+    required this.user,
+    required this.indexSelected,
+  });
 
   @override
   State<CustomerManagementScreen> createState() =>
@@ -15,8 +20,11 @@ class CustomerManagementScreen extends StatefulWidget {
 }
 
 class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
-  final UserCardProvider _userCardProvider = UserCardProvider();
-
+  final UserCardProvider userCardProvider = UserCardProvider();
+  final TextEditingController stampTextEditingController =
+      TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  String code = '';
   final TextEditingController _searchController = TextEditingController();
   Map<int, String> stateList = {
     1: "Activo",
@@ -39,7 +47,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
       _errorCardsActivate = false;
     });
     try {
-      final paginationData = await _userCardProvider.filterByBusiness(
+      final paginationData = await userCardProvider.filterByBusiness(
         widget.user.business[widget.indexSelected].id,
         selectedState,
         itemsPerPage,
@@ -96,7 +104,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
         children: [
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [filtro()]),
           Expanded(child: list()),
-      
+
           PaginacionWidget(
             currentPage: currentPage,
             itemsPerPage: itemsPerPage,
@@ -126,21 +134,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
       itemCount: userCards.length,
       itemBuilder: (context, index) {
         final UserCard userCard = userCards[index];
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: ListTile(
-            title: Text(userCard.code ?? ''),
-            subtitle: Text(
-              'Sellos: ${userCard.currentStamps}/${userCard.businessCard!.maxStamp}',
-            ),
-            trailing: Text(
-              userCard.state!,
-              style: TextStyle(
-                color: userCard.state == 'active' ? Colors.green : Colors.red,
-              ),
-            ),
-          ),
-        );
+        return swichtCard(userCard);
       },
     );
   }
@@ -203,5 +197,254 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
       selectedState = idState;
       _loadUserCards();
     });
+  }
+
+  Widget swichtCard(UserCard userCard) {
+    switch (selectedState) {
+      case 1:
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(userCard.code ?? ''),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Sellos: ${userCard.currentStamps}/${userCard.businessCard!.maxStamp}',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(MdiIcons.stamper),
+                  iconSize: 30,
+                  onPressed: () {
+                    code = userCard.code!;
+                    addStampsDialog();
+                    setState(() {
+                      _loadUserCards();
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      case 2:
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(userCard.code ?? ''),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Sellos: ${userCard.currentStamps}/${userCard.businessCard!.maxStamp}',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                      Text(
+                        'Restictions: ${userCard.businessCard!.restrictions}',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(MdiIcons.check),
+                  iconSize: 30,
+                  onPressed: () {
+                    code = userCard.code!;
+                    redeemCard();
+                    setState(() {
+                      _loadUserCards();
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+
+      case 3:
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(userCard.code ?? ''),
+                      const SizedBox(height: 4),
+                      Text('nada', style: TextStyle(color: Colors.grey[600])),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      case 4:
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(userCard.code ?? ''),
+                      const SizedBox(height: 4),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(MdiIcons.check),
+                  iconSize: 30,
+                  onPressed: () {
+                    code = userCard.code!;
+                    activateCard();
+                    setState(() {
+                      _loadUserCards();
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      case 5:
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(userCard.code ?? ''),
+                      const SizedBox(height: 4),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(MdiIcons.alert),
+                  iconSize: 30,
+                  onPressed: null,
+                ),
+              ],
+            ),
+          ),
+        );
+      default:
+        return Container();
+    }
+  }
+
+  Widget buttom(IconData icon, void Function() function) {
+    return IconButton(onPressed: function, icon: Icon(icon), iconSize: 30);
+  }
+
+  void addStampsDialog() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add stamps'),
+        content: Column(
+          children: [
+            const Text('¿Ingresa la cantidad de sellos que vas a añadir?'),
+            Form(key: _formKey, child: TextFormField()),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Agregar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      addStamp();
+    }
+  }
+
+  Widget textFieldStamp() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
+      child: TextFormField(
+        controller: stampTextEditingController,
+        decoration: InputDecoration(
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey.shade200),
+          ),
+        ),
+        validator: (value) {
+          if (value == null || value.trim().isEmpty) {
+            return 'Este campo es obligatorio';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  void addStamp() async {
+    final success = await userCardProvider.addStamp(
+      code,
+      int.parse(stampTextEditingController.text),
+    );
+    if (success != null) {
+      setState(() {
+        _loadUserCards();
+      });
+    } else {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Error al agregar sellos')));
+    }
+  }
+
+  void activateCard() async {
+    await userCardProvider.activateCard(code);
+  }
+
+  void redeemCard() async {
+    await userCardProvider.redeemCard(code);
   }
 }
