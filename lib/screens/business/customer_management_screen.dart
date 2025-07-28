@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:acumulapp/models/collaborator.dart';
-import 'package:acumulapp/models/pagination_data.dart';
 import 'package:acumulapp/models/user_card.dart';
 import 'package:acumulapp/providers/user_card_provider.dart';
 import 'package:acumulapp/widgets/pagination.dart';
@@ -95,33 +92,31 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
 
   Widget cuerpo() {
     return SafeArea(
-      child: Container(
-        child: Column(
-          children: [
-            Row(mainAxisAlignment: MainAxisAlignment.end, children: [filtro()]),
-            Expanded(child: list()),
-
-            PaginacionWidget(
-              currentPage: currentPage,
-              itemsPerPage: itemsPerPage,
-              totalItems: userCards.length,
-              totalPages: totalPage,
-              onPageChanged: (newPage) {
-                setState(() {
-                  currentPage = newPage;
-                  _loadUserCards();
-                });
-              },
-              onItemsPerPageChanged: (newCount) {
-                setState(() {
-                  itemsPerPage = newCount;
-                  currentPage = 1;
-                  _loadUserCards();
-                });
-              },
-            ),
-          ],
-        ),
+      child: Column(
+        children: [
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [filtro()]),
+          Expanded(child: list()),
+      
+          PaginacionWidget(
+            currentPage: currentPage,
+            itemsPerPage: itemsPerPage,
+            totalItems: userCards.length,
+            totalPages: totalPage,
+            onPageChanged: (newPage) {
+              setState(() {
+                currentPage = newPage;
+                _loadUserCards();
+              });
+            },
+            onItemsPerPageChanged: (newCount) {
+              setState(() {
+                itemsPerPage = newCount;
+                currentPage = 1;
+                _loadUserCards();
+              });
+            },
+          ),
+        ],
       ),
     );
   }

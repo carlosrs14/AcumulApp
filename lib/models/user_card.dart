@@ -1,5 +1,4 @@
 import 'package:acumulapp/models/card.dart';
-import 'package:acumulapp/models/client.dart';
 
 class UserCard {
   int id;
@@ -24,9 +23,6 @@ class UserCard {
 
   // fromJson: convierte campo "date" de string ISO 8601 a DateTime
   factory UserCard.fromJson(Map<String, dynamic> json) {
-    // Puede ser que json['date'] sea null o distinto formato; aquí asumo ISO 8601 String
-    String dateStr = json['expirationDate'] as String;
-    DateTime parsedDate = DateTime.parse(dateStr);
     return UserCard(
       json['id'] as int,
       json['idClient'] as int,

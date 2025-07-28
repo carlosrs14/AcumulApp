@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:acumulapp/models/business.dart';
-import 'package:acumulapp/models/category.dart';
 import 'package:acumulapp/utils/jwt.dart';
 import 'package:http/http.dart' as http;
 import 'package:acumulapp/utils/utils.dart';
