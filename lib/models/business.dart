@@ -5,6 +5,7 @@ import 'package:acumulapp/models/ubication.dart';
 class Business {
   int id;
   String name;
+  String? email;
   String? direction;
   String? logoUrl;
   List<Link>? links;
@@ -15,6 +16,7 @@ class Business {
   Business(
     this.id,
     this.name, {
+    this.email,
     this.direction,
     this.logoUrl,
     this.links,
@@ -48,6 +50,7 @@ class Business {
     return Business(
       json['id'] as int,
       json['name'] as String,
+      email: json['email'] as String,
       direction: json['address'] as String,
       logoUrl: json['logoImage'] as String,
       links: linksList,
@@ -61,12 +64,24 @@ class Business {
     return {
       'id': id,
       'name': name,
+      'email': email,
       'direction': direction,
       'logoUrl': logoUrl,
       'links': links!.map((link) => link.toJson()).toList(),
       'ubication': ubication!.toJson(),
       'categories': categories!.map((category) => category.toJson()).toList(),
       'rating': rating,
+    };
+  }
+
+  Map<String, dynamic> toUpdateJson() {
+    return {
+      'name': name,
+      'email': email,
+      'idLocation': ubication?.id,
+      'logoImage': logoUrl,
+      'address': direction,
+      'categories': categories?.map((c) => c.id).toList() ?? [],
     };
   }
 }

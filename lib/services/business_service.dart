@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:acumulapp/models/business.dart';
+import 'package:acumulapp/models/category.dart';
 import 'package:acumulapp/utils/jwt.dart';
 import 'package:http/http.dart' as http;
 import 'package:acumulapp/utils/utils.dart';
@@ -53,6 +58,38 @@ class BusinessService {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${jwt?.loadToken()}',
       },
+    );
+  }
+
+  Future<http.Response> updateBusiness(Business business) async {
+    final Uri url = Uri.parse("$urlApi/business/${business.id}");
+
+    final body = business.toUpdateJson();
+    log("Body enviado: ${jsonEncode(body)}");
+    return http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
+      body: jsonEncode(body),
+    );
+  }
+
+  Future<http.Response> updateCategories(Business business) async {
+    final Uri url = Uri.parse("$urlApi/business/${business.id}/categories");
+
+    final categoryIds = business.categories!.map((c) => c.id).toList();
+
+    final body = {'categories': categoryIds};
+
+    return http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
+      body: jsonEncode(body),
     );
   }
 }

@@ -1,13 +1,16 @@
+import 'dart:developer';
+
 import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/client.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/screens/business/business_home_screen.dart';
+import 'package:acumulapp/screens/business/update_info_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_screen.dart';
 import 'package:acumulapp/screens/user/business_info_screen.dart';
 import 'package:acumulapp/screens/user/home_screen.dart';
 import 'package:acumulapp/screens/login_screen.dart';
-import 'package:acumulapp/screens/user/register_screen.dart';
+import 'package:acumulapp/screens/register_screen.dart';
 import 'package:acumulapp/utils/jwt.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
@@ -50,9 +53,19 @@ class MyApp extends StatelessWidget {
 
             final user = args;
             if (user.userType == 'collaborator') {
-              return MaterialPageRoute(
-                builder: (_) => BusinessHomeScreen(user: user as Collaborator),
+              user as Collaborator;
+              var indice = user.roles.indexWhere(
+                (roles) => "owner" == roles.toLowerCase(),
               );
+              if (-1 != indice && "N/A" == user.business[indice].name) {
+                return MaterialPageRoute(
+                  builder: (_) => UpdateInfoScreen(user: user),
+                );
+              } else {
+                return MaterialPageRoute(
+                  builder: (_) => BusinessHomeScreen(user: user),
+                );
+              }
             }
 
             return MaterialPageRoute(

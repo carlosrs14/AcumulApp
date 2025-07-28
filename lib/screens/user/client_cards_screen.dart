@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/models/user_card.dart';
+import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/providers/user_card_provider.dart';
 import 'package:acumulapp/screens/user/QrCode_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_info_screen.dart';
@@ -20,6 +22,7 @@ class ClientCardsScreen extends StatefulWidget {
 
 class _ClientCardsScreenState extends State<ClientCardsScreen> {
   final UserCardProvider userCardProvider = UserCardProvider();
+  final BusinessProvider businessProvider = BusinessProvider();
   Timer? _debounce;
   List<UserCard> userCards = [];
   late double screenWidth;
@@ -158,16 +161,21 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
           ),
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
-            onTap: () {
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (_) => BusinessInfoCards(
-              //       business: widget.business,
-              //       user: widget.user,
-              //       businessCard: card.businessCard!,
-              //     ),
-              //   ),
-              // );
+            onTap: () async {
+              Business? businessResponse = await businessProvider.get(
+                card.idBusinessCard,
+              );
+              if (businessResponse != null) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => BusinessInfoCards(
+                      business: businessResponse,
+                      user: widget.user,
+                      businessCard: card.businessCard!,
+                    ),
+                  ),
+                );
+              }
             },
             child: Padding(
               padding: const EdgeInsets.all(18),
