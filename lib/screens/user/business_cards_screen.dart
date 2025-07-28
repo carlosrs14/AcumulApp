@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/models/card.dart';

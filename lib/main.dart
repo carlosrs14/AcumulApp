@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/client.dart';
 import 'package:acumulapp/models/collaborator.dart';

@@ -2,8 +2,6 @@ import 'dart:developer';
 
 import 'package:acumulapp/models/card.dart';
 import 'package:acumulapp/models/collaborator.dart';
-import 'package:acumulapp/models/pagination_data.dart';
-import 'package:acumulapp/models/user_card.dart';
 import 'package:acumulapp/providers/card_provider.dart';
 import 'package:acumulapp/screens/business/add_edit_card_screen.dart';
 import 'package:acumulapp/widgets/pagination.dart';

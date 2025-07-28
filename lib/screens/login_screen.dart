@@ -127,27 +127,6 @@ class _InicioLoginState extends State<InicioLogin> {
     );
   }
 
-  Widget _campoEmail(TextEditingController emailController) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 3),
-      child: TextField(
-        controller: emailController,
-        decoration: InputDecoration(fillColor: Colors.white, filled: true),
-      ),
-    );
-  }
-
-  Widget _campoContrasena(TextEditingController passwordController) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 3),
-      child: TextField(
-        controller: passwordController,
-        obscureText: true,
-        decoration: InputDecoration(fillColor: Colors.white, filled: true),
-      ),
-    );
-  }
-
   Widget textFile(
     TextEditingController controller,
     int minimumQuantity,

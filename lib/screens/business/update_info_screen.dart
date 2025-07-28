@@ -4,7 +4,6 @@ import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/category.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/ubication.dart';
-import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/providers/category_provider.dart';
 import 'package:acumulapp/screens/business/business_home_screen.dart';

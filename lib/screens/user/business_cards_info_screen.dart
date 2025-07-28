@@ -119,7 +119,7 @@ class _BusinessInfoCardsState extends State<BusinessInfoCards> {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => QrCodeScreen(
-                code: userCard!.code!,
+                code: userCard.code!,
                 text:
                     "Presenta este QR al negocio para que te activen tu tarjeta",
               ),
