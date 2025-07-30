@@ -6,7 +6,7 @@ import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/ubication.dart';
 import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/providers/category_provider.dart';
-import 'package:acumulapp/screens/business/business_home_screen.dart';
+import 'package:acumulapp/screens/business/business_main_screen.dart';
 import 'package:acumulapp/screens/category_selector_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -226,7 +226,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
 
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (_) => BusinessHomeScreen(user: widget.user),
+                    builder: (_) => BusinessMainScreen(user: widget.user),
                   ),
                 );
               } else {

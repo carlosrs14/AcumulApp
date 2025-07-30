@@ -380,7 +380,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
         content: Column(
           children: [
             const Text('¿Ingresa la cantidad de sellos que vas a añadir?'),
-            Form(key: _formKey, child: TextFormField()),
+            Form(key: _formKey, child: textFieldStamp()),
           ],
         ),
         actions: [

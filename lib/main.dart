@@ -2,7 +2,7 @@ import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/client.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/user.dart';
-import 'package:acumulapp/screens/business/business_home_screen.dart';
+import 'package:acumulapp/screens/business/business_main_screen.dart';
 import 'package:acumulapp/screens/business/update_info_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_screen.dart';
 import 'package:acumulapp/screens/user/business_info_screen.dart';
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
                 );
               } else {
                 return MaterialPageRoute(
-                  builder: (_) => BusinessHomeScreen(user: user),
+                  builder: (_) => BusinessMainScreen(user: user),
                 );
               }
             }
