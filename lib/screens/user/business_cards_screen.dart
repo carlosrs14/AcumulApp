@@ -91,18 +91,18 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
           itemsPerPage: itemsPerPage,
           totalItems: businessCardsList.length,
           totalPages: totalPage,
-          onPageChanged: (newPage) {
+          onPageChanged: (newPage) async {
             setState(() {
               currentPage = newPage;
-              _loadBusinessCards();
             });
+            await _loadBusinessCards();
           },
-          onItemsPerPageChanged: (newCount) {
+          onItemsPerPageChanged: (newCount) async {
             setState(() {
               itemsPerPage = newCount;
               currentPage = 1;
-              _loadBusinessCards();
             });
+            await _loadBusinessCards();
           },
         ),
       ],

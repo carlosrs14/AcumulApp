@@ -61,9 +61,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
     );
 
     if (result == true) {
-      setState(() {
-        _loadCards(currentPage, itemsPerPage);
-      });
+      await _loadCards(currentPage, itemsPerPage);
     }
   }
 
@@ -91,9 +89,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
     if (confirmed == true) {
       final success = await cardProvider.delete(cardId);
       if (success) {
-        setState(() {
-          _loadCards(currentPage, itemsPerPage);
-        });
+        await _loadCards(currentPage, itemsPerPage);
       } else {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -248,18 +244,18 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
             itemsPerPage: itemsPerPage,
             totalItems: cards.length,
             totalPages: totalPage,
-            onPageChanged: (newPage) {
+            onPageChanged: (newPage) async {
               setState(() {
                 currentPage = newPage;
-                _loadCards(newPage, itemsPerPage);
               });
+              await _loadCards(newPage, itemsPerPage);
             },
-            onItemsPerPageChanged: (newCount) {
+            onItemsPerPageChanged: (newCount) async {
               setState(() {
                 itemsPerPage = newCount;
                 currentPage = 1;
-                _loadCards(currentPage, itemsPerPage);
               });
+              await _loadCards(currentPage, itemsPerPage);
             },
           ),
         ],

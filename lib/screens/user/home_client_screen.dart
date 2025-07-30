@@ -138,36 +138,36 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
           itemsPerPage: itemsPerPage,
           totalItems: filteredBusiness.length,
           totalPages: totalPage,
-          onPageChanged: (newPage) {
+          onPageChanged: (newPage) async {
             setState(() {
               currentPage = newPage;
-              _loadBusiness(
-                _searchController.text.isEmpty ? null : _searchController.text,
-                selectedCategory == 'All'
-                    ? null
-                    : categoryList
-                          .firstWhere((c) => c.name == selectedCategory)
-                          .id,
-                newPage,
-                itemsPerPage,
-              );
             });
+            await _loadBusiness(
+              _searchController.text.isEmpty ? null : _searchController.text,
+              selectedCategory == 'All'
+                  ? null
+                  : categoryList
+                        .firstWhere((c) => c.name == selectedCategory)
+                        .id,
+              newPage,
+              itemsPerPage,
+            );
           },
-          onItemsPerPageChanged: (newCount) {
+          onItemsPerPageChanged: (newCount) async {
             setState(() {
               itemsPerPage = newCount;
               currentPage = 1;
-              _loadBusiness(
-                _searchController.text.isEmpty ? null : _searchController.text,
-                selectedCategory == 'All'
-                    ? null
-                    : categoryList
-                          .firstWhere((c) => c.name == selectedCategory)
-                          .id,
-                currentPage,
-                itemsPerPage,
-              );
             });
+            await _loadBusiness(
+              _searchController.text.isEmpty ? null : _searchController.text,
+              selectedCategory == 'All'
+                  ? null
+                  : categoryList
+                        .firstWhere((c) => c.name == selectedCategory)
+                        .id,
+              currentPage,
+              itemsPerPage,
+            );
           },
         ),
       ],

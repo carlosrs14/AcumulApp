@@ -5,8 +5,8 @@ class PaginacionWidget extends StatelessWidget {
   final int itemsPerPage;
   final int totalItems;
   final int totalPages;
-  final Function(int) onPageChanged;
-  final Function(int) onItemsPerPageChanged;
+  final Future<void> Function(int) onPageChanged;
+  final Future<void> Function(int) onItemsPerPageChanged;
 
   const PaginacionWidget({
     super.key,
@@ -28,7 +28,7 @@ class PaginacionWidget extends StatelessWidget {
           // Botón anterior
           ElevatedButton(
             onPressed: currentPage > 1
-                ? () => onPageChanged(currentPage - 1)
+                ? () async => await onPageChanged(currentPage - 1)
                 : null,
             child: const Text('Anterior'),
           ),
@@ -42,9 +42,9 @@ class PaginacionWidget extends StatelessWidget {
                 child: Text('$value por página'),
               );
             }).toList(),
-            onChanged: (newValue) {
+            onChanged: (newValue) async {
               if (newValue != null) {
-                onItemsPerPageChanged(newValue);
+                await onItemsPerPageChanged(newValue);
               }
             },
           ),
@@ -52,7 +52,7 @@ class PaginacionWidget extends StatelessWidget {
           // Botón siguiente
           ElevatedButton(
             onPressed: currentPage < totalPages
-                ? () => onPageChanged(currentPage + 1)
+                ? () async => await onPageChanged(currentPage + 1)
                 : null,
             child: const Text('Siguiente'),
           ),

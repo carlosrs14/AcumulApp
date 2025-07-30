@@ -124,18 +124,18 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
               itemsPerPage: itemsPerPage,
               totalItems: userCards.length,
               totalPages: totalPage,
-              onPageChanged: (newPage) {
+              onPageChanged: (newPage) async {
                 setState(() {
                   currentPage = newPage;
-                  _loadCards();
                 });
+                await _loadCards();
               },
-              onItemsPerPageChanged: (newCount) {
+              onItemsPerPageChanged: (newCount) async {
                 setState(() {
                   itemsPerPage = newCount;
                   currentPage = 1;
-                  _loadCards();
                 });
+                await _loadCards();
               },
             ),
           ],
@@ -374,7 +374,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
           onChanged: (int? newValue) async {
             if (newValue != null) {
               currentPage = 1;
-              filtros("", newValue);
+              await filtros(newValue);
             }
           },
         ),
@@ -382,10 +382,10 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
     );
   }
 
-  void filtros(String query, int idState) async {
+  Future<void> filtros(int idState) async {
     setState(() {
       selectedState = idState;
-      _loadCards();
     });
+    await _loadCards();
   }
 }

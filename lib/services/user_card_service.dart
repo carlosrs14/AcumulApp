@@ -102,9 +102,7 @@ class UserCardService {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${jwt?.loadToken()}',
       },
-      body: {
-        jsonEncode({"stamps": stamps}),
-      },
+      body: jsonEncode({"stamps": stamps}),
     );
   }
 

@@ -125,11 +125,14 @@ class _QRScannerPageState extends State<QRScannerPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Add stamps'),
-        content: Column(
-          children: [
-            const Text('¿Ingresa la cantidad de sellos que vas a añadir?'),
-            Form(key: _formKey, child: textFieldStamp()),
-          ],
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('¿Ingresa la cantidad de sellos que vas a añadir?'),
+              Form(key: _formKey, child: textFieldStamp()),
+            ],
+          ),
         ),
         actions: [
           TextButton(
