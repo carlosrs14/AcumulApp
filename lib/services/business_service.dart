@@ -26,7 +26,10 @@ class BusinessService {
       if (category != null && category != 0) 'category': category.toString(),
     };
 
-    final Uri url = Uri.http('3.129.14.200', '/api/v1/business', queryParams);
+    final Uri url = Uri.parse(urlApi).replace(
+      path: '${Uri.parse(urlApi).path}/business',
+      queryParameters: queryParams,
+    );
 
     return http.get(
       url,

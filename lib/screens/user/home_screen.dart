@@ -46,11 +46,10 @@ class HomeScreenState extends State<HomeScreen> {
             builder = (context) => ClientCardsScreen(user: widget.user);
             break;
           case 2:
-            builder = (context) => Ejemplo(user: widget.user);
-            break;
-          case 3:
             builder = (context) => UserProfileScreen(user: widget.user);
             break;
+          // case 3:
+
           default:
             builder = (context) => Inicioclienteview(user: widget.user);
         }
@@ -82,10 +81,10 @@ class HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.credit_card),
               label: 'Cards',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.notifications),
-              label: 'notifications',
-            ),
+            // BottomNavigationBarItem(
+            //   icon: Icon(Icons.notifications),
+            //   label: 'notifications',
+            // ),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'profile'),
           ],
         ),
