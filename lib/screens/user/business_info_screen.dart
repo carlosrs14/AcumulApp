@@ -117,6 +117,9 @@ class _BusinessInfoState extends State<BusinessInfo> {
         child: ClipOval(
           child: Image.network(
             widget.business.logoUrl!,
+            fit: BoxFit.cover,
+            width: 120,
+            height: 120,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) return child;
               return Center(

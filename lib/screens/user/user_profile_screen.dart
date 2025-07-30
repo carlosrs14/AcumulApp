@@ -77,7 +77,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                             children: [buttomSignOut()],
                           ),
                           SizedBox(height: 20),
-                          imagenNegocio(),
+                          imagenUser(),
                           SizedBox(height: 30),
                           name(),
                           SizedBox(height: 12),
@@ -97,7 +97,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget imagenNegocio() {
+  Widget imagenUser() {
     return Container(
       width: 120,
       height: 120,
@@ -110,6 +110,9 @@ class UserProfileScreenState extends State<UserProfileScreen> {
         child: ClipOval(
           child: Image.network(
             "url",
+            fit: BoxFit.cover,
+            width: 120,
+            height: 120,
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) return child;
               return Center(
