@@ -15,7 +15,7 @@ class AddEditCardScreen extends StatefulWidget {
 class _AddEditCardScreenState extends State<AddEditCardScreen> {
   final _formKey = GlobalKey<FormState>();
   final CardProvider _cardProvider = CardProvider();
-
+  final ScrollController _scrollController = ScrollController();
   late int _maxStamp;
   late int _expiration;
   late String _description;
@@ -73,6 +73,12 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
         );
       }
     }
+    await Future.delayed(Duration(milliseconds: 100));
+    _scrollController.animateTo(
+      0.0,
+      duration: Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -83,7 +89,8 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
+        controller: _scrollController,
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -91,7 +98,6 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
             children: [
               TextFormField(
                 initialValue: _name,
-                
                 decoration: const InputDecoration(labelText: 'Nombre'),
                 validator: (value) => value!.isEmpty ? 'Campo requerido' : null,
                 onSaved: (value) => _name = value!,
