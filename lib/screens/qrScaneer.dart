@@ -58,7 +58,9 @@ class _QRScannerPageState extends State<QRScannerPage> {
                     for (final barcode in barcodes) {
                       final String? code = barcode.rawValue;
                       if (code != null) {
-                        _isScanning = true;
+                        setState(() {
+                          _isScanning = true;
+                        });
 
                         // ScaffoldMessenger.of(context).hideCurrentSnackBar();
                         // ScaffoldMessenger.of(context).showSnackBar(
@@ -66,11 +68,11 @@ class _QRScannerPageState extends State<QRScannerPage> {
                         // );
 
                         if ("Activate Card" == widget.funcionalidad) {
-                          activateCard(code);
+                          await activateCard(code);
                         } else if ("Redeem Card" == widget.funcionalidad) {
-                          redeemCard(code);
+                          await redeemCard(code);
                         } else if ("Add Stamps" == widget.funcionalidad) {
-                          addStampsDialog(code);
+                          await addStampsDialog(code);
                         } else {
                           Navigator.pop(context);
                           break;
@@ -112,7 +114,9 @@ class _QRScannerPageState extends State<QRScannerPage> {
         padding: const EdgeInsets.only(bottom: 30.0),
         child: FloatingActionButton(
           onPressed: () {
-            _isScanning = false;
+            setState(() {
+              _isScanning = false;
+            });
           },
           child: Icon(MdiIcons.reload),
         ),
@@ -120,7 +124,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
     );
   }
 
-  void addStampsDialog(String code) async {
+  Future<void> addStampsDialog(String code) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -151,11 +155,11 @@ class _QRScannerPageState extends State<QRScannerPage> {
     );
 
     if (confirmed == true) {
-      addStamp(code);
+      await addStamp(code);
     }
   }
 
-  void addStamp(String code) async {
+  Future<void> addStamp(String code) async {
     final success = await userCardProvider.addStamp(
       code,
       int.parse(stampTextEditingController.text),
@@ -170,7 +174,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
     }
   }
 
-  void redeemCard(String code) async {
+  Future<void> redeemCard(String code) async {
     final success = await userCardProvider.redeemCard(code);
     if (success != null) {
       Navigator.pop(context);
@@ -182,7 +186,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
     }
   }
 
-  void activateCard(String code) async {
+  Future<void> activateCard(String code) async {
     final success = await userCardProvider.activateCard(code);
     if (success != null) {
       Navigator.pop(context);
