@@ -230,7 +230,10 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
                   iconSize: 30,
                   onPressed: () async {
                     code = userCard.code!;
-                    await addStampsDialog();
+                    await addStampsDialog(
+                      userCard.code!,
+                      userCard.businessCard!.maxStamp - userCard.currentStamps!,
+                    );
                     await _loadUserCards();
                   },
                 ),
@@ -268,8 +271,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
                   icon: Icon(MdiIcons.check),
                   iconSize: 30,
                   onPressed: () async {
-                    code = userCard.code!;
-                    await redeemCard();
+                    await redeemCard(userCard.code!);
                     await _loadUserCards();
                   },
                 ),
@@ -291,7 +293,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(userCard.code ?? ''),
+                      Text(userCard.idClient.toString() ?? ''),
                       const SizedBox(height: 4),
                       Text('nada', style: TextStyle(color: Colors.grey[600])),
                     ],
@@ -323,8 +325,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
                   icon: Icon(MdiIcons.check),
                   iconSize: 30,
                   onPressed: () async {
-                    code = userCard.code!;
-                    await activateCard();
+                    await activateCard(userCard.code!);
                     await _loadUserCards();
                   },
                 ),
@@ -364,24 +365,26 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
     }
   }
 
-  Widget buttom(IconData icon, void Function() function) {
-    return IconButton(onPressed: function, icon: Icon(icon), iconSize: 30);
-  }
-
-  Future<void> addStampsDialog() async {
+  Future<void> addStampsDialog(String code, int remainingStamps) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Add stamps'),
+
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('¿Ingresa la cantidad de sellos que vas a añadir?'),
-              Form(key: _formKey, child: textFieldStamp()),
+              Text(
+                'Sellos restantes $remainingStamps, ingresa la cantidad de sellos que vas a añadir',
+              ),
+              const SizedBox(height: 10),
+              Form(key: _formKey, child: textFieldStamp(remainingStamps)),
             ],
           ),
         ),
+
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -400,25 +403,38 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
     );
 
     if (confirmed == true) {
-      await addStamp();
+      await addStamp(code, remainingStamps);
     }
   }
 
-  Widget textFieldStamp() {
-    return Container(
+  Widget textFieldStamp(int remainingStamps) {
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
       child: TextFormField(
         controller: stampTextEditingController,
         decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 12,
+          ),
           fillColor: Colors.white,
           filled: true,
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade200),
+            borderSide: BorderSide(color: Colors.grey.shade300),
           ),
+          errorMaxLines: 2,
         ),
+        keyboardType: TextInputType.number,
         validator: (value) {
           if (value == null || value.trim().isEmpty) {
             return 'Este campo es obligatorio';
+          }
+          final parsed = int.tryParse(value);
+          if (parsed == null) {
+            return 'Debe ser un número válido';
+          } else if (parsed > remainingStamps) {
+            return 'Debe ser menor o igual a los sellos restantes';
           }
           return null;
         },
@@ -426,40 +442,70 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
     );
   }
 
-  Future<void> addStamp() async {
+  Future<void> addStamp(String code, int remainingStamps) async {
     final success = await userCardProvider.addStamp(
       code,
       int.parse(stampTextEditingController.text),
     );
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (success != null) {
       await _loadUserCards();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sellos agregados exitosamente'),
+          backgroundColor: Colors.green,
+        ),
+      );
     } else {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Error al agregar sellos')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error al agregar sellos'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
-  Future<void> activateCard() async {
+  Future<void> activateCard(String code) async {
     final success = await userCardProvider.activateCard(code);
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (success != null) {
       await _loadUserCards();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Tarjeta activada exitosamente'),
+          backgroundColor: Colors.green,
+        ),
+      );
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Error al activar tarjeta')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error al activar tarjeta'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
-  Future<void> redeemCard() async {
+  Future<void> redeemCard(String code) async {
     final success = await userCardProvider.redeemCard(code);
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (success != null) {
       await _loadUserCards();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Tarjeta redimida exitosamente'),
+          backgroundColor: Colors.green,
+        ),
+      );
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Error al redimir tarjeta')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error al redimir tarjeta'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 }

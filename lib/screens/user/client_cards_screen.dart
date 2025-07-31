@@ -283,7 +283,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
     );
   }
 
-  Widget qrState(UserCard userCard, int selectedState) {
+  Widget? qrState(UserCard userCard, int selectedState) {
     switch (selectedState) {
       case 1:
         return addCardButton(
@@ -295,7 +295,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
         return addCardButton(
           userCard,
           true,
-          "Presenta este QR en el negocio para recibi tu recompensa.",
+          "Presenta este QR en el negocio para recibir tu recompensa.",
         );
       case 3:
         return addCardButton(userCard, false, "");
@@ -312,41 +312,47 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
     }
   }
 
-  Widget addCardButton(UserCard userCard, bool mostrar, String texto) {
-    return ElevatedButton.icon(
-      onPressed: () {
-        if (userCard.code != null) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => QrCodeScreen(code: userCard.code!, text: texto),
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Error de conexion',
-                style: TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Colors.redAccent,
-              duration: Duration(seconds: 3),
-            ),
-          );
-        }
-      },
-      icon: Icon(MdiIcons.qrcode),
-      label: Text(""),
-      iconAlignment: IconAlignment.end,
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: Theme.of(context).colorScheme.primary,
+  ElevatedButton? addCardButton(UserCard userCard, bool mostrar, String texto) {
+    return !mostrar
+        ? null
+        : ElevatedButton.icon(
+            onPressed: () async {
+              if (userCard.code != null) {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        QrCodeScreen(code: userCard.code!, text: texto),
+                  ),
+                );
+                await _loadCards();
+              } else {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Error de conexion',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.redAccent,
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+              }
+            },
+            icon: Icon(MdiIcons.qrcode),
+            label: Text(""),
+            iconAlignment: IconAlignment.end,
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.primary,
 
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        textStyle: TextStyle(fontSize: 14),
-        elevation: 4,
-      ),
-    );
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              textStyle: TextStyle(fontSize: 14),
+              elevation: 4,
+            ),
+          );
   }
 
   Widget filtro() {

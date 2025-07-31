@@ -20,7 +20,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
   final UserCardProvider userCardProvider = UserCardProvider();
   bool _hasPermission = false;
   bool _isScanning = false;
-  String _code = '';
+
   final TextEditingController stampTextEditingController =
       TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -72,7 +72,16 @@ class _QRScannerPageState extends State<QRScannerPage> {
                         } else if ("Redeem Card" == widget.funcionalidad) {
                           await redeemCard(code);
                         } else if ("Add Stamps" == widget.funcionalidad) {
-                          await addStampsDialog(code);
+                          UserCard? userCard = await userCardProvider.getByCode(
+                            code,
+                          );
+                          if (userCard != null) {
+                            await addStampsDialog(
+                              code,
+                              userCard.businessCard!.maxStamp -
+                                  userCard.currentStamps!,
+                            );
+                          }
                         } else {
                           Navigator.pop(context);
                           break;
@@ -124,20 +133,26 @@ class _QRScannerPageState extends State<QRScannerPage> {
     );
   }
 
-  Future<void> addStampsDialog(String code) async {
+  Future<void> addStampsDialog(String code, int remainingStamps) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Add stamps'),
+
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('¿Ingresa la cantidad de sellos que vas a añadir?'),
-              Form(key: _formKey, child: textFieldStamp()),
+              Text(
+                'Sellos restantes $remainingStamps, ingresa la cantidad de sellos que vas a añadir',
+              ),
+              const SizedBox(height: 10),
+              Form(key: _formKey, child: textFieldStamp(remainingStamps)),
             ],
           ),
         ),
+
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -145,8 +160,9 @@ class _QRScannerPageState extends State<QRScannerPage> {
           ),
           TextButton(
             onPressed: () {
-              if (!_formKey.currentState!.validate()) return;
-              Navigator.pop(context, true);
+              if (_formKey.currentState?.validate() == true) {
+                Navigator.pop(context, true);
+              }
             },
             child: const Text('Agregar'),
           ),
@@ -155,68 +171,111 @@ class _QRScannerPageState extends State<QRScannerPage> {
     );
 
     if (confirmed == true) {
-      await addStamp(code);
+      await addStamp(code, remainingStamps);
     }
   }
 
-  Future<void> addStamp(String code) async {
-    final success = await userCardProvider.addStamp(
-      code,
-      int.parse(stampTextEditingController.text),
-    );
-    if (success != null) {
-      Navigator.pop(context);
-    } else {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Error al agregar sellos')));
-    }
-  }
-
-  Future<void> redeemCard(String code) async {
-    final success = await userCardProvider.redeemCard(code);
-    if (success != null) {
-      Navigator.pop(context);
-    } else {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Error al redimir tarjeta')));
-    }
-  }
-
-  Future<void> activateCard(String code) async {
-    final success = await userCardProvider.activateCard(code);
-    if (success != null) {
-      Navigator.pop(context);
-    } else {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Error al activar tarjeta')));
-    }
-  }
-
-  Widget textFieldStamp() {
-    return Container(
+  Widget textFieldStamp(int remainingStamps) {
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
       child: TextFormField(
         controller: stampTextEditingController,
         decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 12,
+          ),
           fillColor: Colors.white,
           filled: true,
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade200),
+            borderSide: BorderSide(color: Colors.grey.shade300),
           ),
+          errorMaxLines: 2,
         ),
+        keyboardType: TextInputType.number,
         validator: (value) {
           if (value == null || value.trim().isEmpty) {
             return 'Este campo es obligatorio';
+          }
+          final parsed = int.tryParse(value);
+          if (parsed == null) {
+            return 'Debe ser un número válido';
+          } else if (parsed > remainingStamps) {
+            return 'Debe ser menor o igual a los sellos restantes';
           }
           return null;
         },
       ),
     );
+  }
+
+  Future<void> addStamp(String code, int remainingStamps) async {
+    final success = await userCardProvider.addStamp(
+      code,
+      int.parse(stampTextEditingController.text),
+    );
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    if (success != null) {
+      Navigator.pop(context);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Sellos agregados exitosamente'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error al agregar sellos'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> activateCard(String code) async {
+    final success = await userCardProvider.activateCard(code);
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    if (success != null) {
+      Navigator.pop(context);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Tarjeta activada exitosamente'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error al activar tarjeta'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> redeemCard(String code) async {
+    final success = await userCardProvider.redeemCard(code);
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    if (success != null) {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Tarjeta redimida exitosamente'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error al redimir tarjeta'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }

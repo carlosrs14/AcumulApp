@@ -24,13 +24,16 @@ class ManageCardsScreen extends StatefulWidget {
 
 class _ManageCardsScreenState extends State<ManageCardsScreen> {
   final CardProvider cardProvider = CardProvider();
-
+  bool _isLoadingCardsActivate = true;
   int currentPage = 1;
   int itemsPerPage = 10;
   int totalPage = 10;
   List<BusinessCard> cards = [];
 
   Future<void> _loadCards(int page, int size) async {
+    setState(() {
+      _isLoadingCardsActivate = true;
+    });
     try {
       final paginationData = await cardProvider.filterByBusiness(
         widget.user.business[widget.selectedIndex].id,
@@ -45,6 +48,8 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
       });
     } catch (e) {
       log(e.toString());
+    } finally {
+      _isLoadingCardsActivate = false;
     }
   }
 
@@ -103,163 +108,193 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Gestión de tarjetas')),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: cards.length,
-              itemBuilder: (context, index) {
-                BusinessCard card = cards[index];
-                return Card(
-                  elevation: 4,
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: const BorderSide(color: Colors.black),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+      body: _isLoadingCardsActivate
+          ? Center(child: CircularProgressIndicator())
+          : Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: cards.length,
+                    itemBuilder: (context, index) {
+                      BusinessCard card = cards[index];
+                      return Card(
+                        elevation: 4,
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: const BorderSide(color: Colors.black),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                card.name,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.primary,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      card.name,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.stars,
+                                          size: 18,
+                                          color: Colors.grey[700],
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            "Bounty: ${card.reward}",
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          MdiIcons.stamper,
+                                          size: 18,
+                                          color: Colors.grey[700],
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            "MaxStamp: ${card.maxStamp}",
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Icon(
+                                          Icons.info_outline,
+                                          size: 18,
+                                          color: Colors.grey[700],
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            "Restricciones: ${card.restrictions}",
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          MdiIcons.comment,
+                                          size: 18,
+                                          color: Colors.grey[700],
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            "Description: ${card.description}",
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: 12),
-                              Row(
+
+                              // Botones a la derecha
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(
-                                    Icons.stars,
-                                    size: 18,
-                                    color: Colors.grey[700],
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Expanded(
-                                    child: Text(
-                                      "Bounty: ${card.reward}",
-                                      style: const TextStyle(fontSize: 14),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: Colors.blue,
                                     ),
+                                    onPressed: () async {
+                                      await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              AddEditCardScreen(
+                                                card: card,
+                                                idBusiness: widget
+                                                    .user
+                                                    .business[widget
+                                                        .selectedIndex]
+                                                    .id,
+                                              ),
+                                        ),
+                                      );
+                                      await _loadCards(
+                                        currentPage,
+                                        itemsPerPage,
+                                      );
+                                    },
                                   ),
-                                ],
-                              ),
-                              const SizedBox(height: 12),
-                              Row(
-                                children: [
-                                  Icon(
-                                    MdiIcons.stamper,
-                                    size: 18,
-                                    color: Colors.grey[700],
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Expanded(
-                                    child: Text(
-                                      "MaxStamp: ${card.maxStamp}",
-                                      style: const TextStyle(fontSize: 14),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 12),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Icons.info_outline,
-                                    size: 18,
-                                    color: Colors.grey[700],
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Expanded(
-                                    child: Text(
-                                      "Restricciones: ${card.restrictions}",
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 12),
-                              Row(
-                                children: [
-                                  Icon(
-                                    MdiIcons.comment,
-                                    size: 18,
-                                    color: Colors.grey[700],
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Expanded(
-                                    child: Text(
-                                      "Description: ${card.description}",
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
+                                    onPressed: () => _deleteCard(card.id),
                                   ),
                                 ],
                               ),
                             ],
                           ),
                         ),
-
-                        // Botones a la derecha
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.edit, color: Colors.blue),
-                              onPressed: () => _navigateAndReload(
-                                AddEditCardScreen(
-                                  card: card,
-                                  idBusiness: widget
-                                      .user
-                                      .business[widget.selectedIndex]
-                                      .id,
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => _deleteCard(card.id),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+                PaginacionWidget(
+                  currentPage: currentPage,
+                  itemsPerPage: itemsPerPage,
+                  totalItems: cards.length,
+                  totalPages: totalPage,
+                  onPageChanged: (newPage) async {
+                    setState(() {
+                      currentPage = newPage;
+                    });
+                    await _loadCards(newPage, itemsPerPage);
+                  },
+                  onItemsPerPageChanged: (newCount) async {
+                    setState(() {
+                      itemsPerPage = newCount;
+                      currentPage = 1;
+                    });
+                    await _loadCards(currentPage, itemsPerPage);
+                  },
+                ),
+              ],
             ),
-          ),
-          PaginacionWidget(
-            currentPage: currentPage,
-            itemsPerPage: itemsPerPage,
-            totalItems: cards.length,
-            totalPages: totalPage,
-            onPageChanged: (newPage) async {
-              setState(() {
-                currentPage = newPage;
-              });
-              await _loadCards(newPage, itemsPerPage);
-            },
-            onItemsPerPageChanged: (newCount) async {
-              setState(() {
-                itemsPerPage = newCount;
-                currentPage = 1;
-              });
-              await _loadCards(currentPage, itemsPerPage);
-            },
-          ),
-        ],
-      ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 50.0),
         child: FloatingActionButton(
