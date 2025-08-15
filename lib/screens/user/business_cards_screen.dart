@@ -37,6 +37,7 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
   int totalPage = 10;
 
   Future<void> _loadBusinessCards() async {
+    if (!mounted) return;
     setState(() {
       _isLoadingBusinessCards = true;
       _errorBusinessCards = null;
@@ -47,7 +48,7 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
         itemsPerPage,
         currentPage,
       );
-
+      if (!mounted) return;
       setState(() {
         businessCardsList = paginationData!.list as List<BusinessCard>;
         currentPage = paginationData.currentPage;
@@ -55,10 +56,12 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
         totalPage = paginationData.totalPages;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorBusinessCards = 'Error al cargar categorías';
       });
     } finally {
+      if (!mounted) return;
       setState(() {
         _isLoadingBusinessCards = false;
       });

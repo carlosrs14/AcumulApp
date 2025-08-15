@@ -63,6 +63,17 @@ class BusinessService {
     );
   }
 
+  Future<http.Response> cardsStats(int id) async {
+    final Uri url = Uri.parse("$urlApi/client-card/stats?businessId=$id");
+    return http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
+    );
+  }
+
   Future<http.Response> updateBusiness(Business business) async {
     final Uri url = Uri.parse("$urlApi/business/${business.id}");
 

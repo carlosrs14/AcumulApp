@@ -42,6 +42,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
   bool _errorCardsActivate = false;
 
   Future<void> _loadCards() async {
+    if (!mounted) return;
     setState(() {
       _isLoadingCardsActivate = true;
       _errorCardsActivate = false;
@@ -53,7 +54,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
         itemsPerPage,
         currentPage,
       );
-
+      if (!mounted) return;
       setState(() {
         userCards = paginationData!.list as List<UserCard>;
 
@@ -62,10 +63,12 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
         totalPage = paginationData.totalPages;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorCardsActivate = true;
       });
     } finally {
+      if (!mounted) return;
       setState(() {
         _isLoadingCardsActivate = false;
       });

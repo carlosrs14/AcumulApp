@@ -31,6 +31,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
   List<BusinessCard> cards = [];
 
   Future<void> _loadCards(int page, int size) async {
+    if (!mounted) return;
     setState(() {
       _isLoadingCardsActivate = true;
     });
@@ -40,6 +41,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
         size,
         page,
       );
+      if (!mounted) return;
       setState(() {
         cards = paginationData!.list as List<BusinessCard>;
         currentPage = paginationData.currentPage;
@@ -298,6 +300,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 50.0),
         child: FloatingActionButton(
+          foregroundColor: Colors.white,
           onPressed: () => _navigateAndReload(
             AddEditCardScreen(
               idBusiness: widget.user.business[widget.selectedIndex].id,

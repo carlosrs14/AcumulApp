@@ -41,6 +41,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
   List<Category> categoryList = [];
 
   Future<void> _loadCategories() async {
+    if (!mounted) return;
     setState(() {
       _isLoadingCategories = true;
       _errorCategories = false;
@@ -48,14 +49,17 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
     try {
       final lista = await categoryProvider.all();
       lista.insert(0, Category(-1, "All", "All"));
+      if (!mounted) return;
       setState(() {
         categoryList = lista;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorCategories = true;
       });
     } finally {
+      if (!mounted) return;
       setState(() {
         _isLoadingCategories = false;
       });
@@ -68,6 +72,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
     int page,
     int size,
   ) async {
+    if (!mounted) return;
     setState(() {
       _isLoadingBusiness = true;
       _errorBusiness = false;
@@ -79,6 +84,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
         page,
         size,
       );
+      if (!mounted) return;
       setState(() {
         business = paginationData!.list as List<Business>;
         filteredBusiness = business;
@@ -87,10 +93,12 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
         totalPage = paginationData.totalPages;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorBusiness = true;
       });
     } finally {
+      if (!mounted) return;
       setState(() {
         _isLoadingBusiness = false;
       });

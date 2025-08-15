@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:acumulapp/models/business.dart';
+import 'package:acumulapp/models/business_stat.dart';
 import 'package:acumulapp/models/pagination_data.dart';
 import 'package:acumulapp/services/business_service.dart';
 
@@ -60,6 +61,24 @@ class BusinessProvider {
       log(e.toString());
     }
     return business;
+  }
+
+  Future<BusinessStat?> getBusinessStats(int id) async {
+    BusinessStat? businessStats;
+    try {
+      final response = await businessService.cardsStats(id);
+
+      if (response.statusCode != 200) return businessStats;
+
+      String body = utf8.decode(response.bodyBytes);
+      final jsonData = jsonDecode(body);
+
+      businessStats = BusinessStat.fromJson(jsonData);
+      log(businessStats.cardStats.toString());
+    } catch (e) {
+      log(e.toString());
+    }
+    return businessStats;
   }
 
   Future<Business?> update(Business business) async {

@@ -40,21 +40,24 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
   TextEditingController addressTextEditting = TextEditingController();
 
   Future<void> _loadCategories() async {
+    if (!mounted) return;
     setState(() {
       _isLoadingCategories = true;
       _errorCategories = false;
     });
     try {
       final lista = await categoryProvider.all();
-
+      if (!mounted) return;
       setState(() {
         _allCategories = lista;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorCategories = true;
       });
     } finally {
+      if (!mounted) return;
       setState(() {
         _isLoadingCategories = false;
       });

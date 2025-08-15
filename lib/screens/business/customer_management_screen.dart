@@ -42,6 +42,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
   int totalPage = 10;
 
   Future<void> _loadUserCards() async {
+    if (!mounted) return;
     setState(() {
       _isLoadingCardsActivate = true;
       _errorCardsActivate = false;
@@ -53,7 +54,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
         itemsPerPage,
         currentPage,
       );
-
+      if (!mounted) return;
       setState(() {
         userCards = paginationData!.list as List<UserCard>;
 
@@ -62,10 +63,12 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
         totalPage = paginationData.totalPages;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _errorCardsActivate = true;
       });
     } finally {
+      if (!mounted) return;
       setState(() {
         _isLoadingCardsActivate = false;
       });

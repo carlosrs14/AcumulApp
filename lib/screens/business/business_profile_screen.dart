@@ -12,7 +12,11 @@ import 'package:url_launcher/url_launcher.dart';
 class BusinessProfileScreen extends StatefulWidget {
   final Collaborator user;
   final int selectedIndex;
-  const BusinessProfileScreen({super.key, required this.user, required this.selectedIndex});
+  const BusinessProfileScreen({
+    super.key,
+    required this.user,
+    required this.selectedIndex,
+  });
 
   @override
   State<BusinessProfileScreen> createState() => _BusinessProfileScreenState();
@@ -32,9 +36,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Mi negocio'),
-      ),
+      appBar: AppBar(title: Text('Mi negocio')),
       body: FutureBuilder<Business?>(
         future: _businessFuture,
         builder: (context, snapshot) {
@@ -110,6 +112,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
       ),
 
       floatingActionButton: SpeedDial(
+        foregroundColor: Colors.white,
         direction: SpeedDialDirection.left,
         backgroundColor: Theme.of(context).colorScheme.primary,
         icon: MdiIcons.pencil,
