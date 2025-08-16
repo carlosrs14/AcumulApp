@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/utils/jwt.dart';
@@ -104,5 +105,33 @@ class BusinessService {
       },
       body: jsonEncode(body),
     );
+  }
+
+  Future<http.Response> uploadImage(int businessId, File imagen) async {
+    final Uri url = Uri.parse("$urlApi/business/$businessId/upload-image");
+
+    var request = http.MultipartRequest("POST", url);
+
+    // Agregar el token al header
+    request.headers['Authorization'] = 'Bearer ${jwt?.loadToken()}';
+
+    // Adjuntar la imagen
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'imagen', // 👈 este nombre debe coincidir con lo que espera tu backend
+        imagen.path,
+      ),
+    );
+
+    // Enviar la petición
+    var streamedResponse = await request.send();
+
+    // Convertir a Response normal (para ser consistente con el resto del service)
+    final response = await http.Response.fromStream(streamedResponse);
+
+    log("📤 Upload status: ${response.statusCode}");
+    log("📤 Response: ${response.body}");
+
+    return response;
   }
 }

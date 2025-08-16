@@ -9,6 +9,10 @@ import 'package:acumulapp/providers/category_provider.dart';
 import 'package:acumulapp/screens/business/business_main_screen.dart';
 import 'package:acumulapp/screens/category_selector_screen.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class UpdateInfoScreen extends StatefulWidget {
   final Collaborator user;
@@ -19,6 +23,7 @@ class UpdateInfoScreen extends StatefulWidget {
 }
 
 class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
+  File? _imagen;
   final _formKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
   CategoryProvider categoryProvider = CategoryProvider();
@@ -38,6 +43,47 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
   TextEditingController logoTextEditting = TextEditingController();
   TextEditingController emailTextEditting = TextEditingController();
   TextEditingController addressTextEditting = TextEditingController();
+
+  Future<void> _seleccionarImagen() async {
+    PermissionStatus status;
+
+    if (Platform.isAndroid) {
+      // Detectar la versión de Android
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      final sdkInt = androidInfo.version.sdkInt;
+
+      if (sdkInt >= 33) {
+        // Android 13+
+        log("aqui");
+        status = await Permission.photos.request();
+      } else {
+        // Android 12 o menor
+        status = await Permission.storage.request();
+      }
+    } else {
+      // iOS y otros
+      status = await Permission.photos.request();
+    }
+
+    if (status.isGranted) {
+      final ImagePicker picker = ImagePicker();
+      final XFile? imagenSeleccionada = await picker.pickImage(
+        source: ImageSource.gallery,
+      );
+
+      if (imagenSeleccionada != null) {
+        setState(() {
+          _imagen = File(imagenSeleccionada.path);
+        });
+      }
+    } else if (status.isDenied) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Permiso denegado")));
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
+  }
 
   Future<void> _loadCategories() async {
     if (!mounted) return;
@@ -108,6 +154,19 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                               ),
                       ),
                       SizedBox(height: 20),
+                      Center(child: botonSelectImage()),
+                      SizedBox(height: 20),
+                      _imagen != null
+                          ? Center(
+                              child: Image.file(
+                                _imagen!,
+                                width: 200,
+                                height: 200,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Center(child: Text("No hay imagen seleccionada")),
+                      SizedBox(height: 20),
                       botonEntrar(),
                     ],
                   ),
@@ -169,6 +228,13 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
           return null;
         },
       ),
+    );
+  }
+
+  Widget botonSelectImage() {
+    return ElevatedButton(
+      onPressed: _seleccionarImagen,
+      child: Text("Seleccionar logo"),
     );
   }
 
