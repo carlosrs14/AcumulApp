@@ -54,7 +54,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
 
       if (sdkInt >= 33) {
         // Android 13+
-        log("aqui");
+
         status = await Permission.photos.request();
       } else {
         // Android 12 o menor
