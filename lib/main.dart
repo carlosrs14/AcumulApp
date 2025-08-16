@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/client.dart';
 import 'package:acumulapp/models/collaborator.dart';
@@ -10,6 +12,9 @@ import 'package:acumulapp/screens/user/home_screen.dart';
 import 'package:acumulapp/screens/login_screen.dart';
 import 'package:acumulapp/screens/register_screen.dart';
 import 'package:acumulapp/utils/jwt.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
@@ -17,15 +22,32 @@ import 'package:acumulapp/screens/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  await Firebase.initializeApp();
+
+  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
 
   final user = await getLoggedUser();
   final savedColor = await ThemeProvider.getSavedColor();
 
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(savedColor),
-      child: MyApp(isLogged: user != null, user: user),
-    ),
+  runZonedGuarded<Future<void>>(
+    () async {
+      
+      runApp(
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(savedColor),
+          child: MyApp(isLogged: user != null, user: user),
+        ),
+      );
+    },
+    (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
+
   );
 }
 

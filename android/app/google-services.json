@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "68302858699",
+    "project_id": "acumulaapp-f9570",
+    "storage_bucket": "acumulaapp-f9570.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68302858699:android:3c4107744b8517bfa16e4e",
+        "android_client_info": {
+          "package_name": "com.ssociety.acumulapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOrdxyuZW6xtQAhT4OWxDLfocAC_FcaHI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
