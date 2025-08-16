@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/business_stat.dart';
+import 'package:acumulapp/models/image_upload.dart';
 import 'package:acumulapp/models/pagination_data.dart';
 import 'package:acumulapp/services/business_service.dart';
 
@@ -79,6 +81,27 @@ class BusinessProvider {
       log(e.toString());
     }
     return businessStats;
+  }
+
+  Future<ImageUpload?> uploadImage(File image) async {
+    ImageUpload? imageUpload;
+    try {
+      final response = await businessService.uploadImage(image);
+
+      if (response.statusCode != 200) {
+        log(response.body.toString());
+        return imageUpload;
+      }
+
+      String body = utf8.decode(response.bodyBytes);
+      final jsonData = jsonDecode(body);
+
+      imageUpload = ImageUpload.fromJson(jsonData);
+      log(imageUpload.toString());
+    } catch (e) {
+      log(e.toString());
+    }
+    return imageUpload;
   }
 
   Future<Business?> update(Business business) async {

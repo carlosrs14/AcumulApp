@@ -107,8 +107,8 @@ class BusinessService {
     );
   }
 
-  Future<http.Response> uploadImage(int businessId, File imagen) async {
-    final Uri url = Uri.parse("$urlApi/business/$businessId/upload-image");
+  Future<http.Response> uploadImage(File imagen) async {
+    final Uri url = Uri.parse("$urlApi/image/upload");
 
     var request = http.MultipartRequest("POST", url);
 
@@ -116,12 +116,7 @@ class BusinessService {
     request.headers['Authorization'] = 'Bearer ${jwt?.loadToken()}';
 
     // Adjuntar la imagen
-    request.files.add(
-      await http.MultipartFile.fromPath(
-        'imagen', // 👈 este nombre debe coincidir con lo que espera tu backend
-        imagen.path,
-      ),
-    );
+    request.files.add(await http.MultipartFile.fromPath('image', imagen.path));
 
     // Enviar la petición
     var streamedResponse = await request.send();

@@ -35,6 +35,7 @@ class _InicioLoginState extends State<InicioLogin> {
               key: _formKey,
               child: Column(
                 children: [
+                  SizedBox(height: 20),
                   _nombre(),
                   Expanded(
                     child: SingleChildScrollView(
@@ -97,8 +98,8 @@ class _InicioLoginState extends State<InicioLogin> {
                               ),
                               SizedBox(height: 30),
                               _botonEntrar(context),
-                              SizedBox(height: 30),
-                              _botonGoogle(context),
+                              //SizedBox(height: 30),
+                              //_botonGoogle(context),
                               SizedBox(height: 30),
                               _irARegistrar(context),
                             ],
@@ -117,14 +118,7 @@ class _InicioLoginState extends State<InicioLogin> {
   }
 
   Widget _nombre() {
-    return Text(
-      "AcumulApp",
-      style: TextStyle(
-        color: Color(0xFF212121),
-        fontSize: 35,
-        fontFamily: 'sans-serif',
-      ),
-    );
+    return Image.asset("assets/images/AcumulappLogo.png", scale: 4);
   }
 
   Widget textFile(
@@ -231,7 +225,16 @@ class _InicioLoginState extends State<InicioLogin> {
       onTap: () {
         Navigator.pushNamed(context, '/register');
       },
-      child: Text("¿No tienes una cuenta? ingresa aqui"),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("¿No tienes una cuenta? "),
+          Text(
+            "Ingresa aqui ",
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+          ),
+        ],
+      ),
     );
   }
 }

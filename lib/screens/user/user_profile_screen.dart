@@ -37,7 +37,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
         icon: MdiIcons.pencil,
         children: [
           SpeedDialChild(child: Icon(MdiIcons.palette), onTap: customizeTheme),
-          SpeedDialChild(child: Icon(MdiIcons.accountEdit)),
+          //SpeedDialChild(child: Icon(MdiIcons.accountEdit)),
         ],
       ),
     );

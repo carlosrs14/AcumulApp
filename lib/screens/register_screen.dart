@@ -43,7 +43,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             key: _formKey,
             child: Column(
               children: [
-                nombre(),
                 Expanded(
                   child: SingleChildScrollView(
                     controller: _scrollController,
@@ -56,7 +55,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(height: 160),
+                            SizedBox(height: 20),
+                            nombre(),
+                            SizedBox(height: 40),
                             Container(
                               padding: EdgeInsets.only(left: 20),
                               alignment: Alignment.centerLeft,
@@ -109,7 +110,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             SizedBox(height: 30),
                             botonEntrar(),
                             SizedBox(height: 30),
-                            botonGoogle(),
+                            //botonGoogle(),
                           ],
                         ),
                       ),
@@ -125,14 +126,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget nombre() {
-    return Text(
-      "AcumulApp",
-      style: TextStyle(
-        color: Color(0xFF212121),
-        fontSize: 35,
-        fontFamily: 'sans-serif',
-      ),
-    );
+    return Image.asset("assets/images/AcumulappLogo.png", scale: 4);
   }
 
   Widget userName() {
@@ -171,7 +165,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
         onPressed: () async {
           if (!_formKey.currentState!.validate()) {
             await Future.delayed(Duration(milliseconds: 100));

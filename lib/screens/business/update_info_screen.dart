@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/category.dart';
 import 'package:acumulapp/models/collaborator.dart';
+import 'package:acumulapp/models/image_upload.dart';
 import 'package:acumulapp/models/ubication.dart';
 import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/providers/category_provider.dart';
@@ -119,7 +120,6 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     return SafeArea(
       child: Column(
         children: [
-          Padding(padding: const EdgeInsets.all(16.0), child: titulo()),
           Expanded(
             child: SingleChildScrollView(
               controller: _scrollController,
@@ -130,13 +130,15 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 100),
+                      SizedBox(height: 20),
+                      Center(child: nombre()),
+
+                      SizedBox(height: 40),
                       name("Business name"),
                       textFile(nameTextEditting, 3, false, false),
                       name("Email"),
                       textFile(emailTextEditting, 2, true, false),
-                      name("Logo"),
-                      textFile(logoTextEditting, 4, false, false),
+
                       name("Address"),
                       textFile(addressTextEditting, 5, false, false),
                       Padding(
@@ -179,15 +181,8 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     );
   }
 
-  Widget titulo() {
-    return Text(
-      "AcumulApp",
-      style: TextStyle(
-        color: Color(0xFF212121),
-        fontSize: 35,
-        fontFamily: 'sans-serif',
-      ),
-    );
+  Widget nombre() {
+    return Image.asset("assets/images/AcumulappLogo.png", scale: 4);
   }
 
   Widget name(String name) {
@@ -243,7 +238,6 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
         onPressed: () async {
           if (!_formKey.currentState!.validate()) {
             await Future.delayed(Duration(milliseconds: 100));
@@ -263,67 +257,90 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
             (roles) => "owner" == roles.toLowerCase(),
           );
           log(indice.toString());
-          if (indice != -1) {
-            businessRequest = Business(
-              colab.business[indice].id,
-              nameTextEditting.text,
-              email: emailTextEditting.text,
-              ubication: ubication,
-              logoUrl: logoTextEditting.text,
-              direction: addressTextEditting.text,
-              categories: _selectedIds,
-            );
 
-            businessResponse = await businessProvider.update(businessRequest);
-            if (!mounted) return;
-            if (businessResponse != null) {
-              bool state = await businessProvider.updateCategories(
-                businessRequest,
-              );
-              if (state) {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Update sucefull',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    backgroundColor: Colors.green,
-                    duration: Duration(seconds: 3),
-                  ),
+          if (_imagen != null) {
+            ImageUpload? imageUploadResponse;
+            imageUploadResponse = await businessProvider.uploadImage(_imagen!);
+
+            if (imageUploadResponse != null) {
+              if (indice != -1) {
+                businessRequest = Business(
+                  colab.business[indice].id,
+                  nameTextEditting.text,
+                  email: emailTextEditting.text,
+                  ubication: ubication,
+                  logoUrl: imageUploadResponse.url,
+                  direction: addressTextEditting.text,
+                  categories: _selectedIds,
                 );
 
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (_) => BusinessMainScreen(user: widget.user),
-                  ),
+                businessResponse = await businessProvider.update(
+                  businessRequest,
                 );
-              } else {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Error',
-                      style: TextStyle(color: Colors.white),
+                if (!mounted) return;
+                if (businessResponse != null) {
+                  bool state = await businessProvider.updateCategories(
+                    businessRequest,
+                  );
+                  if (state) {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Update sucefull',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Colors.green,
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (_) => BusinessMainScreen(user: widget.user),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Error',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Colors.redAccent,
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Error de conexion',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      backgroundColor: Colors.redAccent,
+                      duration: Duration(seconds: 3),
                     ),
-                    backgroundColor: Colors.redAccent,
-                    duration: Duration(seconds: 3),
-                  ),
-                );
+                  );
+                }
               }
-            } else {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Error de conexion',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  backgroundColor: Colors.redAccent,
-                  duration: Duration(seconds: 3),
-                ),
-              );
             }
+            ;
+          } else {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Selecciona una imagen',
+                  style: TextStyle(color: Colors.white),
+                ),
+                backgroundColor: Colors.redAccent,
+                duration: Duration(seconds: 3),
+              ),
+            );
           }
         },
         child: Text(

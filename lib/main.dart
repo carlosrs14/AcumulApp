@@ -22,7 +22,7 @@ import 'package:acumulapp/screens/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp();
 
   await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
@@ -38,7 +38,6 @@ void main() async {
 
   runZonedGuarded<Future<void>>(
     () async {
-      
       runApp(
         ChangeNotifierProvider(
           create: (_) => ThemeProvider(savedColor),
@@ -46,8 +45,8 @@ void main() async {
         ),
       );
     },
-    (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
-
+    (error, stack) =>
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
   );
 }
 
