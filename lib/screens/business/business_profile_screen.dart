@@ -1,6 +1,7 @@
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/providers/business_provider.dart';
+import 'package:acumulapp/screens/login_screen.dart';
 import 'package:acumulapp/screens/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -71,6 +72,10 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [buttomSignOut()],
+                  ),
                   Center(
                     child: CircleAvatar(
                       radius: 50,
@@ -187,6 +192,34 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
           ],
         );
       },
+    );
+  }
+
+  Widget buttomSignOut() {
+    return TextButton.icon(
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => InicioLogin()),
+          (Route<dynamic> route) => false,
+        );
+      },
+      icon: Icon(
+        MdiIcons.logout,
+        color: Theme.of(context).colorScheme.primary,
+        size: 20,
+      ),
+      iconAlignment: IconAlignment.end,
+      label: Text(
+        "Sign out",
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.primary,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      ),
     );
   }
 
