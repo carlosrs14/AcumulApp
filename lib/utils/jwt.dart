@@ -31,4 +31,8 @@ class JwtController {
   String? loadRefresh() {
       return storage.getItem('refreshToken');
   }
+
+  void clearCache() {
+    storage.clear();
+  }
 }

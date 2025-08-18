@@ -1,9 +1,11 @@
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/screens/login_screen.dart';
 import 'package:acumulapp/screens/theme_provider.dart';
+import 'package:acumulapp/utils/jwt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -173,6 +175,8 @@ class UserProfileScreenState extends State<UserProfileScreen> {
   Widget buttomSignOut() {
     return TextButton.icon(
       onPressed: () {
+        JwtController(localStorage).clearCache();
+        
         Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => InicioLogin()),
           (Route<dynamic> route) => false,
