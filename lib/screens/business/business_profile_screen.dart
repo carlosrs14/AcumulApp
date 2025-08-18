@@ -117,9 +117,10 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
       ),
 
       floatingActionButton: SpeedDial(
-        foregroundColor: Colors.white,
-        direction: SpeedDialDirection.left,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         backgroundColor: Theme.of(context).colorScheme.primary,
+        direction: SpeedDialDirection.left,
+
         icon: MdiIcons.pencil,
         children: [
           SpeedDialChild(child: Icon(MdiIcons.palette), onTap: customizeTheme),
@@ -182,10 +183,14 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
             TextButton(
               child: const Text('Aplicar'),
               onPressed: () {
+                final brightness = Theme.of(context).brightness;
+                final currentMode = brightness == Brightness.dark
+                    ? ThemeMode.dark
+                    : ThemeMode.light;
                 Provider.of<ThemeProvider>(
                   context,
                   listen: false,
-                ).setPrimaryColor(selectedColor);
+                ).setPrimaryColor(selectedColor, currentMode);
                 Navigator.of(context).pop();
               },
             ),

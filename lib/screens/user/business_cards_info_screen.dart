@@ -28,7 +28,6 @@ class _BusinessInfoCardsState extends State<BusinessInfoCards> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -65,10 +64,7 @@ class _BusinessInfoCardsState extends State<BusinessInfoCards> {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 6),
-            Text(
-              "Loyalty Card",
-              style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-            ),
+            Text(widget.businessCard.name, style: TextStyle(fontSize: 18)),
             Divider(height: 30, thickness: 1.5),
 
             infoTile("Expires on:", "${widget.businessCard.expiration}"),
@@ -79,7 +75,7 @@ class _BusinessInfoCardsState extends State<BusinessInfoCards> {
             Text(
               widget.businessCard.description,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+              style: TextStyle(fontSize: 16),
             ),
 
             SizedBox(height: 30),
@@ -103,7 +99,7 @@ class _BusinessInfoCardsState extends State<BusinessInfoCards> {
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
-          Text(value, style: TextStyle(color: Colors.grey[700])),
+          Text(value),
         ],
       ),
     );
@@ -154,7 +150,7 @@ class _BusinessInfoCardsState extends State<BusinessInfoCards> {
       iconAlignment: IconAlignment.end,
       label: Text("Add Card"),
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         backgroundColor: Theme.of(context).colorScheme.primary,
 
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),

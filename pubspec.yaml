@@ -48,6 +48,7 @@ dependencies:
   fl_chart: ^1.0.0
   firebase_core: ^4.0.0
   firebase_crashlytics: ^5.0.0
+  flutter_svg: ^2.2.0
   
 dev_dependencies:
   flutter_native_splash: ^2.3.1
@@ -63,7 +64,7 @@ dev_dependencies:
 # ----------------- INICIO DE LA SECCIÓN CORREGIDA -----------------
 flutter_native_splash:
   color: "#FFFFFF"
-  image: "assets/images/AcumulappLogo.png"
+  image: "assets/images/FullLogoAcumulapp.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

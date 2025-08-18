@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/user_provider.dart';
+import 'package:acumulapp/screens/logo_app.dart';
 import 'package:flutter/material.dart';
 
 class InicioLogin extends StatefulWidget {
@@ -36,7 +37,7 @@ class _InicioLoginState extends State<InicioLogin> {
               child: Column(
                 children: [
                   SizedBox(height: 20),
-                  _nombre(),
+                  LogoApp(),
                   Expanded(
                     child: SingleChildScrollView(
                       controller: _scrollController,
@@ -90,8 +91,15 @@ class _InicioLoginState extends State<InicioLogin> {
                                     });
                                   },
                                   decoration: InputDecoration(
+                                    labelStyle: TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface,
+                                    ),
                                     labelText: 'Account Type',
-                                    fillColor: Colors.white,
+                                    fillColor: Theme.of(
+                                      context,
+                                    ).colorScheme.surface,
                                     filled: true,
                                   ),
                                 ),
@@ -117,10 +125,6 @@ class _InicioLoginState extends State<InicioLogin> {
     );
   }
 
-  Widget _nombre() {
-    return Image.asset("assets/images/AcumulappLogo.png", scale: 4);
-  }
-
   Widget textFile(
     TextEditingController controller,
     int minimumQuantity,
@@ -130,10 +134,11 @@ class _InicioLoginState extends State<InicioLogin> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
       child: TextFormField(
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         obscureText: password,
         controller: controller,
         decoration: InputDecoration(
-          fillColor: Colors.white,
+          fillColor: Theme.of(context).colorScheme.surface,
           filled: true,
           border: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey.shade200),
@@ -160,6 +165,7 @@ class _InicioLoginState extends State<InicioLogin> {
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
           backgroundColor: Theme.of(context).colorScheme.primary,
         ),
         onPressed: () async {
@@ -172,33 +178,32 @@ class _InicioLoginState extends State<InicioLogin> {
             );
             return;
           }
-          User? user = await userProvider.login(
-            emailController.text,
-            passwordController.text,
-            _accountType,
-          );
-
-          if (user != null) {
-            log(user.toString());
-            Navigator.pushNamed(context, '/home', arguments: user);
-          } else {
+          try {
+            User? user = await userProvider.login(
+              emailController.text,
+              passwordController.text,
+              _accountType,
+            );
+            if (user != null) {
+              log(user.toString());
+              Navigator.pushNamed(context, '/home', arguments: user);
+            }
+          } catch (e) {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  'Usuario o contraseña incorrectos',
+                  e.toString().replaceAll("Exception: ", ""),
                   style: TextStyle(color: Colors.white),
                 ),
                 backgroundColor: Colors.redAccent,
                 duration: Duration(seconds: 3),
               ),
             );
+            return;
           }
         },
-        child: Text(
-          "Login",
-          style: TextStyle(color: Colors.white, fontSize: 15),
-        ),
+        child: Text("Login", style: TextStyle(fontSize: 15)),
       ),
     );
   }
@@ -231,7 +236,7 @@ class _InicioLoginState extends State<InicioLogin> {
           Text("¿No tienes una cuenta? "),
           Text(
             "Ingresa aqui ",
-            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ),
         ],
       ),

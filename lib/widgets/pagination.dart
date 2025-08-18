@@ -27,10 +27,14 @@ class PaginacionWidget extends StatelessWidget {
         children: [
           // Botón anterior
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+            ),
             onPressed: currentPage > 1
                 ? () async => await onPageChanged(currentPage - 1)
                 : null,
-            child: const Text('Anterior'),
+            child: Text('Anterior'),
           ),
 
           // Selector de items por página
@@ -51,10 +55,14 @@ class PaginacionWidget extends StatelessWidget {
 
           // Botón siguiente
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+            ),
             onPressed: currentPage < totalPages
                 ? () async => await onPageChanged(currentPage + 1)
                 : null,
-            child: const Text('Siguiente'),
+            child: Text('Siguiente'),
           ),
         ],
       ),

@@ -168,7 +168,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
       height: 40,
       padding: EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.black26),
         boxShadow: [

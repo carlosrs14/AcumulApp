@@ -318,7 +318,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
   ElevatedButton? addCardButton(UserCard userCard, bool mostrar, String texto) {
     return !mostrar
         ? null
-        : ElevatedButton.icon(
+        : ElevatedButton(
             onPressed: () async {
               if (userCard.code != null) {
                 await Navigator.of(context).push(
@@ -342,11 +342,9 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                 );
               }
             },
-            icon: Icon(MdiIcons.qrcode),
-            label: Text(""),
-            iconAlignment: IconAlignment.end,
+
             style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
               backgroundColor: Theme.of(context).colorScheme.primary,
 
               shape: RoundedRectangleBorder(
@@ -355,6 +353,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
               textStyle: TextStyle(fontSize: 14),
               elevation: 4,
             ),
+            child: Icon(MdiIcons.qrcode),
           );
   }
 
@@ -363,7 +362,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
       height: 40,
       padding: EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.black26),
         boxShadow: [

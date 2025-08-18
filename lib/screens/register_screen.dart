@@ -3,6 +3,7 @@ import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/user_provider.dart';
 import 'package:acumulapp/screens/business/update_info_screen.dart';
+import 'package:acumulapp/screens/logo_app.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -51,12 +52,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         minHeight: constraints.maxHeight,
                       ),
                       child: Container(
-                        decoration: BoxDecoration(color: Colors.white),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(height: 20),
-                            nombre(),
+                            LogoApp(),
                             SizedBox(height: 40),
                             Container(
                               padding: EdgeInsets.only(left: 20),
@@ -125,10 +125,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget nombre() {
-    return Image.asset("assets/images/AcumulappLogo.png", scale: 4);
-  }
-
   Widget userName() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 3),
@@ -166,6 +162,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
           backgroundColor: Theme.of(context).colorScheme.primary,
         ),
         onPressed: () async {
@@ -189,8 +186,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
               passwordController.text,
               "client",
             );
-
-            userResponse = await userProvider.register(userRequest);
+            try {
+              userResponse = await userProvider.register(userRequest);
+            } catch (e) {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    e.toString().replaceAll("Exception: ", ""),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  backgroundColor: Colors.redAccent,
+                  duration: Duration(seconds: 3),
+                ),
+              );
+              return;
+            }
           } else {
             userRequest = Collaborator(
               0,
@@ -200,7 +211,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
               "collaborator",
               null,
             );
-            userResponse = await userProvider.registerBusiness(userRequest);
+            try {
+              userResponse = await userProvider.registerBusiness(userRequest);
+            } catch (e) {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    e.toString().replaceAll("Exception: ", ""),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  backgroundColor: Colors.redAccent,
+                  duration: Duration(seconds: 3),
+                ),
+              );
+              return;
+            }
           }
 
           if (userResponse != null && "client" == userResponse.userType) {
@@ -213,21 +239,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     UpdateInfoScreen(user: userResponse as Collaborator),
               ),
             );
-          } else {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Error', style: TextStyle(color: Colors.white)),
-                backgroundColor: Colors.redAccent,
-                duration: Duration(seconds: 3),
-              ),
-            );
           }
         },
-        child: Text(
-          "Registrar",
-          style: TextStyle(color: Colors.white, fontSize: 15),
-        ),
+        child: Text("Registrar", style: TextStyle(fontSize: 15)),
       ),
     );
   }
@@ -242,10 +256,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
       child: TextFormField(
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         obscureText: password,
         controller: controller,
         decoration: InputDecoration(
-          fillColor: Colors.white,
+          fillColor: Theme.of(context).colorScheme.surface,
           filled: true,
           border: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey.shade200),
@@ -298,8 +313,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           });
         },
         decoration: InputDecoration(
+          labelStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           labelText: 'Account Type',
-          fillColor: Colors.white,
+          fillColor: Theme.of(context).colorScheme.surface,
           filled: true,
         ),
       ),

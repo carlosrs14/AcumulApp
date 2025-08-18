@@ -33,6 +33,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
       ),
       floatingActionButton: SpeedDial(
         direction: SpeedDialDirection.left,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         backgroundColor: Theme.of(context).colorScheme.primary,
         icon: MdiIcons.pencil,
         children: [
@@ -146,12 +147,9 @@ class UserProfileScreenState extends State<UserProfileScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(MdiIcons.email, color: Colors.grey[700], size: 18),
+        Icon(MdiIcons.email, size: 18),
         SizedBox(width: 6),
-        Text(
-          widget.user.email,
-          style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-        ),
+        Text(widget.user.email, style: TextStyle(fontSize: 16)),
       ],
     );
   }
@@ -160,12 +158,9 @@ class UserProfileScreenState extends State<UserProfileScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(MdiIcons.security, color: Colors.grey[700], size: 18),
+        Icon(MdiIcons.security, size: 18),
         SizedBox(width: 6),
-        Text(
-          widget.user.userType,
-          style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-        ),
+        Text(widget.user.userType, style: TextStyle(fontSize: 16)),
       ],
     );
   }
@@ -226,10 +221,14 @@ class UserProfileScreenState extends State<UserProfileScreen> {
             TextButton(
               child: const Text('Aplicar'),
               onPressed: () {
+                final brightness = Theme.of(context).brightness;
+                final currentMode = brightness == Brightness.dark
+                    ? ThemeMode.dark
+                    : ThemeMode.light;
                 Provider.of<ThemeProvider>(
                   context,
                   listen: false,
-                ).setPrimaryColor(selectedColor);
+                ).setPrimaryColor(selectedColor, currentMode);
                 Navigator.of(context).pop();
               },
             ),

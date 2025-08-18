@@ -59,7 +59,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
-      theme: themeProvider.themeData,
+      theme: themeProvider.lightTheme,
+      darkTheme: themeProvider.darkTheme,
+      themeMode: ThemeMode.system,
       home: user != null ? HomeScreen(user: user!) : InicioLogin(),
       onGenerateRoute: (settings) {
         switch (settings.name) {

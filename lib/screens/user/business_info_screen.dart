@@ -184,7 +184,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
           iconAlignment: IconAlignment.end,
           label: Text("View cards"),
           style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
             backgroundColor: Theme.of(context).colorScheme.primary,
             padding: EdgeInsets.symmetric(horizontal: 30, vertical: 14),
             shape: RoundedRectangleBorder(

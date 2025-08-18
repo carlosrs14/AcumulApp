@@ -28,13 +28,14 @@ class UserProvider with ChangeNotifier {
 
     try {
       final response = await userService.login(map);
-
-      if (response.statusCode != 200) return null;
-
-      JwtController jwt = JwtController(localStorage);
-
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
+      if (response.statusCode != 200) {
+        final message = jsonData['message'];
+        throw Exception(message);
+      }
+
+      JwtController jwt = JwtController(localStorage);
 
       final userData = jsonData['account'];
       final token = jsonData['token'];
@@ -45,7 +46,7 @@ class UserProvider with ChangeNotifier {
       user = userFactory(userData);
     } catch (e) {
       log(e.toString());
-      return null;
+      rethrow;
     }
     return user;
   }
@@ -55,14 +56,13 @@ class UserProvider with ChangeNotifier {
 
     try {
       final response = await userService.register(user);
-
-      if (response.statusCode != 200) {
-        return null;
-      }
-      JwtController jwt = JwtController(localStorage);
-
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
+      if (response.statusCode != 200) {
+        final message = jsonData['message'];
+        throw Exception(message);
+      }
+      JwtController jwt = JwtController(localStorage);
 
       final userData = jsonData['account'];
       final token = jsonData['token'];
@@ -71,7 +71,7 @@ class UserProvider with ChangeNotifier {
       userResponse = userFactory(userData);
     } catch (e) {
       log(e.toString());
-      return null;
+      rethrow;
     }
     return userResponse;
   }
@@ -80,13 +80,14 @@ class UserProvider with ChangeNotifier {
     User? userResponse;
     try {
       final response = await userService.registroBusiness(user);
-
-      if (response.statusCode != 200) {
-        return null;
-      }
-      JwtController jwt = JwtController(localStorage);
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
+      if (response.statusCode != 200) {
+        final message = jsonData['message'];
+        throw Exception(message);
+      }
+      JwtController jwt = JwtController(localStorage);
+
       log(jsonData["account"].toString());
       final userData = jsonData["account"];
       final token = jsonData['token'];
@@ -94,6 +95,7 @@ class UserProvider with ChangeNotifier {
       userResponse = userFactory(userData);
     } catch (e) {
       log(e.toString());
+      rethrow;
     }
     return userResponse;
   }

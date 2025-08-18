@@ -9,6 +9,7 @@ import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/providers/category_provider.dart';
 import 'package:acumulapp/screens/business/business_main_screen.dart';
 import 'package:acumulapp/screens/category_selector_screen.dart';
+import 'package:acumulapp/screens/logo_app.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -131,7 +132,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 20),
-                      Center(child: nombre()),
+                      Center(child: LogoApp()),
 
                       SizedBox(height: 40),
                       name("Business name"),
@@ -181,10 +182,6 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     );
   }
 
-  Widget nombre() {
-    return Image.asset("assets/images/AcumulappLogo.png", scale: 4);
-  }
-
   Widget name(String name) {
     return Container(
       padding: EdgeInsets.only(left: 20),
@@ -204,8 +201,9 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
       child: TextFormField(
         obscureText: password,
         controller: controller,
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         decoration: InputDecoration(
-          fillColor: Colors.white,
+          fillColor: Theme.of(context).colorScheme.surface,
           filled: true,
           border: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey.shade200),
@@ -238,6 +236,10 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
         onPressed: () async {
           if (!_formKey.currentState!.validate()) {
             await Future.delayed(Duration(milliseconds: 100));
@@ -343,10 +345,8 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
             );
           }
         },
-        child: Text(
-          "Update info",
-          style: TextStyle(color: Colors.white, fontSize: 15),
-        ),
+
+        child: Text("Update info", style: TextStyle(fontSize: 15)),
       ),
     );
   }

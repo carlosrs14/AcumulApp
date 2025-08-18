@@ -117,7 +117,6 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
     screenWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.grey[100],
         body: _isLoadingBusiness || _isLoadingCategories
             ? Center(child: CircularProgressIndicator())
             : _errorBusiness || _errorCategories
@@ -187,7 +186,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
       height: 40,
       padding: EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.black26),
         boxShadow: [
@@ -230,7 +229,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
           contentPadding: EdgeInsets.symmetric(horizontal: 12),
           prefixIcon: Icon(Icons.search),
           hintText: "Search",
-          fillColor: Colors.white,
+          fillColor: Theme.of(context).colorScheme.surface,
           filled: true,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
@@ -363,7 +362,9 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                       child: Icon(MdiIcons.cardsOutline, size: 20),
 
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
+                        foregroundColor: Theme.of(
+                          context,
+                        ).colorScheme.onPrimary,
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),

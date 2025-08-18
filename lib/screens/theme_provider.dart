@@ -3,31 +3,60 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider with ChangeNotifier {
   static const _key = 'primaryColor';
-  ThemeData _themeData;
+  ThemeData _lightTheme;
+  ThemeData _darkTheme;
+
+  static Color getContrastingTextColor(Color bg) {
+    return bg.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+  }
 
   ThemeProvider(Color initialColor)
-    : _themeData = ThemeData(
+    : _lightTheme = ThemeData(
         primaryColor: initialColor,
         colorScheme: ColorScheme.light(
           primary: initialColor,
-          onPrimary: Colors.white,
+          onPrimary: getContrastingTextColor(initialColor),
+          secondary: initialColor.withOpacity(0.8),
+        ),
+        useMaterial3: false,
+      ),
+      _darkTheme = ThemeData(
+        primaryColor: initialColor,
+        colorScheme: ColorScheme.dark(
+          primary: initialColor,
+          onPrimary: getContrastingTextColor(initialColor),
           secondary: initialColor.withOpacity(0.8),
         ),
         useMaterial3: false,
       );
 
-  ThemeData get themeData => _themeData;
+  ThemeData get lightTheme => _lightTheme;
+  ThemeData get darkTheme => _darkTheme;
 
-  void setPrimaryColor(Color color) async {
-    _themeData = ThemeData(
+  void setPrimaryColor(Color color, ThemeMode currentMode) async {
+    if (color.computeLuminance() > 0.9 && currentMode == ThemeMode.light) {
+      color = const Color.fromARGB(255, 143, 143, 143)!;
+    }
+    _lightTheme = ThemeData(
       primaryColor: color,
       colorScheme: ColorScheme.light(
         primary: color,
-        onPrimary: Colors.white,
+        onPrimary: getContrastingTextColor(color),
         secondary: color.withOpacity(0.8),
       ),
       useMaterial3: false,
     );
+
+    _darkTheme = ThemeData(
+      primaryColor: color,
+      colorScheme: ColorScheme.dark(
+        primary: color,
+        onPrimary: getContrastingTextColor(color),
+        secondary: color.withOpacity(0.8),
+      ),
+      useMaterial3: false,
+    );
+
     notifyListeners();
 
     final prefs = await SharedPreferences.getInstance();

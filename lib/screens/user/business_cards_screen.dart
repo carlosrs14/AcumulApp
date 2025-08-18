@@ -269,7 +269,7 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
       label: Text("Add Card"),
       iconAlignment: IconAlignment.end,
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         backgroundColor: Theme.of(context).colorScheme.primary,
 
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),

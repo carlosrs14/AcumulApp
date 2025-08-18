@@ -300,7 +300,8 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 50.0),
         child: FloatingActionButton(
-          foregroundColor: Colors.white,
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           onPressed: () => _navigateAndReload(
             AddEditCardScreen(
               idBusiness: widget.user.business[widget.selectedIndex].id,

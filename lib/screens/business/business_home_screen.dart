@@ -71,8 +71,8 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
           : SafeArea(child: cuerpo()),
       floatingActionButton: SpeedDial(
         direction: SpeedDialDirection.up,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
         icon: MdiIcons.qrcodeScan,
         children: [
           SpeedDialChild(
