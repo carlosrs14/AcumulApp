@@ -156,4 +156,29 @@ class UserProvider with ChangeNotifier {
     }
     return userResponse;
   }
+
+  Future<void> refreshToken(String refreshToken) async {
+    try {
+      final response = await userService.refreshToken(refreshToken);
+
+      if (response.statusCode != 200) {
+        return;
+      }
+
+      JwtController jwt = JwtController(localStorage);
+
+      String body = utf8.decode(response.bodyBytes);
+      final jsonData = jsonDecode(body);
+
+      final accessToken = jsonData["token"];
+
+      jwt.saveToken({
+        'token': accessToken,
+        'refreshToken': refreshToken
+      });
+
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 }
