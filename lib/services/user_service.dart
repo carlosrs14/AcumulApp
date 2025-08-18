@@ -62,15 +62,15 @@ class UserService {
       },
     );
   }
-    Future<http.Response> refreshToken(String token) async {
+  
+  Future<http.Response> refreshToken(String token) async {
     final Uri url = Uri.parse("$urlApi/auth/refresh");
     return await http.post(
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}',
       },
-      body: jsonEncode({'refresh': token})
+      body: jsonEncode({'refreshToken': token})
     );
   }
 }
