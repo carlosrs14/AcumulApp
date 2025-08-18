@@ -121,17 +121,18 @@ class UserProvider with ChangeNotifier {
     User? userResponse;
     try {
       final response = await userService.getById(id);
-
+      log(response.body);
       if (response.statusCode != 200) {
+        log("bad response");
         return null;
       }
 
       String body = utf8.decode(response.bodyBytes);
+
       final jsonData = jsonDecode(body);
 
-      final userData = jsonData["account"];
-
-      userResponse = userFactory(userData);
+      userResponse = userFactory(jsonData);
+      log("4");
     } catch (e) {
       log(e.toString());
     }
@@ -156,6 +157,7 @@ class UserProvider with ChangeNotifier {
     } catch (e) {
       log(e.toString());
     }
+    log("bravo");
     return userResponse;
   }
 
@@ -243,7 +245,9 @@ class UserProvider with ChangeNotifier {
     if (idField != null) {
       final userId = int.tryParse(idField.toString());
       log("god one id = $userId");
-      return getById(userId!);
+      User? u = await getById(userId!);
+      log(u!.toString());
+      return u;
     }
     log("Not validated error");
     return null;

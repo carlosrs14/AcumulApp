@@ -236,7 +236,7 @@ class _InicioLoginState extends State<InicioLogin> {
           Text("¿No tienes una cuenta? "),
           Text(
             "Ingresa aqui ",
-            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           ),
         ],
       ),

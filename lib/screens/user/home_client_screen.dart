@@ -188,7 +188,10 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black26),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.primary,
+          width: 2,
+        ),
         boxShadow: [
           BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(1, 2)),
         ],
@@ -200,7 +203,10 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
           items: categoryList.map((Category value) {
             return DropdownMenuItem<String>(
               value: value.name,
-              child: Text(value.name),
+              child: Text(
+                value.name,
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              ),
             );
           }).toList(),
           onChanged: (String? newValue) async {
@@ -208,6 +214,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
               filtros(_searchController.text, newValue);
             }
           },
+          iconEnabledColor: Theme.of(context).colorScheme.primary,
         ),
       ),
     );
@@ -231,9 +238,26 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
           hintText: "Search",
           fillColor: Theme.of(context).colorScheme.surface,
           filled: true,
-          border: OutlineInputBorder(
+
+          enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: Colors.black26),
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.primary,
+              width: 2,
+            ),
+          ),
+
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.secondary,
+              width: 3,
+            ),
+          ),
+
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide(color: Colors.red, width: 2),
           ),
         ),
       ),
@@ -266,7 +290,10 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: Colors.black12),
+            side: BorderSide(
+              color: Theme.of(context).colorScheme.primary,
+              width: 2,
+            ),
           ),
           child: InkWell(
             onTap: () {
@@ -289,7 +316,10 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                     height: 55,
                     padding: EdgeInsets.all(1),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black26, width: 1),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 1,
+                      ),
                       borderRadius: BorderRadius.circular(35),
                     ),
                     child: ClipOval(

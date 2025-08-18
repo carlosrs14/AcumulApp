@@ -127,7 +127,9 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
-                          side: const BorderSide(color: Colors.black),
+                          side: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(20),

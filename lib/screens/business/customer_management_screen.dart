@@ -105,7 +105,12 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
     return SafeArea(
       child: Column(
         children: [
-          Row(mainAxisAlignment: MainAxisAlignment.end, children: [filtro()]),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(padding: const EdgeInsets.only(top: 11), child: filtro()),
+            ],
+          ),
           Expanded(child: list()),
 
           PaginacionWidget(
@@ -170,7 +175,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black26),
+        border: Border.all(color: Theme.of(context).colorScheme.primary),
         boxShadow: [
           BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(1, 2)),
         ],
@@ -182,7 +187,10 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
           items: stateList.entries.map((entry) {
             return DropdownMenuItem<int>(
               value: entry.key,
-              child: Text(entry.value),
+              child: Text(
+                entry.value,
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              ),
             );
           }).toList(),
           onChanged: (int? newValue) async {
@@ -191,6 +199,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
               await filtros(newValue);
             }
           },
+          iconEnabledColor: Theme.of(context).colorScheme.primary,
         ),
       ),
     );
@@ -228,9 +237,18 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
                     ],
                   ),
                 ),
-                IconButton(
+                ElevatedButton.icon(
                   icon: Icon(MdiIcons.stamper),
-                  iconSize: 30,
+                  label: Text("Add"),
+                  iconAlignment: IconAlignment.end,
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 4,
+                  ),
                   onPressed: () async {
                     code = userCard.code!;
                     await addStampsDialog(
@@ -270,9 +288,18 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
                     ],
                   ),
                 ),
-                IconButton(
+                ElevatedButton.icon(
                   icon: Icon(MdiIcons.check),
-                  iconSize: 30,
+                  label: Text("Redimir"),
+                  iconAlignment: IconAlignment.end,
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 4,
+                  ),
                   onPressed: () async {
                     await redeemCard(userCard.code!);
                     await _loadUserCards();
@@ -296,9 +323,12 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(userCard.idClient.toString() ?? ''),
+                      Text(userCard.businessCard!.name),
                       const SizedBox(height: 4),
-                      Text('nada', style: TextStyle(color: Colors.grey[600])),
+                      Text(
+                        "Esta tarjeta a sido redimida",
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
                     ],
                   ),
                 ),
@@ -324,9 +354,18 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
                     ],
                   ),
                 ),
-                IconButton(
+                ElevatedButton.icon(
                   icon: Icon(MdiIcons.check),
-                  iconSize: 30,
+                  label: Text("Activar"),
+                  iconAlignment: IconAlignment.end,
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 4,
+                  ),
                   onPressed: () async {
                     await activateCard(userCard.code!);
                     await _loadUserCards();
@@ -354,11 +393,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
                     ],
                   ),
                 ),
-                IconButton(
-                  icon: Icon(MdiIcons.alert),
-                  iconSize: 30,
-                  onPressed: null,
-                ),
+                ElevatedButton(child: Icon(MdiIcons.alert), onPressed: null),
               ],
             ),
           ),

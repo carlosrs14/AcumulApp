@@ -123,7 +123,10 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: Colors.black),
+            side: BorderSide(
+              color: Theme.of(context).colorScheme.primary,
+              width: 2,
+            ),
           ),
           child: InkWell(
             onTap: () {

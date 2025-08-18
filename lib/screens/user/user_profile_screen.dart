@@ -58,7 +58,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
-            color: const Color.fromARGB(255, 72, 25, 58),
+            color: Theme.of(context).colorScheme.primary,
             width: 3,
           ),
         ),
@@ -106,7 +106,10 @@ class UserProfileScreenState extends State<UserProfileScreen> {
       height: 120,
       padding: EdgeInsets.all(1),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black, width: 1),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.primary,
+          width: 1,
+        ),
         borderRadius: BorderRadius.circular(70),
       ),
       child: Center(
@@ -171,7 +174,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
     return TextButton.icon(
       onPressed: () {
         JwtController(localStorage).clearCache();
-        
+
         Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => InicioLogin()),
           (Route<dynamic> route) => false,

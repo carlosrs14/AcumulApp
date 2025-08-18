@@ -14,11 +14,12 @@ abstract class User {
 }
 
 User userFactory(Map<String, dynamic> json) {
+  if (json['userType'] == null) json['userType'] = "client";
   switch (json['userType'] as String) {
     case 'collaborator':
       return Collaborator.fromJson(json);
     case 'client':
-      return Client.fromJson(json);       
+      return Client.fromJson(json);
     default:
       throw Exception('Unknown user type');
   }

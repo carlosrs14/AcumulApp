@@ -39,7 +39,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
-            color: const Color.fromARGB(255, 72, 25, 58),
+            color: Theme.of(context).colorScheme.primary,
             width: 3,
           ),
         ),

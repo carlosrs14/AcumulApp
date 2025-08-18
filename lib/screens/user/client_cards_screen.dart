@@ -119,7 +119,15 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
       child: Container(
         child: Column(
           children: [
-            Row(mainAxisAlignment: MainAxisAlignment.end, children: [filtro()]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 11),
+                  child: filtro(),
+                ),
+              ],
+            ),
             Expanded(child: listCards()),
 
             PaginacionWidget(
@@ -160,7 +168,10 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
           margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: Colors.black),
+            side: BorderSide(
+              color: Theme.of(context).colorScheme.primary,
+              width: 2,
+            ),
           ),
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
@@ -198,70 +209,28 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Icon(
-                              MdiIcons.stamper,
-                              size: 18,
-                              color: Colors.grey[700],
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                "CurrentStamps: ${card.currentStamps}",
-                              ),
-                            ),
-                          ],
+                        buildInfoRow(
+                          MdiIcons.stamper,
+                          "CurrentStamps",
+                          "${card.currentStamps}",
                         ),
                         const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.stars,
-                              size: 18,
-                              color: Colors.grey[700],
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                "Bounty: ${card.businessCard!.reward}",
-                              ),
-                            ),
-                          ],
+                        buildInfoRow(
+                          Icons.stars,
+                          "Bounty",
+                          "${card.businessCard!.reward}",
                         ),
                         const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Icon(
-                              MdiIcons.stamper,
-                              size: 18,
-                              color: Colors.grey[700],
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                "MaxStamp: ${card.businessCard!.maxStamp}",
-                              ),
-                            ),
-                          ],
+                        buildInfoRow(
+                          MdiIcons.stamper,
+                          "MaxStamp",
+                          "${card.businessCard!.maxStamp}",
                         ),
                         const SizedBox(height: 12),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.info_outline,
-                              size: 18,
-                              color: Colors.grey[700],
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                "Restricciones: ${card.businessCard!.restrictions}",
-                                style: TextStyle(fontSize: 14),
-                              ),
-                            ),
-                          ],
+                        buildInfoRow(
+                          Icons.info_outline,
+                          "Restricciones",
+                          card.businessCard!.restrictions ?? "",
                         ),
                       ],
                     ),
@@ -269,9 +238,8 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
 
                   const SizedBox(width: 8),
 
-                  // Botón a la derecha centrado verticalmente
                   Padding(
-                    padding: const EdgeInsets.only(right: 15),
+                    padding: const EdgeInsets.only(right: 5),
                     child: Align(
                       alignment: Alignment.center,
                       child: qrState(card, selectedState),
@@ -286,6 +254,33 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
     );
   }
 
+  Widget buildInfoRow(IconData icon, String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
+        const SizedBox(width: 4),
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              style: DefaultTextStyle.of(context).style.copyWith(fontSize: 14),
+              children: [
+                TextSpan(
+                  text: "$label: ",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                TextSpan(
+                  text: value,
+                  style: const TextStyle(fontWeight: FontWeight.normal),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget? qrState(UserCard userCard, int selectedState) {
     switch (selectedState) {
       case 1:
@@ -293,32 +288,40 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
           userCard,
           true,
           "Presenta este QR en el negocio para recibir tus sellos.",
+          "Añadir\nSellos",
         );
       case 2:
         return addCardButton(
           userCard,
           true,
           "Presenta este QR en el negocio para recibir tu recompensa.",
+          "Redimir",
         );
       case 3:
-        return addCardButton(userCard, false, "");
+        return addCardButton(userCard, false, "", "");
       case 4:
         return addCardButton(
           userCard,
           true,
           "Presenta este QR al negocio para que te activen tu tarjeta",
+          "Activar",
         );
       case 5:
-        return addCardButton(userCard, false, "");
+        return addCardButton(userCard, false, "", "");
       default:
         return Text('');
     }
   }
 
-  ElevatedButton? addCardButton(UserCard userCard, bool mostrar, String texto) {
+  ElevatedButton? addCardButton(
+    UserCard userCard,
+    bool mostrar,
+    String texto,
+    String labelBoton,
+  ) {
     return !mostrar
         ? null
-        : ElevatedButton(
+        : ElevatedButton.icon(
             onPressed: () async {
               if (userCard.code != null) {
                 await Navigator.of(context).push(
@@ -346,14 +349,22 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
             style: ElevatedButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
               backgroundColor: Theme.of(context).colorScheme.primary,
-
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
               ),
               textStyle: TextStyle(fontSize: 14),
               elevation: 4,
             ),
-            child: Icon(MdiIcons.qrcode),
+            icon: Icon(MdiIcons.qrcode),
+            iconAlignment: IconAlignment.end,
+            label: Text(
+              labelBoton,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              softWrap: true,
+              textAlign: TextAlign.center,
+            ),
           );
   }
 
@@ -364,7 +375,10 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black26),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.primary,
+          width: 2,
+        ),
         boxShadow: [
           BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(1, 2)),
         ],
@@ -376,7 +390,10 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
           items: stateList.entries.map((entry) {
             return DropdownMenuItem<int>(
               value: entry.key,
-              child: Text(entry.value),
+              child: Text(
+                entry.value,
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              ),
             );
           }).toList(),
           onChanged: (int? newValue) async {
@@ -385,6 +402,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
               await filtros(newValue);
             }
           },
+          iconEnabledColor: Theme.of(context).colorScheme.primary,
         ),
       ),
     );
