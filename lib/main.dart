@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:acumulapp/models/business_datails_arguments.dart';
 import 'package:acumulapp/models/client.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/user.dart';
+import 'package:acumulapp/providers/user_provider.dart';
 import 'package:acumulapp/screens/business/business_main_screen.dart';
 import 'package:acumulapp/screens/business/update_info_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_screen.dart';
@@ -11,7 +13,6 @@ import 'package:acumulapp/screens/user/business_info_screen.dart';
 import 'package:acumulapp/screens/user/home_screen.dart';
 import 'package:acumulapp/screens/login_screen.dart';
 import 'package:acumulapp/screens/register_screen.dart';
-import 'package:acumulapp/utils/jwt.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -21,23 +22,24 @@ import 'package:provider/provider.dart';
 import 'package:acumulapp/screens/theme_provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  await Firebase.initializeApp();
-
-  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
-
-  final user = await getLoggedUser();
-  final savedColor = await ThemeProvider.getSavedColor();
-
   runZonedGuarded<Future<void>>(
     () async {
+      WidgetsFlutterBinding.ensureInitialized();
+
+      await initLocalStorage();
+      await Firebase.initializeApp();
+      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+
+      PlatformDispatcher.instance.onError = (error, stack) {
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+        return true;
+      };
+      UserProvider userProvider = UserProvider();
+      await userProvider.init();
+
+      final user = await userProvider.getLoggedUser();
+      final savedColor = await ThemeProvider.getSavedColor();
       runApp(
         ChangeNotifierProvider(
           create: (_) => ThemeProvider(savedColor),
@@ -57,6 +59,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log(user.toString());
     final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
       theme: themeProvider.lightTheme,
@@ -125,16 +128,4 @@ class MyApp extends StatelessWidget {
       },
     );
   }
-}
-
-Future<User?> getLoggedUser() async {
-  // Aquí va tu lógica real (ej. verificar token guardado)
-  return null; // o true
-}
-
-Future<bool> checkLoginStatus() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await initLocalStorage();
-  JwtController jwt = JwtController(localStorage);
-  return jwt.loadToken() != null;
 }

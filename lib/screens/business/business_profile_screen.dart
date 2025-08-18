@@ -3,9 +3,11 @@ import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/screens/login_screen.dart';
 import 'package:acumulapp/screens/theme_provider.dart';
+import 'package:acumulapp/utils/jwt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -203,6 +205,8 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   Widget buttomSignOut() {
     return TextButton.icon(
       onPressed: () {
+        JwtController(localStorage).clearCache();
+        
         Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => InicioLogin()),
           (Route<dynamic> route) => false,
