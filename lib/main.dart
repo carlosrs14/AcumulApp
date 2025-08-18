@@ -21,29 +21,28 @@ import 'package:provider/provider.dart';
 import 'package:acumulapp/screens/theme_provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
+  runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    await Firebase.initializeApp();
 
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-  final user = await getLoggedUser();
-  final savedColor = await ThemeProvider.getSavedColor();
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
 
-  runZonedGuarded<Future<void>>(
-    () async {
-      runApp(
-        ChangeNotifierProvider(
-          create: (_) => ThemeProvider(savedColor),
-          child: MyApp(isLogged: user != null, user: user),
-        ),
-      );
+    final user = await getLoggedUser();
+    final savedColor = await ThemeProvider.getSavedColor();
+    runApp(
+      ChangeNotifierProvider(
+        create: (_) => ThemeProvider(savedColor),
+        child: MyApp(isLogged: user != null, user: user),
+      ),
+    );
     },
     (error, stack) =>
         FirebaseCrashlytics.instance.recordError(error, stack, fatal: true),
