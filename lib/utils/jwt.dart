@@ -7,9 +7,10 @@ class JwtController {
 
   JwtController(this.storage);
 
-  void saveToken(String token) {
+  void saveToken(Map<String, String> tokens) {
     try {
-      storage.setItem('token', token);
+      storage.setItem('token', tokens['token'] as String);
+      storage.setItem('refreshToken', tokens['refreshToken'] as String);
     } catch (e) {
       log(e.toString());
     }
@@ -17,5 +18,17 @@ class JwtController {
 
   String? loadToken() {
     return storage.getItem('token');
+  }
+
+  Map<String, String> loadTokens() {
+    Map<String, String> tokens = {
+      'token': storage.getItem('token') as String,
+      'refreshToken': storage.getItem('refreshToken') as String
+    };
+    return tokens;
+  }
+
+  String? loadRefresh() {
+      return storage.getItem('refreshToken');
   }
 }

@@ -37,11 +37,15 @@ class UserProvider with ChangeNotifier {
       final jsonData = jsonDecode(body);
 
       final userData = jsonData['account'];
-      final token = jsonData['token'];
-      log(userData.toString());
-      log(token.toString());
+      Map<String, String> tokens = {
+        'token': jsonData['token'],
+        'refreshToken': jsonData['refreshToken']
+      };
 
-      jwt.saveToken(token);
+      log(userData.toString());
+      log(tokens.toString());
+
+      jwt.saveToken(tokens);
       user = userFactory(userData);
     } catch (e) {
       log(e.toString());
@@ -65,9 +69,15 @@ class UserProvider with ChangeNotifier {
       final jsonData = jsonDecode(body);
 
       final userData = jsonData['account'];
-      final token = jsonData['token'];
+      Map<String, String> tokens = {
+        'token': jsonData['token'],
+        'refreshToken': jsonData['refreshToken']
+      };
+
       log(jsonEncode(userData));
-      jwt.saveToken(token);
+      log(tokens.toString());
+
+      jwt.saveToken(tokens);
       userResponse = userFactory(userData);
     } catch (e) {
       log(e.toString());
@@ -87,10 +97,17 @@ class UserProvider with ChangeNotifier {
       JwtController jwt = JwtController(localStorage);
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-      log(jsonData["account"].toString());
+      
       final userData = jsonData["account"];
-      final token = jsonData['token'];
-      jwt.saveToken(token);
+      Map<String, String> tokens = {
+        'token': jsonData['token'],
+        'refreshToken': jsonData['refreshToken']
+      };
+
+      log(jsonEncode(userData));
+      log(tokens.toString());
+
+      jwt.saveToken(tokens);
       userResponse = userFactory(userData);
     } catch (e) {
       log(e.toString());
