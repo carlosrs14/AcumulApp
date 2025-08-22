@@ -297,10 +297,11 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                       ),
                     );
 
-                    Navigator.of(context).pushReplacement(
+                    Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (_) => BusinessMainScreen(user: widget.user),
                       ),
+                      (route) => false,
                     );
                   } else {
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();

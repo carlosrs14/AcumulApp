@@ -230,7 +230,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           }
 
           if (userResponse != null && "client" == userResponse.userType) {
-            Navigator.pushNamed(context, '/home', arguments: userResponse);
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/home',
+              (route) => false,
+              arguments: userResponse,
+            );
           } else if (userResponse != null &&
               "collaborator" == userResponse.userType) {
             Navigator.of(context).push(

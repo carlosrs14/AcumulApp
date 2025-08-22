@@ -186,7 +186,12 @@ class _InicioLoginState extends State<InicioLogin> {
             );
             if (user != null) {
               log(user.toString());
-              Navigator.pushNamed(context, '/home', arguments: user);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/home',
+                (route) => false,
+                arguments: user,
+              );
             }
           } catch (e) {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
