@@ -235,7 +235,9 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 12),
           prefixIcon: Icon(Icons.search),
+          prefixIconColor: Theme.of(context).colorScheme.primary,
           hintText: "Search",
+          hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
           fillColor: Theme.of(context).colorScheme.surface,
           filled: true,
 
@@ -315,13 +317,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                     width: 55,
                     height: 55,
                     padding: EdgeInsets.all(1),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(35),
-                    ),
+
                     child: ClipOval(
                       child: Image.network(
                         filteredBusiness[index].logoUrl!,
@@ -337,10 +333,23 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                           );
                         },
                         errorBuilder: (context, error, stackTrace) {
-                          return Center(
-                            child: Text(
-                              filteredBusiness[index].name[0],
-                              style: TextStyle(fontSize: 20),
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(35),
+                            ),
+                            child: Center(
+                              child: Text(
+                                filteredBusiness[index].name[0],
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           );
                         },
@@ -366,8 +375,10 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                         SizedBox(height: 4),
                         RatingBarIndicator(
                           rating: 3.5,
-                          itemBuilder: (context, _) =>
-                              Icon(MdiIcons.star, color: Colors.amber),
+                          itemBuilder: (context, _) => Icon(
+                            MdiIcons.star,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                           itemCount: 5,
                           itemSize: 20.0,
                         ),
@@ -377,8 +388,8 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
 
                   Container(
                     height: 40,
-                    width: 70,
-                    child: ElevatedButton(
+                    width: 80,
+                    child: ElevatedButton.icon(
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -389,8 +400,9 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                           ),
                         );
                       },
-                      child: Icon(MdiIcons.cardsOutline, size: 20),
-
+                      icon: Icon(MdiIcons.cardsOutline, size: 20),
+                      iconAlignment: IconAlignment.end,
+                      label: Text("Ver"),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Theme.of(
                           context,

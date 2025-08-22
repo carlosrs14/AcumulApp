@@ -136,6 +136,7 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
                     business: widget.business,
                     user: widget.user,
                     businessCard: businessCardsList[index],
+                    userCard: null,
                   ),
                 ),
               );
@@ -168,7 +169,7 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                "Bounty: ${card.reward}",
+                                "Recompensa: ${card.reward}",
                                 style: TextStyle(fontSize: 14),
                               ),
                             ),
@@ -185,7 +186,7 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                "MaxStamp: ${card.maxStamp}",
+                                "Sellos maximos: ${card.maxStamp}",
                                 style: TextStyle(fontSize: 14),
                               ),
                             ),

@@ -108,7 +108,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
       decoration: BoxDecoration(
         border: Border.all(
           color: Theme.of(context).colorScheme.primary,
-          width: 1,
+          width: 2,
         ),
         borderRadius: BorderRadius.circular(70),
       ),
@@ -132,7 +132,11 @@ class UserProfileScreenState extends State<UserProfileScreen> {
             errorBuilder: (context, error, stackTrace) {
               return Text(
                 widget.user.name[0].toUpperCase(),
-                style: TextStyle(fontSize: 40),
+                style: TextStyle(
+                  fontSize: 40,
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
               );
             },
           ),

@@ -1,3 +1,4 @@
+import 'package:acumulapp/models/client.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/screens/user/client_cards_screen.dart';
 import 'package:acumulapp/screens/user/ejemplo.dart';
@@ -6,7 +7,7 @@ import 'package:acumulapp/screens/user/user_profile_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  final User user;
+  final Client user;
   const HomeScreen({super.key, required this.user});
 
   @override

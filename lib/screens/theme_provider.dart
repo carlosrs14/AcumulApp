@@ -13,6 +13,7 @@ class ThemeProvider with ChangeNotifier {
   ThemeProvider(Color initialColor)
     : _lightTheme = ThemeData(
         primaryColor: initialColor,
+        fontFamily: "Roboto",
         colorScheme: ColorScheme.light(
           primary: initialColor,
           onPrimary: getContrastingTextColor(initialColor),
@@ -22,6 +23,7 @@ class ThemeProvider with ChangeNotifier {
       ),
       _darkTheme = ThemeData(
         primaryColor: initialColor,
+        fontFamily: "Roboto",
         colorScheme: ColorScheme.dark(
           primary: initialColor,
           onPrimary: getContrastingTextColor(initialColor),
@@ -39,6 +41,7 @@ class ThemeProvider with ChangeNotifier {
     }
     _lightTheme = ThemeData(
       primaryColor: color,
+      fontFamily: "Roboto",
       colorScheme: ColorScheme.light(
         primary: color,
         onPrimary: getContrastingTextColor(color),
@@ -49,6 +52,7 @@ class ThemeProvider with ChangeNotifier {
 
     _darkTheme = ThemeData(
       primaryColor: color,
+      fontFamily: "Roboto",
       colorScheme: ColorScheme.dark(
         primary: color,
         onPrimary: getContrastingTextColor(color),
