@@ -9,6 +9,7 @@ import 'package:acumulapp/providers/user_card_provider.dart';
 import 'package:acumulapp/screens/user/QrCode_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_info_screen.dart';
 import 'package:acumulapp/widgets/pagination.dart';
+import 'package:acumulapp/widgets/stamp_container.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -186,6 +187,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                       business: businessResponse,
                       user: widget.user,
                       businessCard: card.businessCard!,
+                      userCard: card,
                     ),
                   ),
                 );
@@ -194,7 +196,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
             child: Padding(
               padding: const EdgeInsets.all(18),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Column(
@@ -208,29 +210,12 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                             color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        buildInfoRow(
-                          MdiIcons.stamper,
-                          "CurrentStamps",
-                          "${card.currentStamps}",
-                        ),
-                        const SizedBox(height: 12),
-                        buildInfoRow(
-                          Icons.stars,
-                          "Bounty",
-                          "${card.businessCard!.reward}",
-                        ),
-                        const SizedBox(height: 12),
-                        buildInfoRow(
-                          MdiIcons.stamper,
-                          "MaxStamp",
-                          "${card.businessCard!.maxStamp}",
-                        ),
-                        const SizedBox(height: 12),
-                        buildInfoRow(
-                          Icons.info_outline,
-                          "Restricciones",
-                          card.businessCard!.restrictions ?? "",
+                        SizedBox(height: 10),
+                        StampContainer(
+                          stamps: stampsGenenator(
+                            card.currentStamps!,
+                            card.businessCard!.maxStamp,
+                          ),
                         ),
                       ],
                     ),
@@ -238,12 +223,120 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
 
                   const SizedBox(width: 8),
 
-                  Padding(
-                    padding: const EdgeInsets.only(right: 5),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: qrState(card, selectedState),
-                    ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: qrState(card, selectedState),
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      Material(
+                        elevation: 6,
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.transparent,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: EdgeInsets.all(7),
+
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    "Meta: ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimary,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${card.businessCard!.maxStamp}",
+                                    style: TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimary,
+                                    ),
+                                  ),
+                                  SizedBox(width: 4),
+                                  Icon(
+                                    MdiIcons.starCircle,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "Actual: ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimary,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${card.currentStamps}",
+                                    style: TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimary,
+                                    ),
+                                  ),
+
+                                  SizedBox(width: 4),
+                                  Icon(
+                                    MdiIcons.starCircle,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "Faltan: ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimary,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${card.businessCard!.maxStamp - card.currentStamps!}",
+                                    style: TextStyle(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimary,
+                                    ),
+                                  ),
+                                  SizedBox(width: 4),
+                                  Icon(
+                                    MdiIcons.starCircleOutline,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -413,5 +506,16 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
       selectedState = idState;
     });
     await _loadCards();
+  }
+
+  List<bool> stampsGenenator(int current, int max) {
+    List<bool> result = [];
+    for (int i = 0; i < current; i++) {
+      result.add(true);
+    }
+    for (int i = 0; i < max - current; i++) {
+      result.add(false);
+    }
+    return result;
   }
 }
