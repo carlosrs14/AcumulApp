@@ -65,7 +65,18 @@ class MyApp extends StatelessWidget {
       theme: themeProvider.lightTheme,
       darkTheme: themeProvider.darkTheme,
       themeMode: ThemeMode.system,
-      home: user != null ? HomeScreen(user: user!) : InicioLogin(),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: child!,
+        );
+      },
+
+      home: user != null
+          ? (user!.userType == "collaborator"
+                ? BusinessMainScreen(user: user as Collaborator)
+                : HomeScreen(user: user as Client))
+          : InicioLogin(),
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/home':
@@ -76,6 +87,7 @@ class MyApp extends StatelessWidget {
             }
 
             final user = args;
+            log(user.userType.toString());
             if (user.userType == 'collaborator') {
               user as Collaborator;
               var indice = user.roles.indexWhere(

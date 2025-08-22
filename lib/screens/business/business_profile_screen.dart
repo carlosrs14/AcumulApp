@@ -1,6 +1,7 @@
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/providers/business_provider.dart';
+import 'package:acumulapp/screens/category_business_screen.dart';
 import 'package:acumulapp/screens/login_screen.dart';
 import 'package:acumulapp/screens/theme_provider.dart';
 import 'package:acumulapp/utils/jwt.dart';
@@ -78,39 +79,61 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [buttomSignOut()],
                   ),
-                  Center(
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(business.logoUrl!),
-                      backgroundColor: Colors.grey[200],
-                    ),
-                  ),
+                  Center(child: imagenUser(business)),
                   const SizedBox(height: 20),
-                  Text(
-                    business.name,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    business.direction!,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                  Center(
+                    child: Text(
+                      business.name,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Icon(Icons.star, color: Colors.amber),
+                      Icon(
+                        Icons.location_on,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          business.direction ?? "Sin dirección",
+                          style: const TextStyle(fontSize: 14),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.star,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                       const SizedBox(width: 5),
-                      Text(
-                        business.rating.toString(),
-                        style: Theme.of(context).textTheme.bodyLarge,
+
+                      Flexible(
+                        child: Text(
+                          textAlign: TextAlign.center,
+                          business.rating.toString(),
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 20),
+                  //const Divider(),
+                  //_buildLinks(business.links!),
                   const Divider(),
-                  _buildLinks(business.links!),
-                  const Divider(),
-                  _buildCategories(business.categories!),
+                  CategoryGrid(categories: business.categories!),
                 ],
               ),
             );
@@ -154,6 +177,53 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget imagenUser(Business business) {
+    return SizedBox(
+      width: 120,
+      height: 120,
+      child: ClipOval(
+        child: Image.network(
+          business.logoUrl!,
+          fit: BoxFit.cover,
+          width: 120,
+          height: 120,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Center(
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) {
+            // si falla, mostramos círculo con borde y letra inicial
+            return Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 2,
+                ),
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  business.name[0].toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 40,
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -206,7 +276,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
     return TextButton.icon(
       onPressed: () {
         JwtController(localStorage).clearCache();
-        
+
         Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => InicioLogin()),
           (Route<dynamic> route) => false,

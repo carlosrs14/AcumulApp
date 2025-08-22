@@ -1,5 +1,6 @@
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/user.dart';
+import 'package:acumulapp/screens/category_business_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -35,7 +36,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
     return SafeArea(
       child: Card(
         elevation: 4,
-        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
@@ -60,37 +61,46 @@ class _BusinessInfoState extends State<BusinessInfo> {
                           imagenNegocio(),
                           SizedBox(height: 30),
                           name(),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Categorias:",
-                              style: TextStyle(fontSize: 18),
-                            ),
-                          ),
+
                           SizedBox(height: 10),
                           Row(
                             children: [
                               Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                  ),
-                                  child: categories(),
+                                child: CategoryGrid(
+                                  categories: widget.business.categories!,
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                                child: ratingbar(),
                               ),
                             ],
                           ),
                           SizedBox(height: 10),
-                          Text(widget.business.direction!),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: Text(
+                                  widget.business.direction ?? "Sin dirección",
+                                  style: const TextStyle(fontSize: 14),
+                                  textAlign: TextAlign
+                                      .center, // centra el texto si ocupa varias líneas
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: ratingbar(),
+                      ),
                       SizedBox(height: 20),
                       buttom(),
                     ],
@@ -110,7 +120,10 @@ class _BusinessInfoState extends State<BusinessInfo> {
       height: 120,
       padding: EdgeInsets.all(1),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black, width: 1),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.primary,
+          width: 2,
+        ),
         borderRadius: BorderRadius.circular(70),
       ),
       child: Center(
@@ -133,7 +146,11 @@ class _BusinessInfoState extends State<BusinessInfo> {
             errorBuilder: (context, error, stackTrace) {
               return Text(
                 widget.business.name[0],
-                style: TextStyle(fontSize: 40),
+                style: TextStyle(
+                  fontSize: 40,
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
               );
             },
           ),
@@ -194,21 +211,6 @@ class _BusinessInfoState extends State<BusinessInfo> {
             elevation: 4,
           ),
         ),
-      ),
-    );
-  }
-
-  Widget categories() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-
-        children: widget.business.categories!.map((category) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            child: Text(category.name, style: TextStyle(fontSize: 16)),
-          );
-        }).toList(),
       ),
     );
   }
