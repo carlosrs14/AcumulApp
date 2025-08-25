@@ -11,8 +11,7 @@ class SocialButton {
 class SocialButtonsColumn extends StatelessWidget {
   final List<SocialButton> buttons;
 
-  const SocialButtonsColumn({Key? key, required this.buttons})
-    : super(key: key);
+  const SocialButtonsColumn({super.key, required this.buttons});
 
   Future<void> _abrirEnlace(String url) async {
     final Uri uri = Uri.parse(url);

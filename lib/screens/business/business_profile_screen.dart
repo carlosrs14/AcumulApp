@@ -4,7 +4,7 @@ import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/screens/business/update_info_screen.dart';
 import 'package:acumulapp/screens/category_business_screen.dart';
 import 'package:acumulapp/screens/login_screen.dart';
-import 'package:acumulapp/screens/qrScaneer.dart';
+import 'package:acumulapp/screens/qr_scaneer.dart';
 import 'package:acumulapp/screens/theme_provider.dart';
 import 'package:acumulapp/utils/jwt.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,6 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class BusinessProfileScreen extends StatefulWidget {
   final Collaborator user;
@@ -223,31 +222,6 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
     );
   }
 
-  Widget _buildLinks(List<dynamic> links) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Redes Sociales', style: Theme.of(context).textTheme.titleLarge),
-        const SizedBox(height: 10),
-        ...links.map(
-          (link) => InkWell(
-            onTap: () => _launchURL(link.url),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Text(
-                link.name,
-                style: const TextStyle(
-                  color: Colors.blue,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget imagenUser(Business business) {
     return SizedBox(
       width: 120,
@@ -368,30 +342,5 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
     );
-  }
-
-  Widget _buildCategories(List<dynamic> categories) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Categorías', style: Theme.of(context).textTheme.titleLarge),
-        const SizedBox(height: 10),
-        Wrap(
-          spacing: 8.0,
-          runSpacing: 4.0,
-          children: categories
-              .map((category) => Chip(label: Text(category.name)))
-              .toList(),
-        ),
-      ],
-    );
-  }
-
-  void _launchURL(String url) async {
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
-    } else {
-      throw 'No se pudo abrir $url';
-    }
   }
 }

@@ -12,7 +12,6 @@ class StampContainer extends StatefulWidget {
 class _StampContainerState extends State<StampContainer> {
   @override
   Widget build(BuildContext context) {
-    const int rows = 3;
     const int columns = 4;
     const double itemSize = 40;
     const double spacing = 1;

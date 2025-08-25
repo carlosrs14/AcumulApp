@@ -6,7 +6,7 @@ import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/models/user_card.dart';
 import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/providers/user_card_provider.dart';
-import 'package:acumulapp/screens/user/QrCode_screen.dart';
+import 'package:acumulapp/screens/user/qr_code_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_info_screen.dart';
 import 'package:acumulapp/widgets/pagination.dart';
 import 'package:acumulapp/widgets/stamp_container.dart';
@@ -24,9 +24,9 @@ class ClientCardsScreen extends StatefulWidget {
 class _ClientCardsScreenState extends State<ClientCardsScreen> {
   final UserCardProvider userCardProvider = UserCardProvider();
   final BusinessProvider businessProvider = BusinessProvider();
-  Timer? _debounce;
   List<UserCard> userCards = [];
   late double screenWidth;
+
   Map<int, String> stateList = {
     1: "Activo",
     2: "Completado",
@@ -69,10 +69,11 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
         _errorCardsActivate = true;
       });
     } finally {
-      if (!mounted) return;
-      setState(() {
+      if (mounted) {
+        setState(() {
         _isLoadingCardsActivate = false;
       });
+      }
     }
   }
 
@@ -117,41 +118,39 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
 
   Widget cuerpo() {
     return SafeArea(
-      child: Container(
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 11),
-                  child: filtro(),
-                ),
-              ],
-            ),
-            Expanded(child: listCards()),
-
-            PaginacionWidget(
-              currentPage: currentPage,
-              itemsPerPage: itemsPerPage,
-              totalItems: userCards.length,
-              totalPages: totalPage,
-              onPageChanged: (newPage) async {
-                setState(() {
-                  currentPage = newPage;
-                });
-                await _loadCards();
-              },
-              onItemsPerPageChanged: (newCount) async {
-                setState(() {
-                  itemsPerPage = newCount;
-                  currentPage = 1;
-                });
-                await _loadCards();
-              },
-            ),
-          ],
-        ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 11),
+                child: filtro(),
+              ),
+            ],
+          ),
+          Expanded(child: listCards()),
+      
+          PaginacionWidget(
+            currentPage: currentPage,
+            itemsPerPage: itemsPerPage,
+            totalItems: userCards.length,
+            totalPages: totalPage,
+            onPageChanged: (newPage) async {
+              setState(() {
+                currentPage = newPage;
+              });
+              await _loadCards();
+            },
+            onItemsPerPageChanged: (newCount) async {
+              setState(() {
+                itemsPerPage = newCount;
+                currentPage = 1;
+              });
+              await _loadCards();
+            },
+          ),
+        ],
       ),
     );
   }
@@ -177,11 +176,13 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
             onTap: () async {
+              final navigator = Navigator.of(context);
               Business? businessResponse = await businessProvider.get(
                 card.idBusinessCard,
               );
+              if (!mounted) return;
               if (businessResponse != null) {
-                Navigator.of(context).push(
+                navigator.push(
                   MaterialPageRoute(
                     builder: (_) => BusinessInfoCards(
                       business: businessResponse,
@@ -337,8 +338,6 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
             ),
           ),
         );
-
-        ;
       },
     );
   }

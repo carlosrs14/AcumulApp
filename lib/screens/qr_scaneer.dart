@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:acumulapp/models/user_card.dart';
 import 'package:acumulapp/providers/user_card_provider.dart';
 import 'package:acumulapp/utils/corner.dart';
@@ -34,6 +32,9 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
   Future<void> requestCameraPermission() async {
     var status = await Permission.camera.request();
+    
+    if (!mounted) return;
+
     if (status.isGranted) {
       setState(() {
         _hasPermission = true;
@@ -294,6 +295,8 @@ class _QRScannerPageState extends State<QRScannerPage> {
       code,
       int.parse(stampTextEditingController.text),
     );
+    if (!mounted) return;
+
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (success != null) {
       Navigator.pop(context);
@@ -317,6 +320,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
   Future<void> activateCard(String code) async {
     final success = await userCardProvider.activateCard(code);
+    if (!mounted) return;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (success != null) {
       Navigator.pop(context);
@@ -339,6 +343,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
   Future<void> redeemCard(String code) async {
     final success = await userCardProvider.redeemCard(code);
+    if (!mounted) return;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (success != null) {
       Navigator.pop(context);

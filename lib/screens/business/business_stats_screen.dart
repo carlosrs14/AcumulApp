@@ -3,11 +3,8 @@ import 'dart:developer';
 import 'package:acumulapp/models/business_stat.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/providers/business_provider.dart';
-import 'package:acumulapp/screens/qrScaneer.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class BusinessHomeScreen extends StatefulWidget {
   final int indexSelected;
@@ -27,6 +24,7 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
   BusinessStat? businessStat;
   bool _isLoadingBusinessStats = false;
   bool _errorBusinessStats = false;
+
   Future<void> _loadUserCards() async {
     if (!mounted) return;
     setState(() {
@@ -48,10 +46,11 @@ class _BusinessHomeScreenState extends State<BusinessHomeScreen> {
         _errorBusinessStats = true;
       });
     } finally {
-      if (!mounted) return;
-      setState(() {
-        _isLoadingBusinessStats = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoadingBusinessStats = false;
+        });
+      }
     }
   }
 

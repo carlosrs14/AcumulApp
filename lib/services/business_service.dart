@@ -52,18 +52,6 @@ class BusinessService {
     );
   }
 
-  // TODO
-  Future<http.Response> filterByCategory(String category) async {
-    final Uri url = Uri.parse("$urlApi/business");
-    return http.get(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${jwt?.loadToken()}',
-      },
-    );
-  }
-
   Future<http.Response> cardsStats(int id) async {
     final Uri url = Uri.parse("$urlApi/client-card/stats?businessId=$id");
     return http.get(

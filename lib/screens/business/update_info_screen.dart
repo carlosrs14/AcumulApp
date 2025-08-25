@@ -66,13 +66,13 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
       // iOS y otros
       status = await Permission.photos.request();
     }
+      if (!mounted) return;
 
     if (status.isGranted) {
       final ImagePicker picker = ImagePicker();
       final XFile? imagenSeleccionada = await picker.pickImage(
         source: ImageSource.gallery,
       );
-
       if (imagenSeleccionada != null) {
         setState(() {
           _imagen = File(imagenSeleccionada.path);
@@ -105,10 +105,11 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
         _errorCategories = true;
       });
     } finally {
-      if (!mounted) return;
-      setState(() {
-        _isLoadingCategories = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoadingCategories = false;
+        });
+      }
     }
   }
 
@@ -290,6 +291,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                   bool state = await businessProvider.updateCategories(
                     businessRequest,
                   );
+                  if (!mounted) return;
                   if (state) {
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -337,7 +339,6 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                 }
               }
             }
-            ;
           } else {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context).showSnackBar(

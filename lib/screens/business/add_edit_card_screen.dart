@@ -53,12 +53,16 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
       if (widget.card == null) {
         // Crear
         final createdCard = await _cardProvider.create(newCard);
+        if (!mounted) return;
         if (createdCard != null) {
           success = true;
         }
       } else {
         // Editar
         final updatedCard = await _cardProvider.update(newCard);
+
+        if (!mounted) return;
+
         if (updatedCard != null) {
           success = true;
         }

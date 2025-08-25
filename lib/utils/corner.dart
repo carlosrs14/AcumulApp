@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Corner extends StatelessWidget {
   final double rotate;
-  const Corner({this.rotate = 0});
+  const Corner({super.key, this.rotate = 0});
 
   @override
   Widget build(BuildContext context) {

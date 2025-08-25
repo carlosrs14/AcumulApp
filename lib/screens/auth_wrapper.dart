@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:acumulapp/providers/user_provider.dart';
-import 'package:acumulapp/screens/user/home_screen.dart';
 import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:flutter/material.dart';
 

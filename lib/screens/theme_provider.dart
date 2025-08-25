@@ -37,7 +37,7 @@ class ThemeProvider with ChangeNotifier {
 
   void setPrimaryColor(Color color, ThemeMode currentMode) async {
     if (color.computeLuminance() > 0.9 && currentMode == ThemeMode.light) {
-      color = const Color.fromARGB(255, 143, 143, 143)!;
+      color = const Color.fromARGB(255, 143, 143, 143);
     }
     _lightTheme = ThemeData(
       primaryColor: color,

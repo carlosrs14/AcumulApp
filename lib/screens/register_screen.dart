@@ -51,68 +51,66 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       constraints: BoxConstraints(
                         minHeight: constraints.maxHeight,
                       ),
-                      child: Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: 20),
-                            LogoApp(),
-                            SizedBox(height: 40),
-                            Container(
-                              padding: EdgeInsets.only(left: 20),
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "User name",
-                                style: TextStyle(fontSize: 15),
-                              ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 20),
+                          LogoApp(),
+                          SizedBox(height: 40),
+                          Container(
+                            padding: EdgeInsets.only(left: 20),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "User name",
+                              style: TextStyle(fontSize: 15),
                             ),
-                            textFile(userNameController, 3, false, false, null),
-                            Container(
-                              padding: EdgeInsets.only(left: 20),
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "Email",
-                                style: TextStyle(fontSize: 15),
-                              ),
+                          ),
+                          textFile(userNameController, 3, false, false, null),
+                          Container(
+                            padding: EdgeInsets.only(left: 20),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Email",
+                              style: TextStyle(fontSize: 15),
                             ),
-                            textFile(emailController, 3, true, false, null),
-                            Container(
-                              padding: EdgeInsets.only(left: 20),
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "Password",
-                                style: TextStyle(fontSize: 15),
-                              ),
+                          ),
+                          textFile(emailController, 3, true, false, null),
+                          Container(
+                            padding: EdgeInsets.only(left: 20),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Password",
+                              style: TextStyle(fontSize: 15),
                             ),
-                            textFile(
-                              passwordController,
-                              3,
-                              false,
-                              true,
-                              passwordConfirmController,
+                          ),
+                          textFile(
+                            passwordController,
+                            3,
+                            false,
+                            true,
+                            passwordConfirmController,
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(left: 20),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Password confirm",
+                              style: TextStyle(fontSize: 15),
                             ),
-                            Container(
-                              padding: EdgeInsets.only(left: 20),
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "Password confirm",
-                                style: TextStyle(fontSize: 15),
-                              ),
-                            ),
-                            textFile(
-                              passwordConfirmController,
-                              3,
-                              false,
-                              true,
-                              passwordController,
-                            ),
-                            acountypes(),
-                            SizedBox(height: 30),
-                            botonEntrar(),
-                            SizedBox(height: 30),
-                            //botonGoogle(),
-                          ],
-                        ),
+                          ),
+                          textFile(
+                            passwordConfirmController,
+                            3,
+                            false,
+                            true,
+                            passwordController,
+                          ),
+                          acountypes(),
+                          SizedBox(height: 30),
+                          botonEntrar(),
+                          SizedBox(height: 30),
+                          //botonGoogle(),
+                        ],
                       ),
                     ),
                   ),
@@ -188,6 +186,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             );
             try {
               userResponse = await userProvider.register(userRequest);
+              if (!mounted) return;
             } catch (e) {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(
@@ -213,6 +212,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             );
             try {
               userResponse = await userProvider.registerBusiness(userRequest);
+              if (!mounted) return;
             } catch (e) {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
               ScaffoldMessenger.of(context).showSnackBar(

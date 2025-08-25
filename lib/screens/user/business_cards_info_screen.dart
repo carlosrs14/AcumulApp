@@ -3,7 +3,7 @@ import 'package:acumulapp/models/card.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/models/user_card.dart';
 import 'package:acumulapp/providers/user_card_provider.dart';
-import 'package:acumulapp/screens/user/QrCode_screen.dart';
+import 'package:acumulapp/screens/user/qr_code_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -67,24 +67,24 @@ class _BusinessInfoCardsState extends State<BusinessInfoCards> {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 6),
-            Text(businessCard!.name, style: TextStyle(fontSize: 18)),
+            Text(businessCard.name, style: TextStyle(fontSize: 18)),
             Divider(height: 30, thickness: 1.5),
 
             infoTile(
               MdiIcons.calendarClock,
               "Expiracion:",
-              "${businessCard!.expiration}",
+              "${businessCard.expiration}",
             ),
             infoTile(
               MdiIcons.starCircle,
               "Sellos maximos:",
-              "${businessCard!.maxStamp}",
+              "${businessCard.maxStamp}",
             ),
-            infoTile(MdiIcons.gift, "Recompensa:", businessCard!.reward),
+            infoTile(MdiIcons.gift, "Recompensa:", businessCard.reward),
             infoTile(
               MdiIcons.alertCircleOutline,
               "Restricciones:",
-              businessCard!.restrictions,
+              businessCard.restrictions,
             ),
             ?widget.userCard == null
                 ? null
@@ -95,7 +95,7 @@ class _BusinessInfoCardsState extends State<BusinessInfoCards> {
                   ),
             SizedBox(height: 10),
             Text(
-              businessCard!.description,
+              businessCard.description,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16),
             ),
@@ -131,8 +131,9 @@ class _BusinessInfoCardsState extends State<BusinessInfoCards> {
     return ElevatedButton.icon(
       onPressed: () async {
         UserCard? userCard = await userCardProvider.create(
-          UserCard(0, widget.user.id, widget.businessCard!.id),
+          UserCard(0, widget.user.id, widget.businessCard.id),
         );
+        if (!mounted) return;
         if (userCard != null && userCard.code != null) {
           Navigator.of(context).push(
             MaterialPageRoute(

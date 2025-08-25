@@ -59,10 +59,11 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
         _errorCategories = true;
       });
     } finally {
-      if (!mounted) return;
-      setState(() {
+      if (mounted) {
+        setState(() {
         _isLoadingCategories = false;
       });
+      }
     }
   }
 
@@ -98,10 +99,11 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
         _errorBusiness = true;
       });
     } finally {
-      if (!mounted) return;
-      setState(() {
-        _isLoadingBusiness = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoadingBusiness = false;
+        });
+      }
     }
   }
 
@@ -386,7 +388,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                     ),
                   ),
 
-                  Container(
+                  SizedBox(
                     height: 40,
                     width: 80,
                     child: ElevatedButton.icon(

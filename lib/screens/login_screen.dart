@@ -46,73 +46,71 @@ class _InicioLoginState extends State<InicioLogin> {
                         constraints: BoxConstraints(
                           minHeight: constraints.maxHeight,
                         ),
-                        child: Container(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(height: 160),
-                              Container(
-                                padding: EdgeInsets.only(left: 20),
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Email",
-                                  style: TextStyle(fontSize: 15),
-                                ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 160),
+                            Container(
+                              padding: EdgeInsets.only(left: 20),
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Email",
+                                style: TextStyle(fontSize: 15),
                               ),
-                              textFile(emailController, 3, true, false),
-                              Container(
-                                padding: EdgeInsets.only(left: 20),
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Password",
-                                  style: TextStyle(fontSize: 15),
-                                ),
+                            ),
+                            textFile(emailController, 3, true, false),
+                            Container(
+                              padding: EdgeInsets.only(left: 20),
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Password",
+                                style: TextStyle(fontSize: 15),
                               ),
-                              textFile(passwordController, 3, false, true),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 3,
-                                ),
-                                child: DropdownButtonFormField<String>(
-                                  value: _accountType,
-                                  items: [
-                                    DropdownMenuItem(
-                                      value: 'client',
-                                      child: Text('Client'),
-                                    ),
-                                    DropdownMenuItem(
-                                      value: 'business',
-                                      child: Text('Business'),
-                                    ),
-                                  ],
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      _accountType = newValue!;
-                                    });
-                                  },
-                                  decoration: InputDecoration(
-                                    labelStyle: TextStyle(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSurface,
-                                    ),
-                                    labelText: 'Account Type',
-                                    fillColor: Theme.of(
-                                      context,
-                                    ).colorScheme.surface,
-                                    filled: true,
+                            ),
+                            textFile(passwordController, 3, false, true),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 3,
+                              ),
+                              child: DropdownButtonFormField<String>(
+                                value: _accountType,
+                                items: [
+                                  DropdownMenuItem(
+                                    value: 'client',
+                                    child: Text('Client'),
                                   ),
+                                  DropdownMenuItem(
+                                    value: 'business',
+                                    child: Text('Business'),
+                                  ),
+                                ],
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    _accountType = newValue!;
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  labelStyle: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
+                                  ),
+                                  labelText: 'Account Type',
+                                  fillColor: Theme.of(
+                                    context,
+                                  ).colorScheme.surface,
+                                  filled: true,
                                 ),
                               ),
-                              SizedBox(height: 30),
-                              _botonEntrar(context),
-                              SizedBox(height: 30),
-                              _botonGoogle(context),
-                              SizedBox(height: 30),
-                              _irARegistrar(context),
-                            ],
-                          ),
+                            ),
+                            SizedBox(height: 30),
+                            _botonEntrar(context),
+                            SizedBox(height: 30),
+                            _botonGoogle(context),
+                            SizedBox(height: 30),
+                            _irARegistrar(context),
+                          ],
                         ),
                       ),
                     ),
@@ -170,6 +168,9 @@ class _InicioLoginState extends State<InicioLogin> {
           backgroundColor: Theme.of(context).colorScheme.primary,
         ),
         onPressed: () async {
+          final messenger = ScaffoldMessenger.of(context);
+          final navigator = Navigator.of(context);
+
           if (!_formKey.currentState!.validate()) {
             await Future.delayed(Duration(milliseconds: 100));
             _scrollController.animateTo(
@@ -187,16 +188,15 @@ class _InicioLoginState extends State<InicioLogin> {
             );
             if (user != null) {
               log(user.toString());
-              Navigator.pushNamedAndRemoveUntil(
-                context,
+              navigator.pushNamedAndRemoveUntil(
                 '/home',
                 (route) => false,
                 arguments: user,
               );
             }
           } catch (e) {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(
+            messenger.hideCurrentMaterialBanner();
+            messenger.showSnackBar(
               SnackBar(
                 content: Text(
                   e.toString().replaceAll("Exception: ", ""),

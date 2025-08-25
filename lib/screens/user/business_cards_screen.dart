@@ -4,7 +4,7 @@ import 'package:acumulapp/models/card.dart';
 import 'package:acumulapp/models/user_card.dart';
 import 'package:acumulapp/providers/card_provider.dart';
 import 'package:acumulapp/providers/user_card_provider.dart';
-import 'package:acumulapp/screens/user/QrCode_screen.dart';
+import 'package:acumulapp/screens/user/qr_code_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_info_screen.dart';
 import 'package:acumulapp/widgets/pagination.dart';
 
@@ -29,7 +29,7 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
   final UserCardProvider userCardProvider = UserCardProvider();
 
   bool _isLoadingBusinessCards = true;
-  String? _errorBusinessCards;
+  bool _errorBusinessCards = false;
 
   List<BusinessCard> businessCardsList = [];
   int currentPage = 1;
@@ -40,7 +40,7 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
     if (!mounted) return;
     setState(() {
       _isLoadingBusinessCards = true;
-      _errorBusinessCards = null;
+      _errorBusinessCards = false;
     });
     try {
       final paginationData = await cardProvider.filterByBusiness(
@@ -58,13 +58,14 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _errorBusinessCards = 'Error al cargar categorías';
+        _errorBusinessCards = true;
       });
     } finally {
-      if (!mounted) return;
-      setState(() {
-        _isLoadingBusinessCards = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoadingBusinessCards = false;
+        });
+      }
     }
   }
 
@@ -79,8 +80,10 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
     return Scaffold(
       body: _isLoadingBusinessCards
           ? Center(child: CircularProgressIndicator())
+          : _errorBusinessCards
+          ? Center(child: const Text("Error de conexion"))
           : businessCardsList.isEmpty
-          ? Center(child: Text("No hay tarjetas disponibles"))
+          ? Center(child: const Text("No hay tarjetas disponibles"))
           : Container(child: cuerpo()),
     );
   }
@@ -234,11 +237,14 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
         UserCard? userCard = await userCardProvider.create(
           UserCard(0, widget.user.id, businessCard.id),
         );
+        
+        if (!mounted) return;
+
         if (userCard != null && userCard.code != null) {
           Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => QrCodeScreen(
-                code: userCard!.code!,
+                code: userCard.code!,
                 text:
                     "Presenta este QR al negocio para que te activen tu tarjeta",
               ),

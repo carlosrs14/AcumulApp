@@ -206,15 +206,13 @@ class _BusinessInfoState extends State<BusinessInfo> {
   }
 
   Widget ratingbar() {
-    return Container(
-      child: RatingBarIndicator(
-        rating: widget.business.rating!,
-        itemBuilder: (context, index) =>
-            Icon(MdiIcons.star, color: Colors.amber),
-        itemCount: 5,
-        itemSize: screenWidth * 0.065,
-        direction: Axis.horizontal,
-      ),
+    return RatingBarIndicator(
+      rating: widget.business.rating!,
+      itemBuilder: (context, index) =>
+          Icon(MdiIcons.star, color: Colors.amber),
+      itemCount: 5,
+      itemSize: screenWidth * 0.065,
+      direction: Axis.horizontal,
     );
   }
 

@@ -19,7 +19,7 @@ class ManageCardsScreen extends StatefulWidget {
   });
 
   @override
-  _ManageCardsScreenState createState() => _ManageCardsScreenState();
+   State<ManageCardsScreen> createState() => _ManageCardsScreenState();
 }
 
 class _ManageCardsScreenState extends State<ManageCardsScreen> {
@@ -58,10 +58,12 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
 
       log(e.toString());
     } finally {
-      if (!mounted) return;
-      setState(() {
-        _isLoadingCardsActivate = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoadingCardsActivate = false;
+        });
+      }
+      
     }
   }
 
@@ -105,6 +107,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
 
     if (confirmed == true) {
       final success = await cardProvider.delete(cardId);
+      if (!mounted) return;
       if (success) {
         await _loadCards(currentPage, itemsPerPage);
       } else {

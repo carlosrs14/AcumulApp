@@ -68,10 +68,11 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
         _errorCardsActivate = true;
       });
     } finally {
-      if (!mounted) return;
-      setState(() {
-        _isLoadingCardsActivate = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoadingCardsActivate = false;
+        });
+      }
     }
   }
 
@@ -143,7 +144,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
       itemCount: userCards.length,
       itemBuilder: (context, index) {
         final UserCard userCard = userCards[index];
-        return swichtCard(userCard);
+        return swichtCard(userCard, selectedState);
       },
     );
   }
@@ -213,7 +214,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
     await _loadUserCards();
   }
 
-  Widget swichtCard(UserCard userCard) {
+  Widget swichtCard(UserCard userCard, int selectedState) {
     switch (selectedState) {
       case 1:
         return Card(
@@ -393,7 +394,10 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
                     ],
                   ),
                 ),
-                ElevatedButton(child: Icon(MdiIcons.alert), onPressed: null),
+                ElevatedButton(
+                  onPressed: null,
+                  child: Icon(MdiIcons.alert)
+                ),
               ],
             ),
           ),
@@ -485,9 +489,11 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
       code,
       int.parse(stampTextEditingController.text),
     );
+    if (!mounted) return;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (success != null) {
       await _loadUserCards();
+    if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Sellos agregados exitosamente'),
@@ -507,9 +513,13 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
 
   Future<void> activateCard(String code) async {
     final success = await userCardProvider.activateCard(code);
+    
+    if (!mounted) return;
+
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (success != null) {
-      await _loadUserCards();
+    await _loadUserCards();
+    if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Tarjeta activada exitosamente'),
@@ -528,9 +538,11 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
 
   Future<void> redeemCard(String code) async {
     final success = await userCardProvider.redeemCard(code);
+    if (!mounted) return;
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (success != null) {
       await _loadUserCards();
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Tarjeta redimida exitosamente'),
