@@ -20,6 +20,8 @@ class _QRScannerPageState extends State<QRScannerPage> {
   final UserCardProvider userCardProvider = UserCardProvider();
   bool _hasPermission = false;
   bool _isScanning = false;
+  bool _isReloading = false;
+  final MobileScannerController _cameraController = MobileScannerController();
 
   final TextEditingController stampTextEditingController =
       TextEditingController();
@@ -51,6 +53,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
           ? Stack(
               children: [
                 MobileScanner(
+                  controller: _cameraController,
                   onDetect: (BarcodeCapture capture) async {
                     if (_isScanning) return;
 
@@ -61,11 +64,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
                         setState(() {
                           _isScanning = true;
                         });
-
-                        // ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        // ScaffoldMessenger.of(context).showSnackBar(
-                        //   SnackBar(content: Text('Código: $code')),
-                        // );
 
                         if ("Activate Card" == widget.funcionalidad) {
                           await activateCard(code);
@@ -98,15 +96,12 @@ class _QRScannerPageState extends State<QRScannerPage> {
                     child: Stack(
                       children: [
                         Positioned(top: 0, left: 0, child: Corner()),
-
                         Positioned(top: 0, right: 0, child: Corner(rotate: 90)),
-
                         Positioned(
                           bottom: 0,
                           left: 0,
                           child: Corner(rotate: 270),
                         ),
-
                         Positioned(
                           bottom: 0,
                           right: 0,
@@ -116,21 +111,105 @@ class _QRScannerPageState extends State<QRScannerPage> {
                     ),
                   ),
                 ),
+
+                if (_isReloading)
+                  Container(
+                    color: Colors.black54,
+                    child: const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    ),
+                  ),
               ],
             )
-          : Center(child: Text('Esperando permiso de cámara...')),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 30.0),
-        child: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              _isScanning = false;
-            });
-          },
-          child: Icon(MdiIcons.reload),
-        ),
+          : const Center(child: Text('Esperando permiso de cámara...')),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Botón para resetear escaneo
+          FloatingActionButton(
+            heroTag: "btnReload",
+            onPressed: () async {
+              setState(() {
+                _isReloading = true;
+                _isScanning = false;
+              });
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                try {
+                  await _cameraController.stop();
+                  await _cameraController.start();
+                } catch (e) {
+                  debugPrint("Error al reiniciar la cámara: $e");
+                } finally {
+                  if (mounted) {
+                    setState(() {
+                      _isReloading = false;
+                    });
+                  }
+                }
+              });
+            },
+            child: Icon(MdiIcons.reload),
+          ),
+          const SizedBox(height: 15),
+          // Botón para ingresar código manual
+          FloatingActionButton(
+            heroTag: "btnManual",
+            onPressed: () => enterCodeManually(),
+            child: Icon(MdiIcons.keyboard),
+          ),
+        ],
       ),
     );
+  }
+
+  Future<void> enterCodeManually() async {
+    final TextEditingController codeController = TextEditingController();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Ingresar código'),
+        content: TextField(
+          controller: codeController,
+          decoration: const InputDecoration(
+            hintText: 'Escribe el código aquí',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (codeController.text.trim().isNotEmpty) {
+                Navigator.pop(context, true);
+              }
+            },
+            child: const Text('Aceptar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      final code = codeController.text.trim();
+
+      if ("Activate Card" == widget.funcionalidad) {
+        await activateCard(code);
+      } else if ("Redeem Card" == widget.funcionalidad) {
+        await redeemCard(code);
+      } else if ("Add Stamps" == widget.funcionalidad) {
+        UserCard? userCard = await userCardProvider.getByCode(code);
+        if (userCard != null) {
+          await addStampsDialog(
+            code,
+            userCard.businessCard!.maxStamp - userCard.currentStamps!,
+          );
+        }
+      }
+    }
   }
 
   Future<void> addStampsDialog(String code, int remainingStamps) async {
