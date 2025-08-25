@@ -252,4 +252,37 @@ class UserProvider with ChangeNotifier {
     log("Not validated error");
     return null;
   }
+
+  Future<User?> authClerk(String token) async {
+    User user;
+
+    try {
+      final response = await userService.authClerk(token);
+      String body = utf8.decode(response.bodyBytes);
+      final jsonData = jsonDecode(body);
+
+      if (response.statusCode != 200) {
+        final message = jsonData['message'];
+        throw Exception(message);
+      }
+
+      JwtController jwt = JwtController(localStorage);
+
+      final userData = jsonData['account'];
+      Map<String, String> tokens = {
+        'token': jsonData['token'],
+        'refreshToken': jsonData['refreshToken'],
+      };
+
+      log(userData.toString());
+      log(tokens.toString());
+
+      jwt.saveToken(tokens);
+      user = userFactory(userData);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+    return user;
+  }
 }

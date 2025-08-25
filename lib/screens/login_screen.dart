@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/user_provider.dart';
+import 'package:acumulapp/screens/auth_wrapper.dart';
 import 'package:acumulapp/screens/logo_app.dart';
 import 'package:flutter/material.dart';
 
@@ -106,8 +107,8 @@ class _InicioLoginState extends State<InicioLogin> {
                               ),
                               SizedBox(height: 30),
                               _botonEntrar(context),
-                              //SizedBox(height: 30),
-                              //_botonGoogle(context),
+                              SizedBox(height: 30),
+                              _botonGoogle(context),
                               SizedBox(height: 30),
                               _irARegistrar(context),
                             ],
@@ -221,7 +222,9 @@ class _InicioLoginState extends State<InicioLogin> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Theme.of(context).colorScheme.primary,
         ),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const AuthWrapper(),));
+        },
         child: Text(
           "Login with Google",
           style: TextStyle(color: Colors.white, fontSize: 15),

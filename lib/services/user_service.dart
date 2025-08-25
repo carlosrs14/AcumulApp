@@ -73,4 +73,16 @@ class UserService {
       body: jsonEncode({'refreshToken': token})
     );
   }
+  
+  Future<http.Response> authClerk(String token) async {
+    final Uri url = Uri.parse("$urlApi/auth/clerk-signin");
+    return await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+    );
+  }
+  
 }
