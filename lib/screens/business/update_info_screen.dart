@@ -114,7 +114,13 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: cuerpo());
+    return Scaffold(
+      body: _isLoadingCategories
+          ? Center(child: CircularProgressIndicator())
+          : _errorCategories
+          ? Center(child: Text("Error de conexion"))
+          : cuerpo(),
+    );
   }
 
   Widget cuerpo() {

@@ -25,6 +25,7 @@ class ManageCardsScreen extends StatefulWidget {
 class _ManageCardsScreenState extends State<ManageCardsScreen> {
   final CardProvider cardProvider = CardProvider();
   bool _isLoadingCardsActivate = true;
+  bool _errorLoadingCards = false;
   int currentPage = 1;
   int itemsPerPage = 10;
   int totalPage = 10;
@@ -34,6 +35,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
     if (!mounted) return;
     setState(() {
       _isLoadingCardsActivate = true;
+      _errorLoadingCards = false;
     });
     try {
       final paginationData = await cardProvider.filterByBusiness(
@@ -49,9 +51,17 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
         totalPage = paginationData.totalPages;
       });
     } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorLoadingCards = true;
+      });
+
       log(e.toString());
     } finally {
-      _isLoadingCardsActivate = false;
+      if (!mounted) return;
+      setState(() {
+        _isLoadingCardsActivate = false;
+      });
     }
   }
 
@@ -112,6 +122,8 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
       appBar: AppBar(title: Text('Gestión de tarjetas')),
       body: _isLoadingCardsActivate
           ? Center(child: CircularProgressIndicator())
+          : _errorLoadingCards
+          ? Center(child: Text("Error de conexion"))
           : Column(
               children: [
                 Expanded(
@@ -364,7 +376,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                     ),
                     elevation: 0,
                   ),
-                  icon: Icon(Icons.delete),
+                  icon: Icon(Icons.archive),
                   label: Text(texto2),
                 ),
               ),

@@ -94,7 +94,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
       body: _isLoadingCardsActivate
           ? Center(child: CircularProgressIndicator())
           : _errorCardsActivate
-          ? Center(child: Text("Error"))
+          ? Center(child: Text("Error de conexion"))
           : userCards.isEmpty
           ? noCards()
           : Container(child: cuerpo()),
