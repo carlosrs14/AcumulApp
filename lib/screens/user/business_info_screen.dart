@@ -1,8 +1,8 @@
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/screens/category_business_screen.dart';
-import 'package:acumulapp/screens/links_redes_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_screen.dart';
+import 'package:acumulapp/widgets/links_redes_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
