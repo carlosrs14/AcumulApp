@@ -1,8 +1,10 @@
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/providers/business_provider.dart';
+import 'package:acumulapp/screens/business/update_info_screen.dart';
 import 'package:acumulapp/screens/category_business_screen.dart';
 import 'package:acumulapp/screens/login_screen.dart';
+import 'package:acumulapp/screens/qrScaneer.dart';
 import 'package:acumulapp/screens/theme_provider.dart';
 import 'package:acumulapp/utils/jwt.dart';
 import 'package:flutter/material.dart';
@@ -41,115 +43,181 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Mi negocio')),
-      body: FutureBuilder<Business?>(
-        future: _businessFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError ||
-              !snapshot.hasData ||
-              snapshot.data == null) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Error al cargar el perfil del negocio.'),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _businessFuture = _businessProvider.get(
-                          widget.user.business[indexSelected].id,
-                        );
-                      });
-                    },
-                    child: const Text('Reintentar'),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            final business = snapshot.data!;
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [buttomSignOut()],
-                  ),
-                  Center(child: imagenUser(business)),
-                  const SizedBox(height: 20),
-                  Center(
-                    child: Text(
-                      business.name,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.location_on,
-                        color: Theme.of(context).colorScheme.primary,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 6),
-                      Flexible(
-                        child: Text(
-                          business.direction ?? "Sin dirección",
-                          style: const TextStyle(fontSize: 14),
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.star,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      const SizedBox(width: 5),
-
-                      Flexible(
-                        child: Text(
-                          textAlign: TextAlign.center,
-                          business.rating.toString(),
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  //const Divider(),
-                  //_buildLinks(business.links!),
-                  const Divider(),
-                  CategoryGrid(categories: business.categories!),
-                ],
-              ),
-            );
-          }
-        },
-      ),
-
-      floatingActionButton: SpeedDial(
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        direction: SpeedDialDirection.left,
-
-        icon: MdiIcons.pencil,
+      body: Stack(
         children: [
-          SpeedDialChild(child: Icon(MdiIcons.palette), onTap: customizeTheme),
-          SpeedDialChild(child: Icon(MdiIcons.accountEdit)),
+          Positioned.fill(
+            child: FutureBuilder<Business?>(
+              future: _businessFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError ||
+                    !snapshot.hasData ||
+                    snapshot.data == null) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('Error al cargar el perfil del negocio.'),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _businessFuture = _businessProvider.get(
+                                widget.user.business[indexSelected].id,
+                              );
+                            });
+                          },
+                          child: const Text('Reintentar'),
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  final business = snapshot.data!;
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 60),
+                        Center(child: imagenUser(business)),
+                        const SizedBox(height: 20),
+                        Center(
+                          child: Text(
+                            business.name,
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                business.direction ?? "Sin dirección",
+                                style: const TextStyle(fontSize: 14),
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.star,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(width: 5),
+
+                            Flexible(
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                business.rating.toString(),
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        //const Divider(),
+                        //_buildLinks(business.links!),
+                        const Divider(),
+                        CategoryGrid(categories: business.categories!),
+                      ],
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+          Positioned(
+            top: 16,
+            left: 16,
+            child: SpeedDial(
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              direction: SpeedDialDirection.right,
+              icon: MdiIcons.pencil,
+              children: [
+                SpeedDialChild(
+                  child: Icon(MdiIcons.palette),
+                  onTap: customizeTheme,
+                ),
+                SpeedDialChild(
+                  child: Icon(MdiIcons.accountEdit),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => UpdateInfoScreen(user: widget.user),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 16,
+            right: 16,
+            child: SpeedDial(
+              direction: SpeedDialDirection.up,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              icon: MdiIcons.qrcodeScan,
+              children: [
+                SpeedDialChild(
+                  child: Icon(MdiIcons.stamper),
+                  label: 'Add Stamps',
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            QRScannerPage(funcionalidad: "Add Stamps"),
+                      ),
+                    );
+                  },
+                ),
+                SpeedDialChild(
+                  child: Icon(MdiIcons.walletGiftcard),
+                  label: 'Redeem Card',
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            QRScannerPage(funcionalidad: "Redeem Card"),
+                      ),
+                    );
+                  },
+                ),
+                SpeedDialChild(
+                  child: Icon(MdiIcons.toggleSwitch),
+                  label: 'Activate Card',
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            QRScannerPage(funcionalidad: "Activate Card"),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          Positioned(top: 16, right: 16, child: buttomSignOut()),
         ],
       ),
     );
