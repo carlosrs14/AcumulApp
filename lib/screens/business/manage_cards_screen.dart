@@ -76,9 +76,9 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirmar Eliminación'),
+        title: const Text('Confirmar desactivacion'),
         content: const Text(
-          '¿Estás seguro de que quieres eliminar esta tarjeta?',
+          '¿Estás seguro de que quieres desactivar esta tarjeta?',
         ),
         actions: [
           TextButton(
@@ -131,145 +131,122 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                             color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Row(
+                        child: Expanded(
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 15,
+                                  bottom: 6,
+                                ),
+                                child: Text(
+                                  card.name,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                ),
+                                child: Row(
                                   children: [
-                                    Text(
-                                      card.name,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
+                                    Icon(
+                                      Icons.stars,
+                                      size: 18,
+                                      color: Colors.grey[700],
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Expanded(
+                                      child: Text(
+                                        "Bounty: ${card.reward}",
+                                        style: const TextStyle(fontSize: 14),
                                       ),
                                     ),
-                                    const SizedBox(height: 12),
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.stars,
-                                          size: 18,
-                                          color: Colors.grey[700],
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Expanded(
-                                          child: Text(
-                                            "Bounty: ${card.reward}",
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      MdiIcons.stamper,
+                                      size: 18,
+                                      color: Colors.grey[700],
                                     ),
-                                    const SizedBox(height: 12),
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          MdiIcons.stamper,
-                                          size: 18,
-                                          color: Colors.grey[700],
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Expanded(
-                                          child: Text(
-                                            "MaxStamp: ${card.maxStamp}",
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                    const SizedBox(width: 4),
+                                    Expanded(
+                                      child: Text(
+                                        "MaxStamp: ${card.maxStamp}",
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
                                     ),
-                                    const SizedBox(height: 12),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Icon(
-                                          Icons.info_outline,
-                                          size: 18,
-                                          color: Colors.grey[700],
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Expanded(
-                                          child: Text(
-                                            "Restricciones: ${card.restrictions}",
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Icon(
+                                      Icons.info_outline,
+                                      size: 18,
+                                      color: Colors.grey[700],
                                     ),
-                                    const SizedBox(height: 12),
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          MdiIcons.comment,
-                                          size: 18,
-                                          color: Colors.grey[700],
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Expanded(
-                                          child: Text(
-                                            "Description: ${card.description}",
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                    const SizedBox(width: 4),
+                                    Expanded(
+                                      child: Text(
+                                        "Restricciones: ${card.restrictions}",
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 15,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      MdiIcons.comment,
+                                      size: 18,
+                                      color: Colors.grey[700],
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        "Descripcion: \n${card.description}",
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
 
-                              // Botones a la derecha
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.edit,
-                                      color: Colors.blue,
-                                    ),
-                                    onPressed: () async {
-                                      await Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              AddEditCardScreen(
-                                                card: card,
-                                                idBusiness: widget
-                                                    .user
-                                                    .business[widget
-                                                        .selectedIndex]
-                                                    .id,
-                                              ),
-                                        ),
-                                      );
-                                      await _loadCards(
-                                        currentPage,
-                                        itemsPerPage,
-                                      );
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
-                                    ),
-                                    onPressed: () => _deleteCard(card.id),
-                                  ),
-                                ],
+                              const SizedBox(height: 16),
+                              ?actionButtons(
+                                card,
+                                true,
+                                "Editar",
+                                "Desactivar",
                               ),
                             ],
                           ),
@@ -278,6 +255,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                     },
                   ),
                 ),
+                SizedBox(height: 50),
                 PaginacionWidget(
                   currentPage: currentPage,
                   itemsPerPage: itemsPerPage,
@@ -299,8 +277,9 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                 ),
               ],
             ),
+
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 50.0),
+        padding: const EdgeInsets.only(bottom: 40.0),
         child: FloatingActionButton(
           foregroundColor: Theme.of(context).colorScheme.onPrimary,
           backgroundColor: Theme.of(context).colorScheme.primary,
@@ -314,5 +293,82 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
         ),
       ),
     );
+  }
+
+  Widget? actionButtons(
+    BusinessCard card,
+    bool mostrar,
+    String texto,
+    String texto2,
+  ) {
+    return !mostrar
+        ? null
+        : Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddEditCardScreen(
+                          card: card,
+                          idBusiness:
+                              widget.user.business[widget.selectedIndex].id,
+                        ),
+                      ),
+                    );
+                    await _loadCards(currentPage, itemsPerPage);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(48),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(12),
+                      ),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    elevation: 0,
+                  ),
+                  icon: Icon(Icons.edit),
+                  label: Text(texto),
+                ),
+              ),
+              Container(
+                width: 1,
+                height: 48,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    _deleteCard(card.id);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(48),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(12),
+                      ),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    elevation: 0,
+                  ),
+                  icon: Icon(Icons.delete),
+                  label: Text(texto2),
+                ),
+              ),
+            ],
+          );
   }
 }

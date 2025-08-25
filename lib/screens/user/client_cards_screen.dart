@@ -193,47 +193,40 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                 );
               }
             },
-            child: Padding(
-              padding: const EdgeInsets.all(18),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          card.businessCard!.name,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        StampContainer(
-                          stamps: stampsGenenator(
-                            card.currentStamps!,
-                            card.businessCard!.maxStamp,
-                          ),
-                        ),
-                      ],
-                    ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 10,
                   ),
-
-                  const SizedBox(width: 8),
-
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: qrState(card, selectedState),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              card.businessCard!.name,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            StampContainer(
+                              stamps: stampsGenenator(
+                                card.currentStamps!,
+                                card.businessCard!.maxStamp,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(height: 30),
+                      const SizedBox(width: 8),
                       Material(
                         elevation: 6,
                         borderRadius: BorderRadius.circular(12),
@@ -244,8 +237,8 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           padding: EdgeInsets.all(7),
-
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Row(
                                 children: [
@@ -294,7 +287,6 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                                       ).colorScheme.onPrimary,
                                     ),
                                   ),
-
                                   SizedBox(width: 4),
                                   Icon(
                                     MdiIcons.starCircle,
@@ -338,11 +330,15 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+
+                ?qrState(card, selectedState),
+              ],
             ),
           ),
         );
+
+        ;
       },
     );
   }
@@ -381,7 +377,7 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
           userCard,
           true,
           "Presenta este QR en el negocio para recibir tus sellos.",
-          "Añadir\nSellos",
+          "Añadir Sellos",
         );
       case 2:
         return addCardButton(
@@ -440,22 +436,26 @@ class _ClientCardsScreenState extends State<ClientCardsScreen> {
             },
 
             style: ElevatedButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              minimumSize: const Size.fromHeight(48),
               backgroundColor: Theme.of(context).colorScheme.primary,
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(12),
+                ),
               ),
-              textStyle: TextStyle(fontSize: 14),
-              elevation: 4,
+              textStyle: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              elevation: 0,
             ),
             icon: Icon(MdiIcons.qrcode),
             iconAlignment: IconAlignment.end,
             label: Text(
               labelBoton,
-              maxLines: 2,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              softWrap: true,
               textAlign: TextAlign.center,
             ),
           );

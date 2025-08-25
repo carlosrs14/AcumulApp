@@ -1,6 +1,7 @@
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/screens/category_business_screen.dart';
+import 'package:acumulapp/screens/links_redes_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -101,6 +102,44 @@ class _BusinessInfoState extends State<BusinessInfo> {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: ratingbar(),
                       ),
+                      SizedBox(height: 20),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "descripcion descripcion descripcion descripcion descripcion ",
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          SocialButtonsColumn(
+                            buttons: [
+                              SocialButton(
+                                icon: MdiIcons.facebook,
+                                url: "https://www.facebook.com/",
+                              ),
+                              SocialButton(
+                                icon: MdiIcons.whatsapp,
+                                url: "https://wa.me/573116623799",
+                              ),
+                              SocialButton(
+                                icon: MdiIcons.instagram,
+                                url: "https://www.instagram.com/",
+                              ),
+                              SocialButton(
+                                icon: Icons.email,
+                                url: "https://gmail.com/",
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
                       SizedBox(height: 20),
                       buttom(),
                     ],
