@@ -1,11 +1,12 @@
 import 'dart:developer';
 
 import 'package:acumulapp/models/collaborator.dart';
-import 'package:acumulapp/screens/business/business_home_screen.dart';
+import 'package:acumulapp/screens/business/business_stats_screen.dart';
 import 'package:acumulapp/screens/business/customer_management_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:acumulapp/screens/business/manage_cards_screen.dart';
 import 'package:acumulapp/screens/business/business_profile_screen.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class BusinessMainScreen extends StatefulWidget {
   final Collaborator user;
@@ -43,9 +44,11 @@ class _BusinessHomeScreenState extends State<BusinessMainScreen> {
 
         switch (index) {
           case 0:
-            builder = (context) => BusinessHomeScreen(
-              user: widget.user,
-              indexSelected: selectedBusiness,
+            builder = (context) => SafeArea(
+              child: BusinessProfileScreen(
+                user: widget.user,
+                selectedIndex: selectedBusiness,
+              ),
             );
             break;
           case 1:
@@ -65,11 +68,9 @@ class _BusinessHomeScreenState extends State<BusinessMainScreen> {
             );
             break;
           case 3:
-            builder = (context) => SafeArea(
-              child: BusinessProfileScreen(
-                user: widget.user,
-                selectedIndex: selectedBusiness,
-              ),
+            builder = (context) => BusinessHomeScreen(
+              user: widget.user,
+              indexSelected: selectedBusiness,
             );
             break;
           default:
@@ -106,8 +107,8 @@ class _BusinessHomeScreenState extends State<BusinessMainScreen> {
           },
           type: BottomNavigationBarType.shifting,
           selectedItemColor: Theme.of(context).colorScheme.primary,
-          unselectedItemColor: Colors.grey,
-          items: const [
+          unselectedItemColor: Theme.of(context).colorScheme.onSurface,
+          items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
             BottomNavigationBarItem(
               icon: Icon(Icons.people),
@@ -117,7 +118,10 @@ class _BusinessHomeScreenState extends State<BusinessMainScreen> {
               icon: Icon(Icons.credit_card),
               label: 'Tarjetas',
             ),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+            BottomNavigationBarItem(
+              icon: Icon(MdiIcons.chartLine),
+              label: 'Estadisticas',
+            ),
           ],
         ),
       ),
