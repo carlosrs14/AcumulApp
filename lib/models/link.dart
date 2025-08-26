@@ -3,11 +3,7 @@ class Link {
   String _url;
   String _redSocial;
 
-  Link(
-    this._id,
-    this._url,
-    this._redSocial
-  );
+  Link(this._id, this._url, this._redSocial);
 
   int get id => _id;
   set id(int value) => _id = value;
@@ -18,20 +14,15 @@ class Link {
   String get redSocial => _redSocial;
   set redSocial(String value) => _redSocial = value;
 
-  
   factory Link.fromJson(Map<String, dynamic> json) {
     return Link(
       json['id'] as int,
-      json['url'] as String,
-      json['redSocial'] as String,
+      json['value'] as String,
+      json['name'] as String,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': _id,
-      'url': _url,
-      'redSocial': _redSocial,
-    };
+    return {'id': _id, 'url': _url, 'redSocial': _redSocial};
   }
 }
