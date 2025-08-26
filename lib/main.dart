@@ -22,7 +22,8 @@ import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
 import 'package:acumulapp/screens/theme_provider.dart';
 
-const String clerkPublishableKey = 'pk_test_ZW5qb3llZC1ncnViLTM2LmNsZXJrLmFjY291bnRzLmRldiQ';
+const String clerkPublishableKey =
+    'pk_test_ZW5qb3llZC1ncnViLTM2LmNsZXJrLmFjY291bnRzLmRldiQ';
 
 void main() async {
   runZonedGuarded<Future<void>>(
@@ -100,7 +101,8 @@ class MyApp extends StatelessWidget {
                 );
                 if (-1 != indice && "N/A" == user.business[indice].name) {
                   return MaterialPageRoute(
-                    builder: (_) => UpdateInfoScreen(user: user),
+                    builder: (_) =>
+                        UpdateInfoScreen(user: user, business: null),
                   );
                 } else {
                   return MaterialPageRoute(
@@ -118,7 +120,7 @@ class MyApp extends StatelessWidget {
 
             case '/login':
               return MaterialPageRoute(builder: (_) => InicioLogin());
-              
+
             case '/business_details':
               final args = settings.arguments;
               final businessDetails = args as BusinessDetailsArguments;
@@ -144,7 +146,7 @@ class MyApp extends StatelessWidget {
               );
           }
         },
-      )
+      ),
     );
   }
 }
