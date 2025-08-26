@@ -1,8 +1,11 @@
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/user.dart';
+import 'package:acumulapp/providers/rating_provider.dart';
 import 'package:acumulapp/screens/category_business_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_screen.dart';
+import 'package:acumulapp/utils/categories_icons.dart';
 import 'package:acumulapp/widgets/links_redes_screen.dart';
+import 'package:acumulapp/widgets/rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -17,7 +20,16 @@ class BusinessInfo extends StatefulWidget {
 }
 
 class _BusinessInfoState extends State<BusinessInfo> {
+  final RatingProvider ratingProvider = RatingProvider();
   late double screenWidth;
+  double selectedRating = 0;
+
+  Map<String, IconData> iconosRedes = {
+    "website": MdiIcons.web,
+    "facebook": MdiIcons.facebook,
+    "instagram": MdiIcons.instagram,
+    "whatsapp": MdiIcons.whatsapp,
+  };
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
@@ -88,8 +100,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
                                 child: Text(
                                   widget.business.direction ?? "Sin dirección",
                                   style: const TextStyle(fontSize: 14),
-                                  textAlign: TextAlign
-                                      .center, // centra el texto si ocupa varias líneas
+                                  textAlign: TextAlign.center,
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 2,
                                 ),
@@ -100,9 +111,16 @@ class _BusinessInfoState extends State<BusinessInfo> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: ratingbar(),
+                        child: RatingSelector(
+                          onRatingChanged: (value) {
+                            setState(() {
+                              selectedRating = value;
+                            });
+                            ratingConfirmacion(value);
+                          },
+                        ),
                       ),
-                      SizedBox(height: 20),
+
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -110,32 +128,22 @@ class _BusinessInfoState extends State<BusinessInfo> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  "descripcion descripcion descripcion descripcion descripcion ",
-                                ),
+                                Text(widget.business.descripcion ?? " "),
                               ],
                             ),
                           ),
 
                           SocialButtonsColumn(
-                            buttons: [
-                              SocialButton(
-                                icon: MdiIcons.facebook,
-                                url: "https://www.facebook.com/",
-                              ),
-                              SocialButton(
-                                icon: MdiIcons.whatsapp,
-                                url: "https://wa.me/573116623799",
-                              ),
-                              SocialButton(
-                                icon: MdiIcons.instagram,
-                                url: "https://www.instagram.com/",
-                              ),
-                              SocialButton(
-                                icon: Icons.email,
-                                url: "https://gmail.com/",
-                              ),
-                            ],
+                            buttons: widget.business.links!
+                                .map(
+                                  (l) => SocialButton(
+                                    icon:
+                                        iconosRedes[normalize(l.redSocial)] ??
+                                        MdiIcons.web,
+                                    url: l.url,
+                                  ),
+                                )
+                                .toList(),
                           ),
                         ],
                       ),
@@ -168,7 +176,7 @@ class _BusinessInfoState extends State<BusinessInfo> {
       child: Center(
         child: ClipOval(
           child: Image.network(
-            widget.business.logoUrl!,
+            widget.business.logoIconoUrl ?? ' ',
             fit: BoxFit.cover,
             width: 120,
             height: 120,
@@ -207,13 +215,49 @@ class _BusinessInfoState extends State<BusinessInfo> {
 
   Widget ratingbar() {
     return RatingBarIndicator(
-      rating: widget.business.rating!,
-      itemBuilder: (context, index) =>
-          Icon(MdiIcons.star, color: Colors.amber),
+      rating: widget.business.ratingAverage!,
+      itemBuilder: (context, index) => Icon(MdiIcons.star, color: Colors.amber),
       itemCount: 5,
       itemSize: screenWidth * 0.065,
       direction: Axis.horizontal,
     );
+  }
+
+  void ratingConfirmacion(double value) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar calificacion'),
+        content: Text('¿Estás seguro de enviar esta calificacion: $value'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Aceptar'),
+          ),
+        ],
+      ),
+    );
+    if (!mounted) return;
+
+    if (confirmed == true) {
+      final success = await ratingProvider.create(widget.business.id, value);
+      if (!mounted) return;
+      if (success) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Calificacion guardada con exito')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Error')));
+      }
+    }
   }
 
   Widget buttom() {
