@@ -240,8 +240,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               "collaborator" == userResponse.userType) {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) =>
-                    UpdateInfoScreen(user: userResponse as Collaborator),
+                builder: (_) => UpdateInfoScreen(
+                  user: userResponse as Collaborator,
+                  business: null,
+                ),
               ),
             );
           }
