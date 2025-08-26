@@ -4,7 +4,6 @@ import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/category.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/image_upload.dart';
-import 'package:acumulapp/models/ubication.dart';
 import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/providers/category_provider.dart';
 import 'package:acumulapp/screens/business/business_main_screen.dart';
@@ -45,7 +44,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
   void initState() {
     _loadCategories();
     if (widget.business != null) {
-      nameTextEditting.text = widget.business!.name ?? "";
+      nameTextEditting.text = widget.business!.name;
       emailTextEditting.text = widget.business!.email ?? "";
       addressTextEditting.text = widget.business!.direction ?? "";
       descripcionTextEdittig.text = widget.business!.descripcion ?? "";
