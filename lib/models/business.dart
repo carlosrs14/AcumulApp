@@ -1,28 +1,35 @@
+import 'dart:developer';
+
 import 'package:acumulapp/models/category.dart';
 import 'package:acumulapp/models/link.dart';
-import 'package:acumulapp/models/ubication.dart';
 
 class Business {
   int id;
   String name;
   String? email;
   String? direction;
-  String? logoUrl;
+  String? logoIconoUrl;
+  String? logoBannerImage;
+  String? descripcion;
+  int? ratingCount;
+  double? ratingAverage;
+  String? createdAt;
   List<Link>? links;
-  Ubication? ubication;
   List<Category>? categories;
-  double? rating;
 
   Business(
     this.id,
     this.name, {
     this.email,
     this.direction,
-    this.logoUrl,
+    this.logoIconoUrl,
+    this.logoBannerImage,
+    this.descripcion,
+    this.ratingAverage,
+    this.ratingCount,
+    this.createdAt,
     this.links,
-    this.ubication,
     this.categories,
-    this.rating,
   });
 
   factory Business.fromJson(Map<String, dynamic> json) {
@@ -35,11 +42,6 @@ class Business {
           .toList();
     }
 
-    Ubication? ubication;
-    if (json.containsKey('ubication') && json['ubication'] != null) {
-      ubication = Ubication.fromJson(json['ubication'] as Map<String, dynamic>);
-    }
-
     if (json['categories'] != null) {
       final l = json['categories'] as List;
       categoryList = l
@@ -47,17 +49,29 @@ class Business {
           .toList();
     }
 
-    return Business(
+    double ratinggAverage;
+    if (json['rating_average'] == 0 || json['rating_average'] == null) {
+      ratinggAverage = 0.0;
+    } else {
+      ratinggAverage = (json['rating_average'] as num).toDouble();
+      ;
+    }
+
+    Business business = Business(
       json['id'] as int,
       json['name'] as String,
-      email: json['email'] as String,
-      direction: json['address'] as String,
-      logoUrl: json['logoImage'] as String,
+      email: json['email'] as String?,
+      direction: json['address'] as String?,
+      logoIconoUrl: json['logoImage'] as String?,
+      logoBannerImage: json['bannerImage'] as String?,
       links: linksList,
-      ubication: ubication,
+      descripcion: json['description'] as String?,
+      createdAt: json['createdAt'] as String?,
       categories: categoryList,
-      rating: (json['rating'] ?? 0.0),
+      ratingAverage: ratinggAverage,
     );
+
+    return business;
   }
 
   Map<String, dynamic> toJson() {
@@ -66,11 +80,10 @@ class Business {
       'name': name,
       'email': email,
       'direction': direction,
-      'logoUrl': logoUrl,
+      'logoUrl': logoIconoUrl,
       'links': links!.map((link) => link.toJson()).toList(),
-      'ubication': ubication!.toJson(),
+
       'categories': categories!.map((category) => category.toJson()).toList(),
-      'rating': rating,
     };
   }
 
@@ -78,10 +91,14 @@ class Business {
     return {
       'name': name,
       'email': email,
-      'idLocation': ubication?.id,
-      'logoImage': logoUrl,
+      'description': descripcion,
+      'logoImage': logoIconoUrl,
+      'bannerImamge': logoBannerImage,
       'address': direction,
       'categories': categories?.map((c) => c.id).toList() ?? [],
+      'links':
+          links?.map((l) => {"value": l.url, "name": l.redSocial}).toList() ??
+          [],
     };
   }
 }
