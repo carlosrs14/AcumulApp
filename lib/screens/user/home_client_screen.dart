@@ -61,8 +61,8 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
     } finally {
       if (mounted) {
         setState(() {
-        _isLoadingCategories = false;
-      });
+          _isLoadingCategories = false;
+        });
       }
     }
   }
@@ -122,8 +122,26 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
         body: _isLoadingBusiness || _isLoadingCategories
             ? Center(child: CircularProgressIndicator())
             : _errorBusiness || _errorCategories
-            ? Center(child: Text("Error"))
+            ? reintentar()
             : Container(padding: EdgeInsets.all(8), child: home()),
+      ),
+    );
+  }
+
+  Widget reintentar() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("Error de conexion"),
+          ElevatedButton(
+            onPressed: () {
+              _loadCategories();
+              _loadBusiness(null, null, currentPage, itemsPerPage);
+            },
+            child: Text("Reintentar"),
+          ),
+        ],
       ),
     );
   }
@@ -322,7 +340,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
 
                     child: ClipOval(
                       child: Image.network(
-                        filteredBusiness[index].logoUrl!,
+                        filteredBusiness[index].logoIconoUrl ?? " ",
                         fit: BoxFit.cover,
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
@@ -376,7 +394,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
                         Text(filteredBusiness[index].direction ?? ''),
                         SizedBox(height: 4),
                         RatingBarIndicator(
-                          rating: 3.5,
+                          rating: filteredBusiness[index].ratingAverage!,
                           itemBuilder: (context, _) => Icon(
                             MdiIcons.star,
                             color: Theme.of(context).colorScheme.primary,
