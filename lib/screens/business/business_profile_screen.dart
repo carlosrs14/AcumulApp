@@ -124,7 +124,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                             Flexible(
                               child: Text(
                                 textAlign: TextAlign.center,
-                                business.rating.toString(),
+                                business.ratingAverage.toString(),
                                 style: Theme.of(context).textTheme.bodyLarge,
                               ),
                             ),
@@ -157,10 +157,15 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                 ),
                 SpeedDialChild(
                   child: Icon(MdiIcons.accountEdit),
-                  onTap: () {
+                  onTap: () async {
+                    final business = await _businessFuture;
+                    if (!mounted || business == null) return;
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => UpdateInfoScreen(user: widget.user),
+                        builder: (_) => UpdateInfoScreen(
+                          user: widget.user,
+                          business: business,
+                        ),
                       ),
                     );
                   },
@@ -228,7 +233,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
       height: 120,
       child: ClipOval(
         child: Image.network(
-          business.logoUrl!,
+          business.logoIconoUrl ?? ' ',
           fit: BoxFit.cover,
           width: 120,
           height: 120,

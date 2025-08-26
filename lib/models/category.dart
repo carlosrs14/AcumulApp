@@ -21,4 +21,11 @@ class Category {
   Map<String, dynamic> toJson() {
     return {'id': _id, 'name': _name, 'description': _description};
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is Category && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

@@ -18,14 +18,20 @@ import 'package:permission_handler/permission_handler.dart';
 
 class UpdateInfoScreen extends StatefulWidget {
   final Collaborator user;
-  const UpdateInfoScreen({super.key, required this.user});
+  final Business? business;
+  const UpdateInfoScreen({
+    super.key,
+    required this.user,
+    required this.business,
+  });
 
   @override
   State<UpdateInfoScreen> createState() => _UpdateInfoScreenState();
 }
 
 class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
-  File? _imagen;
+  File? _imagenLogo;
+  File? _imagenBanner;
   final _formKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
   CategoryProvider categoryProvider = CategoryProvider();
@@ -38,15 +44,26 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
   @override
   void initState() {
     _loadCategories();
-    super.initState();
+    if (widget.business != null) {
+      nameTextEditting.text = widget.business!.name ?? "";
+      emailTextEditting.text = widget.business!.email ?? "";
+      addressTextEditting.text = widget.business!.direction ?? "";
+      descripcionTextEdittig.text = widget.business!.descripcion ?? "";
+
+      if (widget.business!.categories != null) {
+        _selectedIds = (widget.business!.categories) ?? [];
+      }
+      super.initState();
+    }
   }
 
   TextEditingController nameTextEditting = TextEditingController();
   TextEditingController logoTextEditting = TextEditingController();
   TextEditingController emailTextEditting = TextEditingController();
   TextEditingController addressTextEditting = TextEditingController();
+  TextEditingController descripcionTextEdittig = TextEditingController();
 
-  Future<void> _seleccionarImagen() async {
+  Future<void> _seleccionarImagen(int i) async {
     PermissionStatus status;
 
     if (Platform.isAndroid) {
@@ -66,7 +83,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
       // iOS y otros
       status = await Permission.photos.request();
     }
-      if (!mounted) return;
+    if (!mounted) return;
 
     if (status.isGranted) {
       final ImagePicker picker = ImagePicker();
@@ -75,7 +92,11 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
       );
       if (imagenSeleccionada != null) {
         setState(() {
-          _imagen = File(imagenSeleccionada.path);
+          if (i == 1) {
+            _imagenLogo = File(imagenSeleccionada.path);
+          } else if (i == 2) {
+            _imagenBanner = File(imagenSeleccionada.path);
+          }
         });
       }
     } else if (status.isDenied) {
@@ -143,12 +164,14 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
 
                       SizedBox(height: 40),
                       name("Business name"),
-                      textFile(nameTextEditting, 3, false, false),
+                      textFile(nameTextEditting, 3, false, false, false),
                       name("Email"),
-                      textFile(emailTextEditting, 2, true, false),
+                      textFile(emailTextEditting, 2, true, false, false),
 
-                      name("Address"),
-                      textFile(addressTextEditting, 5, false, false),
+                      name("Direccion"),
+                      textFile(addressTextEditting, 5, false, false, false),
+                      name("Descripcion(Opcional)"),
+                      textFile(descripcionTextEdittig, 0, false, false, true),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: _isLoadingCategories
@@ -164,13 +187,26 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                               ),
                       ),
                       SizedBox(height: 20),
-                      Center(child: botonSelectImage()),
+                      Center(child: botonSelectImage(1, "Seleccionar logo")),
                       SizedBox(height: 20),
-                      _imagen != null
+                      _imagenLogo != null
                           ? Center(
                               child: Image.file(
-                                _imagen!,
+                                _imagenLogo!,
                                 width: 200,
+                                height: 200,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Center(child: Text("No hay imagen seleccionada")),
+                      SizedBox(height: 20),
+                      Center(child: botonSelectImage(2, "Seleccionar banner")),
+                      SizedBox(height: 20),
+                      _imagenBanner != null
+                          ? Center(
+                              child: Image.file(
+                                _imagenBanner!,
+                                width: 300,
                                 height: 200,
                                 fit: BoxFit.cover,
                               ),
@@ -202,6 +238,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     int minimumQuantity,
     bool email,
     bool password,
+    bool opcional,
   ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
@@ -217,6 +254,9 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
           ),
         ),
         validator: (value) {
+          if (opcional) {
+            return null;
+          }
           if (value == null || value.trim().isEmpty) {
             return 'Este campo es obligatorio';
           } else if (value.length < minimumQuantity) {
@@ -231,10 +271,10 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     );
   }
 
-  Widget botonSelectImage() {
+  Widget botonSelectImage(int i, String texto) {
     return ElevatedButton(
-      onPressed: _seleccionarImagen,
-      child: Text("Seleccionar logo"),
+      onPressed: () => _seleccionarImagen(i),
+      child: Text(texto),
     );
   }
 
@@ -260,97 +300,90 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
 
           late Business businessRequest;
           Business? businessResponse;
-          Ubication ubication = Ubication(2, "nose");
+
           Collaborator colab = widget.user;
           var indice = colab.roles.indexWhere(
             (roles) => "owner" == roles.toLowerCase(),
           );
           log(indice.toString());
-
-          if (_imagen != null) {
-            ImageUpload? imageUploadResponse;
-            imageUploadResponse = await businessProvider.uploadImage(_imagen!);
-
-            if (imageUploadResponse != null) {
-              if (indice != -1) {
-                businessRequest = Business(
-                  colab.business[indice].id,
-                  nameTextEditting.text,
-                  email: emailTextEditting.text,
-                  ubication: ubication,
-                  logoUrl: imageUploadResponse.url,
-                  direction: addressTextEditting.text,
-                  categories: _selectedIds,
-                );
-
-                businessResponse = await businessProvider.update(
-                  businessRequest,
-                );
-                if (!mounted) return;
-                if (businessResponse != null) {
-                  bool state = await businessProvider.updateCategories(
-                    businessRequest,
-                  );
-                  if (!mounted) return;
-                  if (state) {
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Update sucefull',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Colors.green,
-                        duration: Duration(seconds: 3),
-                      ),
-                    );
-
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (_) => BusinessMainScreen(user: widget.user),
-                      ),
-                      (route) => false,
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Error',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        backgroundColor: Colors.redAccent,
-                        duration: Duration(seconds: 3),
-                      ),
-                    );
-                  }
-                } else {
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Error de conexion',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      backgroundColor: Colors.redAccent,
-                      duration: Duration(seconds: 3),
-                    ),
-                  );
-                }
-              }
-            }
-          } else {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Selecciona una imagen',
-                  style: TextStyle(color: Colors.white),
-                ),
-                backgroundColor: Colors.redAccent,
-                duration: Duration(seconds: 3),
-              ),
+          ImageUpload? imageLogoResponse;
+          ImageUpload? imageBannerResponse;
+          if (_imagenLogo != null) {
+            imageLogoResponse = await businessProvider.uploadImage(
+              _imagenLogo!,
             );
+          }
+
+          if (_imagenBanner != null) {
+            imageBannerResponse = await businessProvider.uploadImage(
+              _imagenBanner!,
+            );
+          }
+
+          if (indice != -1) {
+            businessRequest = Business(
+              colab.business[indice].id,
+              nameTextEditting.text,
+              email: emailTextEditting.text,
+              descripcion: descripcionTextEdittig.text,
+              logoIconoUrl: imageLogoResponse?.url,
+              logoBannerImage: imageBannerResponse?.url,
+              direction: addressTextEditting.text,
+              categories: _selectedIds,
+            );
+
+            businessResponse = await businessProvider.update(businessRequest);
+            if (!mounted) return;
+            if (businessResponse != null) {
+              bool state = await businessProvider.updateCategories(
+                businessRequest,
+              );
+              if (!mounted) return;
+              if (state) {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Update sucefull',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.green,
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (_) => BusinessMainScreen(user: widget.user),
+                  ),
+                  (route) => false,
+                );
+              } else {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Error',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: Colors.redAccent,
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+              }
+            } else {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Error de conexion',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  backgroundColor: Colors.redAccent,
+                  duration: Duration(seconds: 3),
+                ),
+              );
+            }
           }
         },
 
