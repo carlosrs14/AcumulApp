@@ -47,6 +47,7 @@ class _BusinessCardsScreenState extends State<BusinessCardsScreen> {
         widget.business.id,
         itemsPerPage,
         currentPage,
+        true
       );
       if (!mounted) return;
       setState(() {

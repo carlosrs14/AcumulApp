@@ -47,6 +47,7 @@ class _AddEditCardScreenState extends State<AddEditCardScreen> {
         _description,
         _restrictions,
         _rewards,
+        true
       );
 
       bool success = false;

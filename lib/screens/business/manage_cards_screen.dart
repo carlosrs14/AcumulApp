@@ -42,6 +42,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
         widget.user.business[widget.selectedIndex].id,
         size,
         page,
+        null
       );
       if (!mounted) return;
       setState(() {
@@ -84,13 +85,14 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
     }
   }
 
-  void _deleteCard(int cardId) async {
+  void _archiveCard(BusinessCard card) async {
+    final String extraText = card.isActive? "archivar": "desarchivar";
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Confirmar desactivacion'),
-        content: const Text(
-          '¿Estás seguro de que quieres desactivar esta tarjeta?',
+        title: Text("$extraText tarjeta"),
+        content: Text(
+          '¿Estás seguro de que quieres $extraText esta tarjeta?',
         ),
         actions: [
           TextButton(
@@ -99,21 +101,21 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Eliminar'),
+            child: const Text('Seguro'),
           ),
         ],
       ),
     );
 
     if (confirmed == true) {
-      final success = await cardProvider.delete(cardId);
+      final success = await cardProvider.archive(card.id, card.isActive);
       if (!mounted) return;
       if (success) {
         await _loadCards(currentPage, itemsPerPage);
       } else {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error al eliminar la tarjeta')),
+          SnackBar(content: Text('Error al $extraText la tarjeta')),
         );
       }
     }
@@ -134,6 +136,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                     itemCount: cards.length,
                     itemBuilder: (context, index) {
                       BusinessCard card = cards[index];
+                      String archivarText = card.isActive? "Archivar": "Desarchivar";
                       return Card(
                         elevation: 4,
                         margin: const EdgeInsets.symmetric(
@@ -261,7 +264,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                                 card,
                                 true,
                                 "Editar",
-                                "Desactivar",
+                               archivarText,
                               ),
                             ],
                           ),
@@ -362,7 +365,7 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    _deleteCard(card.id);
+                    _archiveCard(card);
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size.fromHeight(48),

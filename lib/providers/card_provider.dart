@@ -36,6 +36,7 @@ class CardProvider {
     int idBusiness,
     int size,
     int page,
+    bool? state
   ) async {
     List<BusinessCard> cards = [];
     PaginationData? paginationData;
@@ -44,6 +45,7 @@ class CardProvider {
         idBusiness,
         size,
         page,
+        state
       );
 
       if (response.statusCode != 200) {
@@ -53,7 +55,7 @@ class CardProvider {
 
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-      log(jsonData.toString());
+      //log(jsonData.toString());
       for (var element in jsonData["data"]) {
         cards.add(BusinessCard.fromJson(element));
       }
@@ -99,7 +101,7 @@ class CardProvider {
         log(response.body);
         return cardResponse;
       }
-
+  
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
 
@@ -110,10 +112,11 @@ class CardProvider {
     return cardResponse;
   }
 
-  Future<bool> delete(int id) async {
+  Future<bool> archive(int id, bool newState) async {
     try {
-      final response = await cardService.delete(id);
+      final response = await cardService.archive(id, !newState);
 
+      log(response.body);
       if (response.statusCode != 200) {
         log(response.body);
         return false;
