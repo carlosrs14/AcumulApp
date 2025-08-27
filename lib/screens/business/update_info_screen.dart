@@ -45,7 +45,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     super.initState();
     _loadCategories();
     if (widget.business != null) {
-      nameTextEditting.text = widget.business!.name ?? "";
+      nameTextEditting.text = widget.business!.name;
       emailTextEditting.text = widget.business!.email ?? "";
       addressTextEditting.text = widget.business!.direction ?? "";
       descripcionTextEdittig.text = widget.business!.descripcion ?? "";

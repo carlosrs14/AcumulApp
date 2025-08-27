@@ -7,7 +7,7 @@ class RatingSelector extends StatefulWidget {
   const RatingSelector({super.key, required this.onRatingChanged});
 
   @override
-  _RatingSelectorState createState() => _RatingSelectorState();
+  State<RatingSelector> createState() => _RatingSelectorState();
 }
 
 class _RatingSelectorState extends State<RatingSelector> {

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:acumulapp/models/category.dart';
 import 'package:acumulapp/models/link.dart';
 
@@ -54,7 +52,6 @@ class Business {
       ratinggAverage = 0.0;
     } else {
       ratinggAverage = (json['rating_average'] as num).toDouble();
-      ;
     }
 
     Business business = Business(

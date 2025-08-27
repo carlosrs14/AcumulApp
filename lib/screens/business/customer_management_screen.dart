@@ -26,6 +26,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
   final _formKey = GlobalKey<FormState>();
   String code = '';
   final TextEditingController _searchController = TextEditingController();
+  
   Map<int, String> stateList = {
     1: "Activo",
     2: "Completado",
@@ -33,6 +34,7 @@ class _CustomerManagementScreenState extends State<CustomerManagementScreen> {
     4: "Inactivo",
     5: "Vencido",
   };
+
   List<UserCard> userCards = [];
   bool _isLoadingCardsActivate = true;
   bool _errorCardsActivate = false;

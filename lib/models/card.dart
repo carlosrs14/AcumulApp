@@ -4,6 +4,7 @@ class BusinessCard {
   int expiration;
   int maxStamp;
   String name;
+  bool isActive;
   String description;
   String restrictions;
   String reward;
@@ -17,6 +18,7 @@ class BusinessCard {
     this.description,
     this.restrictions,
     this.reward,
+    this.isActive
   );
 
   factory BusinessCard.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class BusinessCard {
       json['description'] as String,
       json['restrictions'] as String,
       json['reward'] as String,
+      json['isActive'] as bool
     );
   }
 
