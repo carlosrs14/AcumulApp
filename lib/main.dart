@@ -44,9 +44,10 @@ void main() async {
 
       final user = await userProvider.getLoggedUser();
       final savedColor = await ThemeProvider.getSavedColor();
+      final savedMode = await ThemeProvider.getSavedMode();
       runApp(
         ChangeNotifierProvider(
-          create: (_) => ThemeProvider(savedColor),
+          create: (_) => ThemeProvider(savedColor, savedMode),
           child: MyApp(isLogged: user != null, user: user),
         ),
       );
@@ -70,7 +71,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         theme: themeProvider.lightTheme,
         darkTheme: themeProvider.darkTheme,
-        themeMode: ThemeMode.system,
+        themeMode: themeProvider.themeMode,
         builder: (context, child) {
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
