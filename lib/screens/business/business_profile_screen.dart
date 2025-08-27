@@ -10,6 +10,7 @@ import 'package:acumulapp/utils/categories_icons.dart';
 import 'package:acumulapp/utils/jwt.dart';
 import 'package:acumulapp/utils/redes_icons.dart';
 import 'package:acumulapp/utils/theme_mode_dialog.dart';
+import 'package:acumulapp/widgets/links_form.dart';
 import 'package:acumulapp/widgets/links_redes_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -80,93 +81,113 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                   );
                 } else {
                   final business = snapshot.data!;
-                  return SingleChildScrollView(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 60),
-                        Center(child: imagenUser(business)),
-                        const SizedBox(height: 20),
-                        Center(
-                          child: Text(
-                            business.name,
-                            style: Theme.of(context).textTheme.headlineSmall,
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 60),
+                              Center(child: imagenUser(business)),
+                              const SizedBox(height: 20),
+                              Center(
+                                child: Text(
+                                  business.name,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.headlineSmall,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.location_on,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Flexible(
+                                    child: Text(
+                                      business.direction ?? "Sin dirección",
+                                      style: const TextStyle(fontSize: 14),
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                                  const SizedBox(width: 5),
+
+                                  Flexible(
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      business.ratingAverage.toString(),
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodyLarge,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                              //const Divider(),
+                              //_buildLinks(business.links!),
+                              const Divider(),
+                              CategoryGrid(categories: business.categories!),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(business.descripcion ?? " "),
+                                      ],
+                                    ),
+                                  ),
+
+                                  SocialButtonsColumn(
+                                    buttons: business.links!
+                                        .map(
+                                          (l) => SocialButton(
+                                            icon:
+                                                iconosRedes[normalize(
+                                                  l.redSocial,
+                                                )] ??
+                                                MdiIcons.web,
+                                            url: l.url,
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.location_on,
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 6),
-                            Flexible(
-                              child: Text(
-                                business.direction ?? "Sin dirección",
-                                style: const TextStyle(fontSize: 14),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.star,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            const SizedBox(width: 5),
-
-                            Flexible(
-                              child: Text(
-                                textAlign: TextAlign.center,
-                                business.ratingAverage.toString(),
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        //const Divider(),
-                        //_buildLinks(business.links!),
-                        const Divider(),
-                        CategoryGrid(categories: business.categories!),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [Text(business.descripcion ?? " ")],
-                              ),
-                            ),
-
-                            SocialButtonsColumn(
-                              buttons: business.links!
-                                  .map(
-                                    (l) => SocialButton(
-                                      icon:
-                                          iconosRedes[normalize(l.redSocial)] ??
-                                          MdiIcons.web,
-                                      url: l.url,
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 75),
+                    ],
                   );
                 }
               },
@@ -209,6 +230,23 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                   child: Icon(MdiIcons.paletteAdvanced),
                   onTap: () async {
                     await showThemeModeDialog(context);
+                  },
+                ),
+                SpeedDialChild(
+                  child: Icon(MdiIcons.link),
+                  onTap: () async {
+                    final business = await _businessFuture;
+                    if (!mounted || business == null) return;
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => SocialLinksForm(business: business),
+                      ),
+                    );
+                    setState(() {
+                      _businessFuture = _businessProvider.get(
+                        widget.user.business[indexSelected].id,
+                      );
+                    });
                   },
                 ),
               ],

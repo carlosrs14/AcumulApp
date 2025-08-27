@@ -25,4 +25,8 @@ class Link {
   Map<String, dynamic> toJson() {
     return {'id': _id, 'url': _url, 'redSocial': _redSocial};
   }
+
+  Map<String, dynamic> toJsonUpdate() {
+    return {'idLink': _id, 'value': _url};
+  }
 }

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
+import 'package:acumulapp/models/link.dart';
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/business_stat.dart';
 import 'package:acumulapp/models/image_upload.dart';
@@ -63,6 +63,25 @@ class BusinessProvider {
       log(e.toString());
     }
     return business;
+  }
+
+  Future<bool> updateLinks(Business business, List<Link> links) async {
+    try {
+      final response = await businessService.updateLinks(business, links);
+      final body = utf8.decode(response.bodyBytes);
+      final jsonData = jsonDecode(body);
+      if (response.statusCode != 200) {
+        log(
+          "Error HTTP al actualizar links: ${response.statusCode} - ${response.body}",
+        );
+        final message = jsonData['message'];
+        throw Exception(message);
+      }
+      return true;
+    } catch (e) {
+      log("Excepción en updateLinks: $e");
+      rethrow;
+    }
   }
 
   Future<BusinessStat?> getBusinessStats(int id) async {

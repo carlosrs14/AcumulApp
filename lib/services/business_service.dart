@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
+import 'package:acumulapp/models/link.dart';
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/utils/jwt.dart';
 import 'package:http/http.dart' as http;
@@ -90,6 +90,23 @@ class BusinessService {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${jwt?.loadToken()}',
+      },
+      body: jsonEncode(body),
+    );
+  }
+
+  Future<http.Response> updateLinks(Business business, List<Link> links) async {
+    final Uri url = Uri.parse("$urlApi/business/${business.id}/links");
+
+    final linksBody = links.map((l) => l.toJsonUpdate()).toList();
+    final body = {"links": linksBody};
+    log(body.toString());
+
+    return http.put(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${jwt?.loadToken()}",
       },
       body: jsonEncode(body),
     );
