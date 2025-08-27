@@ -4,7 +4,6 @@ import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/category.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/image_upload.dart';
-import 'package:acumulapp/models/ubication.dart';
 import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/providers/category_provider.dart';
 import 'package:acumulapp/screens/business/business_main_screen.dart';
@@ -43,6 +42,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
 
   @override
   void initState() {
+    super.initState();
     _loadCategories();
     if (widget.business != null) {
       nameTextEditting.text = widget.business!.name ?? "";
@@ -53,7 +53,6 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
       if (widget.business!.categories != null) {
         _selectedIds = (widget.business!.categories) ?? [];
       }
-      super.initState();
     }
   }
 
@@ -170,8 +169,8 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
 
                       name("Direccion"),
                       textFile(addressTextEditting, 5, false, false, false),
-                      name("Descripcion(Opcional)"),
-                      textFile(descripcionTextEdittig, 0, false, false, true),
+                      name("Descripcion"),
+                      textFile(descripcionTextEdittig, 10, false, false, false),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: _isLoadingCategories
@@ -198,7 +197,14 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                                 fit: BoxFit.cover,
                               ),
                             )
-                          : Center(child: Text("No hay imagen seleccionada")),
+                          : Center(
+                              child: widget.business == null
+                                  ? Text("No hay imagen seleccionada")
+                                  : Text(
+                                      textAlign: TextAlign.center,
+                                      "No hay imagen seleccionada\n(se mantendrá la actual si no eliges otra)",
+                                    ),
+                            ),
                       SizedBox(height: 20),
                       Center(child: botonSelectImage(2, "Seleccionar banner")),
                       SizedBox(height: 20),
@@ -211,7 +217,14 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                                 fit: BoxFit.cover,
                               ),
                             )
-                          : Center(child: Text("No hay imagen seleccionada")),
+                          : Center(
+                              child: widget.business == null
+                                  ? Text("No hay imagen seleccionada")
+                                  : Text(
+                                      textAlign: TextAlign.center,
+                                      "No hay imagen seleccionada\n(se mantendrá la actual si no eliges otra)",
+                                    ),
+                            ),
                       SizedBox(height: 20),
                       botonEntrar(),
                     ],
@@ -321,16 +334,31 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
           }
 
           if (indice != -1) {
-            businessRequest = Business(
-              colab.business[indice].id,
-              nameTextEditting.text,
-              email: emailTextEditting.text,
-              descripcion: descripcionTextEdittig.text,
-              logoIconoUrl: imageLogoResponse?.url,
-              logoBannerImage: imageBannerResponse?.url,
-              direction: addressTextEditting.text,
-              categories: _selectedIds,
-            );
+            if (widget.business == null) {
+              businessRequest = Business(
+                colab.business[indice].id,
+                nameTextEditting.text,
+                email: emailTextEditting.text,
+                descripcion: descripcionTextEdittig.text,
+                logoIconoUrl: imageLogoResponse?.url ?? " ",
+                logoBannerImage: imageBannerResponse?.url ?? " ",
+                direction: addressTextEditting.text,
+                categories: _selectedIds,
+              );
+            } else {
+              businessRequest = Business(
+                colab.business[indice].id,
+                nameTextEditting.text,
+                email: emailTextEditting.text,
+                descripcion: descripcionTextEdittig.text,
+                logoIconoUrl:
+                    imageLogoResponse?.url ?? widget.business!.logoIconoUrl,
+                logoBannerImage:
+                    imageBannerResponse?.url ?? widget.business!.logoIconoUrl,
+                direction: addressTextEditting.text,
+                categories: _selectedIds,
+              );
+            }
 
             businessResponse = await businessProvider.update(businessRequest);
             if (!mounted) return;
@@ -351,13 +379,16 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                     duration: Duration(seconds: 3),
                   ),
                 );
-
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (_) => BusinessMainScreen(user: widget.user),
-                  ),
-                  (route) => false,
-                );
+                if (widget.business == null) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (_) => BusinessMainScreen(user: widget.user),
+                    ),
+                    (route) => false,
+                  );
+                } else {
+                  Navigator.pop(context);
+                }
               } else {
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 ScaffoldMessenger.of(context).showSnackBar(

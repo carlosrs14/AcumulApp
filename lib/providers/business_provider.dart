@@ -57,7 +57,7 @@ class BusinessProvider {
 
       String body = utf8.decode(response.bodyBytes);
       final jsonData = jsonDecode(body);
-
+      log(jsonData.toString());
       business = Business.fromJson(jsonData);
     } catch (e) {
       log(e.toString());
