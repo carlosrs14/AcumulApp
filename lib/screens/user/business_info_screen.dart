@@ -4,6 +4,7 @@ import 'package:acumulapp/providers/rating_provider.dart';
 import 'package:acumulapp/screens/category_business_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_screen.dart';
 import 'package:acumulapp/utils/categories_icons.dart';
+import 'package:acumulapp/utils/redes_icons.dart';
 import 'package:acumulapp/widgets/links_redes_screen.dart';
 import 'package:acumulapp/widgets/rating.dart';
 import 'package:flutter/material.dart';
@@ -24,12 +25,6 @@ class _BusinessInfoState extends State<BusinessInfo> {
   late double screenWidth;
   double selectedRating = 0;
 
-  Map<String, IconData> iconosRedes = {
-    "website": MdiIcons.web,
-    "facebook": MdiIcons.facebook,
-    "instagram": MdiIcons.instagram,
-    "whatsapp": MdiIcons.whatsapp,
-  };
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;

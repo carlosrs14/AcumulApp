@@ -2,6 +2,7 @@ import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/screens/login_screen.dart';
 import 'package:acumulapp/screens/theme_provider.dart';
 import 'package:acumulapp/utils/jwt.dart';
+import 'package:acumulapp/utils/theme_mode_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -40,7 +41,12 @@ class UserProfileScreenState extends State<UserProfileScreen> {
         icon: MdiIcons.pencil,
         children: [
           SpeedDialChild(child: Icon(MdiIcons.palette), onTap: customizeTheme),
-          //SpeedDialChild(child: Icon(MdiIcons.accountEdit)),
+          SpeedDialChild(
+            child: Icon(MdiIcons.paletteAdvanced),
+            onTap: () async {
+              await showThemeModeDialog(context);
+            },
+          ),
         ],
       ),
     );

@@ -6,7 +6,11 @@ import 'package:acumulapp/screens/category_business_screen.dart';
 import 'package:acumulapp/screens/login_screen.dart';
 import 'package:acumulapp/screens/qr_scaneer.dart';
 import 'package:acumulapp/screens/theme_provider.dart';
+import 'package:acumulapp/utils/categories_icons.dart';
 import 'package:acumulapp/utils/jwt.dart';
+import 'package:acumulapp/utils/redes_icons.dart';
+import 'package:acumulapp/utils/theme_mode_dialog.dart';
+import 'package:acumulapp/widgets/links_redes_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -35,7 +39,9 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _businessFuture = _businessProvider.get(widget.user.business[0].id);
+    _businessFuture = _businessProvider.get(
+      widget.user.business[indexSelected].id,
+    );
   }
 
   @override
@@ -135,6 +141,30 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                         //_buildLinks(business.links!),
                         const Divider(),
                         CategoryGrid(categories: business.categories!),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [Text(business.descripcion ?? " ")],
+                              ),
+                            ),
+
+                            SocialButtonsColumn(
+                              buttons: business.links!
+                                  .map(
+                                    (l) => SocialButton(
+                                      icon:
+                                          iconosRedes[normalize(l.redSocial)] ??
+                                          MdiIcons.web,
+                                      url: l.url,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   );
@@ -160,7 +190,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                   onTap: () async {
                     final business = await _businessFuture;
                     if (!mounted || business == null) return;
-                    Navigator.of(context).push(
+                    await Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => UpdateInfoScreen(
                           user: widget.user,
@@ -168,6 +198,17 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                         ),
                       ),
                     );
+                    setState(() {
+                      _businessFuture = _businessProvider.get(
+                        widget.user.business[indexSelected].id,
+                      );
+                    });
+                  },
+                ),
+                SpeedDialChild(
+                  child: Icon(MdiIcons.paletteAdvanced),
+                  onTap: () async {
+                    await showThemeModeDialog(context);
                   },
                 ),
               ],
