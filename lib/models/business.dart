@@ -93,7 +93,7 @@ class Business {
       'email': email,
       'description': descripcion,
       'logoImage': logoIconoUrl,
-      'bannerImamge': logoBannerImage,
+      'bannerImage': logoBannerImage,
       'address': direction,
       'categories': categories?.map((c) => c.id).toList() ?? [],
       'links':
