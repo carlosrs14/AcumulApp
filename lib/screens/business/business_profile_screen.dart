@@ -153,8 +153,9 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                               //_buildLinks(business.links!),
                               const Divider(),
                               CategoryGrid(categories: business.categories!),
+                              SizedBox(height: 30),
                               Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
                                     child: Column(
