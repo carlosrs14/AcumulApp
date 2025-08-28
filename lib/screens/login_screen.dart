@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/user_provider.dart';
 import 'package:acumulapp/screens/auth_wrapper.dart';
-import 'package:acumulapp/screens/logo_app.dart';
+import 'package:acumulapp/widgets/logo_app.dart';
 import 'package:flutter/material.dart';
 
 class InicioLogin extends StatefulWidget {

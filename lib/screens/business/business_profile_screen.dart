@@ -2,7 +2,7 @@ import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/screens/business/update_info_screen.dart';
-import 'package:acumulapp/screens/category_business_screen.dart';
+import 'package:acumulapp/widgets/category_business_screen.dart';
 import 'package:acumulapp/screens/login_screen.dart';
 import 'package:acumulapp/screens/qr_scaneer.dart';
 import 'package:acumulapp/screens/theme_provider.dart';
