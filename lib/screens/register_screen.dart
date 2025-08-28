@@ -3,7 +3,7 @@ import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/user_provider.dart';
 import 'package:acumulapp/screens/business/update_info_screen.dart';
-import 'package:acumulapp/screens/logo_app.dart';
+import 'package:acumulapp/widgets/logo_app.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {

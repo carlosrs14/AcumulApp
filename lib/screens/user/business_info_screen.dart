@@ -1,7 +1,7 @@
 import 'package:acumulapp/models/business.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/rating_provider.dart';
-import 'package:acumulapp/screens/category_business_screen.dart';
+import 'package:acumulapp/widgets/category_business_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_screen.dart';
 import 'package:acumulapp/utils/categories_icons.dart';
 import 'package:acumulapp/utils/redes_icons.dart';
