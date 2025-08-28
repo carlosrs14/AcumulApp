@@ -8,7 +8,11 @@ import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/providers/category_provider.dart';
 import 'package:acumulapp/screens/business/business_main_screen.dart';
 import 'package:acumulapp/widgets/category_selector_screen.dart';
+import 'package:acumulapp/widgets/custom_text_form_field.dart';
+import 'package:acumulapp/widgets/image_picker_button.dart';
 import 'package:acumulapp/widgets/logo_app.dart';
+import 'package:acumulapp/widgets/section_title.dart';
+import 'package:acumulapp/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -33,12 +37,17 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
   File? _imagenBanner;
   final _formKey = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
-  CategoryProvider categoryProvider = CategoryProvider();
-  BusinessProvider businessProvider = BusinessProvider();
+  final CategoryProvider categoryProvider = CategoryProvider();
+  final BusinessProvider businessProvider = BusinessProvider();
   List<Category> _allCategories = [];
   List<Category> _selectedIds = [];
   bool _isLoadingCategories = true;
   bool _errorCategories = false;
+
+  final TextEditingController nameTextEditting = TextEditingController();
+  final TextEditingController emailTextEditting = TextEditingController();
+  final TextEditingController addressTextEditting = TextEditingController();
+  final TextEditingController descripcionTextEdittig = TextEditingController();
 
   @override
   void initState() {
@@ -56,30 +65,19 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     }
   }
 
-  TextEditingController nameTextEditting = TextEditingController();
-  TextEditingController logoTextEditting = TextEditingController();
-  TextEditingController emailTextEditting = TextEditingController();
-  TextEditingController addressTextEditting = TextEditingController();
-  TextEditingController descripcionTextEdittig = TextEditingController();
-
   Future<void> _seleccionarImagen(int i) async {
     PermissionStatus status;
 
     if (Platform.isAndroid) {
-      // Detectar la versión de Android
       final androidInfo = await DeviceInfoPlugin().androidInfo;
       final sdkInt = androidInfo.version.sdkInt;
 
       if (sdkInt >= 33) {
-        // Android 13+
-
         status = await Permission.photos.request();
       } else {
-        // Android 12 o menor
         status = await Permission.storage.request();
       }
     } else {
-      // iOS y otros
       status = await Permission.photos.request();
     }
     if (!mounted) return;
@@ -101,7 +99,7 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     } else if (status.isDenied) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Permiso denegado")));
+      ).showSnackBar(const SnackBar(content: Text("Permiso denegado")));
     } else if (status.isPermanentlyDenied) {
       openAppSettings();
     }
@@ -133,18 +131,136 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     }
   }
 
+  void _submitForm() async {
+    if (!_formKey.currentState!.validate()) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      _scrollController.animateTo(
+        0.0,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+      return;
+    }
+
+    late Business businessRequest;
+    Business? businessResponse;
+
+    Collaborator colab = widget.user;
+    var indice = colab.roles.indexWhere(
+      (roles) => "owner" == roles.toLowerCase(),
+    );
+    log(indice.toString());
+    ImageUpload? imageLogoResponse;
+    ImageUpload? imageBannerResponse;
+    if (_imagenLogo != null) {
+      imageLogoResponse = await businessProvider.uploadImage(
+        _imagenLogo!,
+      );
+    }
+
+    if (_imagenBanner != null) {
+      imageBannerResponse = await businessProvider.uploadImage(
+        _imagenBanner!,
+      );
+    }
+
+    if (indice != -1) {
+      if (widget.business == null) {
+        businessRequest = Business(
+          colab.business[indice].id,
+          nameTextEditting.text,
+          email: emailTextEditting.text,
+          descripcion: descripcionTextEdittig.text,
+          logoIconoUrl: imageLogoResponse?.url ?? " ",
+          logoBannerImage: imageBannerResponse?.url ?? " ",
+          direction: addressTextEditting.text,
+          categories: _selectedIds,
+        );
+      } else {
+        businessRequest = Business(
+          colab.business[indice].id,
+          nameTextEditting.text,
+          email: emailTextEditting.text,
+          descripcion: descripcionTextEdittig.text,
+          logoIconoUrl:
+              imageLogoResponse?.url ?? widget.business!.logoIconoUrl,
+          logoBannerImage:
+              imageBannerResponse?.url ?? widget.business!.logoIconoUrl,
+          direction: addressTextEditting.text,
+          categories: _selectedIds,
+        );
+      }
+
+      businessResponse = await businessProvider.update(businessRequest);
+      if (!mounted) return;
+      if (businessResponse != null) {
+        bool state = await businessProvider.updateCategories(
+          businessRequest,
+        );
+        if (!mounted) return;
+        if (state) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Update sucefull',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 3),
+            ),
+          );
+          if (widget.business == null) {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (_) => BusinessMainScreen(user: widget.user),
+              ),
+              (route) => false,
+            );
+          } else {
+            Navigator.pop(context);
+          }
+        } else {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Error',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.redAccent,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Error de conexion',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.redAccent,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _isLoadingCategories
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : _errorCategories
-          ? Center(child: Text("Error de conexion"))
-          : cuerpo(),
+              ? const Center(child: Text("Error de conexion"))
+              : _buildBody(),
     );
   }
 
-  Widget cuerpo() {
+  Widget _buildBody() {
     return SafeArea(
       child: Column(
         children: [
@@ -158,19 +274,30 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 20),
-                      Center(child: LogoApp()),
-
-                      SizedBox(height: 40),
-                      name("Business name"),
-                      textFile(nameTextEditting, 3, false, false, false),
-                      name("Email"),
-                      textFile(emailTextEditting, 2, true, false, false),
-
-                      name("Direccion"),
-                      textFile(addressTextEditting, 5, false, false, false),
-                      name("Descripcion"),
-                      textFile(descripcionTextEdittig, 10, false, false, false),
+                      const SizedBox(height: 20),
+                      const Center(child: LogoApp()),
+                      const SizedBox(height: 40),
+                      const SectionTitle(title: "Business name"),
+                      CustomTextFormField(
+                        controller: nameTextEditting,
+                        minimumQuantity: 3,
+                      ),
+                      const SectionTitle(title: "Email"),
+                      CustomTextFormField(
+                        controller: emailTextEditting,
+                        minimumQuantity: 2,
+                        email: true,
+                      ),
+                      const SectionTitle(title: "Direccion"),
+                      CustomTextFormField(
+                        controller: addressTextEditting,
+                        minimumQuantity: 5,
+                      ),
+                      const SectionTitle(title: "Descripcion"),
+                      CustomTextFormField(
+                        controller: descripcionTextEdittig,
+                        minimumQuantity: 10,
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: _isLoadingCategories
@@ -185,48 +312,29 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
                                 },
                               ),
                       ),
-                      SizedBox(height: 20),
-                      Center(child: botonSelectImage(1, "Seleccionar logo")),
-                      SizedBox(height: 20),
-                      _imagenLogo != null
-                          ? Center(
-                              child: Image.file(
-                                _imagenLogo!,
-                                width: 200,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : Center(
-                              child: widget.business == null
-                                  ? Text("No hay imagen seleccionada")
-                                  : Text(
-                                      textAlign: TextAlign.center,
-                                      "No hay imagen seleccionada\n(se mantendrá la actual si no eliges otra)",
-                                    ),
-                            ),
-                      SizedBox(height: 20),
-                      Center(child: botonSelectImage(2, "Seleccionar banner")),
-                      SizedBox(height: 20),
-                      _imagenBanner != null
-                          ? Center(
-                              child: Image.file(
-                                _imagenBanner!,
-                                width: 300,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : Center(
-                              child: widget.business == null
-                                  ? Text("No hay imagen seleccionada")
-                                  : Text(
-                                      textAlign: TextAlign.center,
-                                      "No hay imagen seleccionada\n(se mantendrá la actual si no eliges otra)",
-                                    ),
-                            ),
-                      SizedBox(height: 20),
-                      botonEntrar(),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: ImagePickerButton(
+                          onPressed: () => _seleccionarImagen(1),
+                          text: "Seleccionar logo",
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      _buildImagePreview(_imagenLogo),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: ImagePickerButton(
+                          onPressed: () => _seleccionarImagen(2),
+                          text: "Seleccionar banner",
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      _buildImagePreview(_imagenBanner, isBanner: true),
+                      const SizedBox(height: 20),
+                      SubmitButton(
+                        onPressed: _submitForm,
+                        text: "Update info",
+                      ),
                     ],
                   ),
                 ),
@@ -238,188 +346,21 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
     );
   }
 
-  Widget name(String name) {
-    return Container(
-      padding: EdgeInsets.only(left: 20),
-      alignment: Alignment.centerLeft,
-      child: Text(name, style: TextStyle(fontSize: 15)),
-    );
-  }
-
-  Widget textFile(
-    TextEditingController controller,
-    int minimumQuantity,
-    bool email,
-    bool password,
-    bool opcional,
-  ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 3),
-      child: TextFormField(
-        obscureText: password,
-        controller: controller,
-        style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-        decoration: InputDecoration(
-          fillColor: Theme.of(context).colorScheme.surface,
-          filled: true,
-          border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade200),
-          ),
-        ),
-        validator: (value) {
-          if (opcional) {
-            return null;
-          }
-          if (value == null || value.trim().isEmpty) {
-            return 'Este campo es obligatorio';
-          } else if (value.length < minimumQuantity) {
-            return 'Requiere una cantidad minima de $minimumQuantity caracteres';
-          } else if (email &&
-              !(value.contains("@") && value.contains(".com"))) {
-            return 'Debe ser un correo';
-          }
-          return null;
-        },
-      ),
-    );
-  }
-
-  Widget botonSelectImage(int i, String texto) {
-    return ElevatedButton(
-      onPressed: () => _seleccionarImagen(i),
-      child: Text(texto),
-    );
-  }
-
-  Widget botonEntrar() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Theme.of(context).colorScheme.onPrimary,
-          backgroundColor: Theme.of(context).colorScheme.primary,
-        ),
-        onPressed: () async {
-          if (!_formKey.currentState!.validate()) {
-            await Future.delayed(Duration(milliseconds: 100));
-            _scrollController.animateTo(
-              0.0,
-              duration: Duration(milliseconds: 500),
-              curve: Curves.easeInOut,
-            );
-            return;
-          }
-
-          late Business businessRequest;
-          Business? businessResponse;
-
-          Collaborator colab = widget.user;
-          var indice = colab.roles.indexWhere(
-            (roles) => "owner" == roles.toLowerCase(),
-          );
-          log(indice.toString());
-          ImageUpload? imageLogoResponse;
-          ImageUpload? imageBannerResponse;
-          if (_imagenLogo != null) {
-            imageLogoResponse = await businessProvider.uploadImage(
-              _imagenLogo!,
-            );
-          }
-
-          if (_imagenBanner != null) {
-            imageBannerResponse = await businessProvider.uploadImage(
-              _imagenBanner!,
-            );
-          }
-
-          if (indice != -1) {
-            if (widget.business == null) {
-              businessRequest = Business(
-                colab.business[indice].id,
-                nameTextEditting.text,
-                email: emailTextEditting.text,
-                descripcion: descripcionTextEdittig.text,
-                logoIconoUrl: imageLogoResponse?.url ?? " ",
-                logoBannerImage: imageBannerResponse?.url ?? " ",
-                direction: addressTextEditting.text,
-                categories: _selectedIds,
-              );
-            } else {
-              businessRequest = Business(
-                colab.business[indice].id,
-                nameTextEditting.text,
-                email: emailTextEditting.text,
-                descripcion: descripcionTextEdittig.text,
-                logoIconoUrl:
-                    imageLogoResponse?.url ?? widget.business!.logoIconoUrl,
-                logoBannerImage:
-                    imageBannerResponse?.url ?? widget.business!.logoIconoUrl,
-                direction: addressTextEditting.text,
-                categories: _selectedIds,
-              );
-            }
-
-            businessResponse = await businessProvider.update(businessRequest);
-            if (!mounted) return;
-            if (businessResponse != null) {
-              bool state = await businessProvider.updateCategories(
-                businessRequest,
-              );
-              if (!mounted) return;
-              if (state) {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Update sucefull',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    backgroundColor: Colors.green,
-                    duration: Duration(seconds: 3),
-                  ),
-                );
-                if (widget.business == null) {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (_) => BusinessMainScreen(user: widget.user),
-                    ),
-                    (route) => false,
-                  );
-                } else {
-                  Navigator.pop(context);
-                }
-              } else {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Error',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    backgroundColor: Colors.redAccent,
-                    duration: Duration(seconds: 3),
-                  ),
-                );
-              }
-            } else {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Error de conexion',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  backgroundColor: Colors.redAccent,
-                  duration: Duration(seconds: 3),
-                ),
-              );
-            }
-          }
-        },
-
-        child: Text("Update info", style: TextStyle(fontSize: 15)),
-      ),
+  Widget _buildImagePreview(File? image, {bool isBanner = false}) {
+    return Center(
+      child: image != null
+          ? Image.file(
+              image,
+              width: isBanner ? 300 : 200,
+              height: 200,
+              fit: BoxFit.cover,
+            )
+          : Text(
+              textAlign: TextAlign.center,
+              widget.business == null
+                  ? "No hay imagen seleccionada"
+                  : "No hay imagen seleccionada\n(se mantendrá la actual si no eliges otra)",
+            ),
     );
   }
 }
