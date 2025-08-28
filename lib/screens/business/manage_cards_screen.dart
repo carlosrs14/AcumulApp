@@ -4,9 +4,9 @@ import 'package:acumulapp/models/card.dart';
 import 'package:acumulapp/models/collaborator.dart';
 import 'package:acumulapp/providers/card_provider.dart';
 import 'package:acumulapp/screens/business/add_edit_card_screen.dart';
+import 'package:acumulapp/widgets/business_card_list_item.dart';
 import 'package:acumulapp/widgets/pagination.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ManageCardsScreen extends StatefulWidget {
   final int selectedIndex;
@@ -136,139 +136,16 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
                     itemCount: cards.length,
                     itemBuilder: (context, index) {
                       BusinessCard card = cards[index];
-                      String archivarText = card.isActive? "Archivar": "Desarchivar";
-                      return Card(
-                        elevation: 4,
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(
-                            color: Theme.of(context).colorScheme.primary,
+                      return BusinessCardListItem(
+                        card: card,
+                        onEdit: () => _navigateAndReload(
+                          AddEditCardScreen(
+                            card: card,
+                            idBusiness:
+                                widget.user.business[widget.selectedIndex].id,
                           ),
                         ),
-                        child: Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 15,
-                                  bottom: 6,
-                                ),
-                                child: Text(
-                                  card.name,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.stars,
-                                      size: 18,
-                                      color: Colors.grey[700],
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Expanded(
-                                      child: Text(
-                                        "Bounty: ${card.reward}",
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      MdiIcons.stamper,
-                                      size: 18,
-                                      color: Colors.grey[700],
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Expanded(
-                                      child: Text(
-                                        "MaxStamp: ${card.maxStamp}",
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Icon(
-                                      Icons.info_outline,
-                                      size: 18,
-                                      color: Colors.grey[700],
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Expanded(
-                                      child: Text(
-                                        "Restricciones: ${card.restrictions}",
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 15,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      MdiIcons.comment,
-                                      size: 18,
-                                      color: Colors.grey[700],
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Expanded(
-                                      child: Text(
-                                        "Descripcion: \n${card.description}",
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              const SizedBox(height: 16),
-                              ?actionButtons(
-                                card,
-                                true,
-                                "Editar",
-                               archivarText,
-                              ),
-                            ],
-                          ),
-                        ),
+                        onArchive: () => _archiveCard(card),
                       );
                     },
                   ),
@@ -311,82 +188,5 @@ class _ManageCardsScreenState extends State<ManageCardsScreen> {
         ),
       ),
     );
-  }
-
-  Widget? actionButtons(
-    BusinessCard card,
-    bool mostrar,
-    String texto,
-    String texto2,
-  ) {
-    return !mostrar
-        ? null
-        : Row(
-            children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddEditCardScreen(
-                          card: card,
-                          idBusiness:
-                              widget.user.business[widget.selectedIndex].id,
-                        ),
-                      ),
-                    );
-                    await _loadCards(currentPage, itemsPerPage);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(48),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(12),
-                      ),
-                    ),
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    elevation: 0,
-                  ),
-                  icon: Icon(Icons.edit),
-                  label: Text(texto),
-                ),
-              ),
-              Container(
-                width: 1,
-                height: 48,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    _archiveCard(card);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(48),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        bottomRight: Radius.circular(12),
-                      ),
-                    ),
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    elevation: 0,
-                  ),
-                  icon: Icon(Icons.archive),
-                  label: Text(texto2),
-                ),
-              ),
-            ],
-          );
   }
 }
