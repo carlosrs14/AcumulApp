@@ -2,32 +2,27 @@ import 'package:acumulapp/models/category.dart';
 import 'package:acumulapp/models/user.dart';
 import 'package:acumulapp/providers/business_provider.dart';
 import 'package:acumulapp/providers/category_provider.dart';
-import 'package:acumulapp/screens/user/business_cards_screen.dart';
-import 'package:acumulapp/screens/user/business_info_screen.dart';
+import 'package:acumulapp/screens/user/home_client/business_list.dart';
+import 'package:acumulapp/screens/user/home_client/business_search_field.dart';
+import 'package:acumulapp/screens/user/home_client/category_filter_dropdown.dart';
 import 'package:acumulapp/widgets/pagination.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:acumulapp/models/business.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'dart:async';
 
-class Inicioclienteview extends StatefulWidget {
+class HomeClientScreen extends StatefulWidget {
   final User user;
-  const Inicioclienteview({super.key, required this.user});
+
+  const HomeClientScreen({super.key, required this.user});
 
   @override
-  State<Inicioclienteview> createState() => _InicioclienteviewState();
+  State<HomeClientScreen> createState() => _HomeClientScreenState();
 }
 
-class _InicioclienteviewState extends State<Inicioclienteview> {
+class _HomeClientScreenState extends State<HomeClientScreen> {
   final BusinessProvider businessProvider = BusinessProvider();
   final CategoryProvider categoryProvider = CategoryProvider();
-  late double screenWidth;
-  Timer? _debounce;
-  List<Business> business = [];
-  List<Business> filteredBusiness = [];
-  final TextEditingController _searchController = TextEditingController();
 
+  List<Business> businesses = [];
   String selectedCategory = 'All';
   bool _isLoadingCategories = true;
   bool _errorCategories = false;
@@ -39,6 +34,18 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
   int totalPage = 10;
 
   List<Category> categoryList = [];
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await _loadCategories();
+    await _loadBusiness();
+  }
 
   Future<void> _loadCategories() async {
     if (!mounted) return;
@@ -67,12 +74,7 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
     }
   }
 
-  Future<void> _loadBusiness(
-    String? name,
-    int? category,
-    int page,
-    int size,
-  ) async {
+  Future<void> _loadBusiness() async {
     if (!mounted) return;
     setState(() {
       _isLoadingBusiness = true;
@@ -80,15 +82,16 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
     });
     try {
       final paginationData = await businessProvider.all(
-        name,
-        category,
-        page,
-        size,
+        _searchQuery.isEmpty ? null : _searchQuery,
+        selectedCategory == 'All'
+            ? null
+            : categoryList.firstWhere((c) => c.name == selectedCategory).id,
+        currentPage,
+        itemsPerPage,
       );
       if (!mounted) return;
       setState(() {
-        business = paginationData!.list as List<Business>;
-        filteredBusiness = business;
+        businesses = paginationData!.list as List<Business>;
         currentPage = paginationData.currentPage;
         itemsPerPage = paginationData.pageSize;
         totalPage = paginationData.totalPages;
@@ -108,351 +111,104 @@ class _InicioclienteviewState extends State<Inicioclienteview> {
   }
 
   @override
-  void initState() {
-    _loadCategories();
-    _loadBusiness(null, null, currentPage, itemsPerPage);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
-        body: _isLoadingBusiness || _isLoadingCategories
-            ? Center(child: CircularProgressIndicator())
-            : _errorBusiness || _errorCategories
-            ? reintentar()
-            : Container(padding: EdgeInsets.all(8), child: home()),
+        body: _buildBody(),
       ),
     );
   }
 
-  Widget reintentar() {
-    return Center(
+  Widget _buildBody() {
+    if (_isLoadingBusiness || _isLoadingCategories) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_errorBusiness || _errorCategories) {
+      return _buildRetryWidget();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Error de conexion"),
-          ElevatedButton(
-            onPressed: () {
-              _loadCategories();
-              _loadBusiness(null, null, currentPage, itemsPerPage);
-            },
-            child: Text("Reintentar"),
-          ),
+          const SizedBox(height: 10),
+          _buildFilters(),
+          const SizedBox(height: 10),
+          Expanded(child: BusinessList(businesses: businesses, user: widget.user)),
+          _buildPagination(),
         ],
       ),
     );
   }
 
-  Widget home() {
-    return Column(
+  Widget _buildFilters() {
+    return Row(
       children: [
-        SizedBox(height: 10),
-        Row(
-          children: [
-            SizedBox(width: 10),
-            search(),
-            SizedBox(width: 10),
-            filtro(),
-          ],
-        ),
-        SizedBox(height: 10),
-        Expanded(child: listaBusiness()),
-        PaginacionWidget(
-          currentPage: currentPage,
-          itemsPerPage: itemsPerPage,
-          totalItems: filteredBusiness.length,
-          totalPages: totalPage,
-          onPageChanged: (newPage) async {
-            setState(() {
-              currentPage = newPage;
-            });
-            await _loadBusiness(
-              _searchController.text.isEmpty ? null : _searchController.text,
-              selectedCategory == 'All'
-                  ? null
-                  : categoryList
-                        .firstWhere((c) => c.name == selectedCategory)
-                        .id,
-              newPage,
-              itemsPerPage,
-            );
-          },
-          onItemsPerPageChanged: (newCount) async {
-            setState(() {
-              itemsPerPage = newCount;
-              currentPage = 1;
-            });
-            await _loadBusiness(
-              _searchController.text.isEmpty ? null : _searchController.text,
-              selectedCategory == 'All'
-                  ? null
-                  : categoryList
-                        .firstWhere((c) => c.name == selectedCategory)
-                        .id,
-              currentPage,
-              itemsPerPage,
-            );
-          },
+        const SizedBox(width: 10),
+        BusinessSearchField(onSearch: _onSearchChanged),
+        const SizedBox(width: 10),
+        CategoryFilterDropdown(
+          selectedCategory: selectedCategory,
+          categories: categoryList,
+          onChanged: _onCategoryChanged,
         ),
       ],
     );
   }
 
-  Widget filtro() {
-    return Container(
-      height: 40,
-      padding: EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.primary,
-          width: 2,
-        ),
-        boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(1, 2)),
-        ],
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: selectedCategory,
-          icon: Icon(Icons.arrow_drop_down),
-          items: categoryList.map((Category value) {
-            return DropdownMenuItem<String>(
-              value: value.name,
-              child: Text(
-                value.name,
-                style: TextStyle(color: Theme.of(context).colorScheme.primary),
-              ),
-            );
-          }).toList(),
-          onChanged: (String? newValue) async {
-            if (newValue != null) {
-              filtros(_searchController.text, newValue);
-            }
-          },
-          iconEnabledColor: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-    );
-  }
-
-  Widget search() {
-    return SizedBox(
-      width: screenWidth * 0.3,
-      height: 40,
-      child: TextField(
-        onChanged: (value) {
-          if (_debounce?.isActive ?? false) _debounce!.cancel();
-          _debounce = Timer(const Duration(milliseconds: 1000), () async {
-            filtros(value, selectedCategory);
-          });
-        },
-        controller: _searchController,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 12),
-          prefixIcon: Icon(Icons.search),
-          prefixIconColor: Theme.of(context).colorScheme.primary,
-          hintText: "Search",
-          hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-          fillColor: Theme.of(context).colorScheme.surface,
-          filled: true,
-
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.primary,
-              width: 2,
-            ),
-          ),
-
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.secondary,
-              width: 3,
-            ),
-          ),
-
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(color: Colors.red, width: 2),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void filtros(String query, String categoria) async {
-    String? name = query.trim().isEmpty ? null : query.trim();
-    int? category = categoria == "All"
-        ? null
-        : categoryList.firstWhere((c) => c.name == categoria).id;
-
-    setState(() {
-      selectedCategory = categoria;
-      currentPage = 1;
-    });
-
-    await _loadBusiness(name, category, currentPage, itemsPerPage);
-    setState(() {
-      filteredBusiness = business;
-    });
-  }
-
-  Widget listaBusiness() {
-    return ListView.builder(
-      itemCount: filteredBusiness.length,
-      itemBuilder: (context, index) {
-        return Card(
-          elevation: 5,
-          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(
-              color: Theme.of(context).colorScheme.primary,
-              width: 2,
-            ),
-          ),
-          child: InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => BusinessInfo(
-                    business: filteredBusiness[index],
-                    user: widget.user,
-                  ),
-                ),
-              );
-            },
-            child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 55,
-                    height: 55,
-                    padding: EdgeInsets.all(1),
-
-                    child: ClipOval(
-                      child: Image.network(
-                        filteredBusiness[index].logoIconoUrl ?? " ",
-                        fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(35),
-                            ),
-                            child: Center(
-                              child: Text(
-                                filteredBusiness[index].name[0],
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Theme.of(context).colorScheme.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(width: 12),
-
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          filteredBusiness[index].name,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(filteredBusiness[index].direction ?? ''),
-                        SizedBox(height: 4),
-                        RatingBarIndicator(
-                          rating: filteredBusiness[index].ratingAverage!,
-                          itemBuilder: (context, _) => Icon(
-                            MdiIcons.star,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          itemCount: 5,
-                          itemSize: 20.0,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(
-                    height: 40,
-                    width: 80,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => BusinessCardsScreen(
-                              business: filteredBusiness[index],
-                              user: widget.user,
-                            ),
-                          ),
-                        );
-                      },
-                      icon: Icon(MdiIcons.cardsOutline, size: 20),
-                      iconAlignment: IconAlignment.end,
-                      label: Text("Ver"),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Theme.of(
-                          context,
-                        ).colorScheme.onPrimary,
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        elevation: 4,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
+  Widget _buildPagination() {
+    return PaginacionWidget(
+      currentPage: currentPage,
+      itemsPerPage: itemsPerPage,
+      totalItems: businesses.length,
+      totalPages: totalPage,
+      onPageChanged: (newPage) async {
+        setState(() {
+          currentPage = newPage;
+        });
+        await _loadBusiness();
+      },
+      onItemsPerPageChanged: (newCount) async {
+        setState(() {
+          itemsPerPage = newCount;
+          currentPage = 1;
+        });
+        await _loadBusiness();
       },
     );
   }
 
-  void cargatrue() {
-    setState(() {
-      _isLoadingCategories = true;
-    });
+  Widget _buildRetryWidget() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text("Error de conexión"),
+          ElevatedButton(
+            onPressed: _loadData,
+            child: const Text("Reintentar"),
+          ),
+        ],
+      ),
+    );
   }
 
-  void cargafalse() {
+  void _onSearchChanged(String query) {
     setState(() {
-      _isLoadingCategories = false;
+      _searchQuery = query;
+      currentPage = 1;
     });
+    _loadBusiness();
+  }
+
+  void _onCategoryChanged(String? newValue) {
+    if (newValue != null) {
+      setState(() {
+        selectedCategory = newValue;
+        currentPage = 1;
+      });
+      _loadBusiness();
+    }
   }
 }

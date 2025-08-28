@@ -39,7 +39,7 @@ class HomeScreenState extends State<HomeScreen> {
 
         switch (index) {
           case 0:
-            builder = (context) => Inicioclienteview(user: widget.user);
+            builder = (context) => HomeClientScreen(user: widget.user);
             break;
           case 1:
             builder = (context) => ClientCardsScreen(user: widget.user);
@@ -50,7 +50,7 @@ class HomeScreenState extends State<HomeScreen> {
           // case 3:
 
           default:
-            builder = (context) => Inicioclienteview(user: widget.user);
+            builder = (context) => HomeClientScreen(user: widget.user);
         }
 
         return MaterialPageRoute(builder: builder, settings: settings);
