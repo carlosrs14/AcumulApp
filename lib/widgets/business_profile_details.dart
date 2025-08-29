@@ -1,4 +1,5 @@
 import 'package:acumulapp/models/business.dart';
+import 'package:acumulapp/utils/categories_icons.dart';
 import 'package:acumulapp/widgets/business_logo.dart';
 import 'package:acumulapp/utils/redes_icons.dart';
 import 'package:acumulapp/widgets/category_business_screen.dart';
@@ -89,7 +90,7 @@ class BusinessProfileDetails extends StatelessWidget {
                       buttons: business.links!
                           .map(
                             (l) => SocialButton(
-                              icon: iconosRedes[l.redSocial] ?? MdiIcons.web,
+                              icon: iconosRedes[normalize(l.redSocial)] ?? MdiIcons.web,
                               url: l.url,
                             ),
                           )

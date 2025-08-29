@@ -5,6 +5,7 @@ import 'package:acumulapp/providers/category_provider.dart';
 import 'package:acumulapp/screens/user/home_client/business_list.dart';
 import 'package:acumulapp/screens/user/home_client/business_search_field.dart';
 import 'package:acumulapp/screens/user/home_client/category_filter_dropdown.dart';
+import 'package:acumulapp/widgets/favorite_business.dart';
 import 'package:acumulapp/widgets/pagination.dart';
 import 'package:acumulapp/models/business.dart';
 import 'package:flutter/material.dart';
@@ -131,9 +132,14 @@ class _HomeClientScreenState extends State<HomeClientScreen> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 10),
           _buildFilters(),
+          const SizedBox(height: 10),
+          Text("Favoritos", textAlign: TextAlign.left),
+          const SizedBox(height: 10),
+          SizedBox(height: 70, child: Expanded(child: FavoriteBusiness(user: widget.user))),
           const SizedBox(height: 10),
           Expanded(child: BusinessList(businesses: businesses, user: widget.user)),
           _buildPagination(),
