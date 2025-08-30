@@ -112,21 +112,41 @@ class BusinessService {
     );
   }
 
+  Future<http.Response> getFavorites(int idUser) {
+    final Uri url = Uri.parse("$urlApi/business/favorites");
+
+    return http.get(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${jwt?.loadToken()}",
+      }
+    );
+  }
+
+  Future<http.Response> updateFavorite(int idBusiness) {
+    final Uri url = Uri.parse("$urlApi/business/favorite/$idBusiness");
+
+    return http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${jwt?.loadToken()}",
+      }
+    );
+  }
+
   Future<http.Response> uploadImage(File imagen) async {
     final Uri url = Uri.parse("$urlApi/image/upload");
 
     var request = http.MultipartRequest("POST", url);
 
-    // Agregar el token al header
     request.headers['Authorization'] = 'Bearer ${jwt?.loadToken()}';
 
-    // Adjuntar la imagen
     request.files.add(await http.MultipartFile.fromPath('image', imagen.path));
 
-    // Enviar la petición
     var streamedResponse = await request.send();
 
-    // Convertir a Response normal (para ser consistente con el resto del service)
     final response = await http.Response.fromStream(streamedResponse);
 
     log("📤 Upload status: ${response.statusCode}");

@@ -5,6 +5,7 @@ import 'package:acumulapp/widgets/category_business_screen.dart';
 import 'package:acumulapp/screens/user/business_cards_screen.dart';
 import 'package:acumulapp/utils/categories_icons.dart';
 import 'package:acumulapp/utils/redes_icons.dart';
+import 'package:acumulapp/widgets/favorite_button.dart';
 import 'package:acumulapp/widgets/links_redes_screen.dart';
 import 'package:acumulapp/widgets/rating.dart';
 import 'package:flutter/material.dart';
@@ -65,6 +66,12 @@ class _BusinessInfoState extends State<BusinessInfo> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              FavoriteButton(idBusiness: widget.business.id, isFavorite: false)
+                              ],
+                          ),
                           SizedBox(height: 20),
                           imagenNegocio(),
                           SizedBox(height: 30),

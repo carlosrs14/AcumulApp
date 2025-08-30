@@ -140,6 +140,45 @@ class BusinessProvider {
       return null;
     }
   }
+  
+  Future<List<Business>> getFavorites(int idUser) async {
+    try {
+      final response = await businessService.getFavorites(idUser);
+      if (response.statusCode == 200) {
+        final body = utf8.decode(response.bodyBytes);
+        final jsonData = jsonDecode(body);
+        
+        List<Business> favorites = [];
+        
+        for (var element in jsonData) {
+          favorites.add(Business.fromJson(element));
+        }
+        return favorites;
+      } else {
+        log(response.body);
+        return [];
+      }
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
+
+  Future<bool> updateFavorite(int idBusiness) async {
+    try {
+      final response = await businessService.updateFavorite(idBusiness);
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        log('Error al poner como favorito el negocio: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      log('Excepción en update(): $e');
+      return false;
+    }
+  }
 
   Future<bool> updateCategories(Business business) async {
     try {

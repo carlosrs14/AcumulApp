@@ -24,6 +24,7 @@ class _HomeClientScreenState extends State<HomeClientScreen> {
   final CategoryProvider categoryProvider = CategoryProvider();
 
   List<Business> businesses = [];
+  List<Business> favorites = [];
   String selectedCategory = 'All';
   bool _isLoadingCategories = true;
   bool _errorCategories = false;
@@ -41,74 +42,6 @@ class _HomeClientScreenState extends State<HomeClientScreen> {
   void initState() {
     super.initState();
     _loadData();
-  }
-
-  Future<void> _loadData() async {
-    await _loadCategories();
-    await _loadBusiness();
-  }
-
-  Future<void> _loadCategories() async {
-    if (!mounted) return;
-    setState(() {
-      _isLoadingCategories = true;
-      _errorCategories = false;
-    });
-    try {
-      final lista = await categoryProvider.all();
-      lista.insert(0, Category(-1, "All", "All"));
-      if (!mounted) return;
-      setState(() {
-        categoryList = lista;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _errorCategories = true;
-      });
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoadingCategories = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _loadBusiness() async {
-    if (!mounted) return;
-    setState(() {
-      _isLoadingBusiness = true;
-      _errorBusiness = false;
-    });
-    try {
-      final paginationData = await businessProvider.all(
-        _searchQuery.isEmpty ? null : _searchQuery,
-        selectedCategory == 'All'
-            ? null
-            : categoryList.firstWhere((c) => c.name == selectedCategory).id,
-        currentPage,
-        itemsPerPage,
-      );
-      if (!mounted) return;
-      setState(() {
-        businesses = paginationData!.list as List<Business>;
-        currentPage = paginationData.currentPage;
-        itemsPerPage = paginationData.pageSize;
-        totalPage = paginationData.totalPages;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _errorBusiness = true;
-      });
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoadingBusiness = false;
-        });
-      }
-    }
   }
 
   @override
@@ -139,7 +72,7 @@ class _HomeClientScreenState extends State<HomeClientScreen> {
           const SizedBox(height: 10),
           Text("Favoritos", textAlign: TextAlign.left),
           const SizedBox(height: 10),
-          SizedBox(height: 70, child: Expanded(child: FavoriteBusiness(user: widget.user))),
+          SizedBox(height: 70, child: Expanded(child: FavoriteBusiness(user: widget.user,businesses: favorites))),
           const SizedBox(height: 10),
           Expanded(child: BusinessList(businesses: businesses, user: widget.user)),
           _buildPagination(),
@@ -217,4 +150,102 @@ class _HomeClientScreenState extends State<HomeClientScreen> {
       _loadBusiness();
     }
   }
+
+  
+  Future<void> _loadData() async {
+    await _loadCategories();
+    await _loadBusiness();
+    await _loadFavoriteBusiness();
+  }
+
+  Future<void> _loadCategories() async {
+    if (!mounted) return;
+    setState(() {
+      _isLoadingCategories = true;
+      _errorCategories = false;
+    });
+    try {
+      final lista = await categoryProvider.all();
+      lista.insert(0, Category(-1, "All", "All"));
+      if (!mounted) return;
+      setState(() {
+        categoryList = lista;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorCategories = true;
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingCategories = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadBusiness() async {
+    if (!mounted) return;
+    setState(() {
+      _isLoadingBusiness = true;
+      _errorBusiness = false;
+    });
+    try {
+      final paginationData = await businessProvider.all(
+        _searchQuery.isEmpty ? null : _searchQuery,
+        selectedCategory == 'All'
+            ? null
+            : categoryList.firstWhere((c) => c.name == selectedCategory).id,
+        currentPage,
+        itemsPerPage,
+      );
+      if (!mounted) return;
+      setState(() {
+        businesses = paginationData!.list as List<Business>;
+        currentPage = paginationData.currentPage;
+        itemsPerPage = paginationData.pageSize;
+        totalPage = paginationData.totalPages;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorBusiness = true;
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingBusiness = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadFavoriteBusiness() async {
+    if (!mounted) return;
+    setState(() {
+      _isLoadingBusiness = true;
+      _errorBusiness = false;
+    });
+
+    try {
+      final List<Business> businessesResponse = await businessProvider.getFavorites(widget.user.id);
+      if (!mounted) return;
+      setState(() {
+        favorites = favorites = businessesResponse;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorBusiness = true;
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingBusiness = false;
+        });
+      }
+    }
+  }
+
 }
